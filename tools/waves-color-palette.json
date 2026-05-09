@@ -1,0 +1,82 @@
+{
+  "default": "#8e804b",
+  "colors": [
+    {
+      "hex": "#8e804b",
+      "name": "草灰绿",
+      "pinyin": "caohuilv",
+      "RGB": [142, 128, 75],
+      "CMYK": [38, 38, 76, 24]
+    },
+    {
+      "hex": "#918072",
+      "name": "银灰",
+      "pinyin": "yinhui",
+      "RGB": [145, 128, 114],
+      "CMYK": [34, 42, 46, 23]
+    },
+    {
+      "hex": "#f03f24",
+      "name": "胭脂红",
+      "pinyin": "yanzhihong",
+      "RGB": [240, 63, 36],
+      "CMYK": [0, 83, 81, 0]
+    },
+    {
+      "hex": "#c45a65",
+      "name": "莓红",
+      "pinyin": "meihong",
+      "RGB": [196, 90, 101],
+      "CMYK": [13, 76, 50, 2]
+    },
+    {
+      "hex": "#8076a3",
+      "name": "藤萝紫",
+      "pinyin": "tengluozi",
+      "RGB": [128, 118, 163],
+      "CMYK": [58, 56, 17, 2]
+    },
+    {
+      "hex": "#ad6598",
+      "name": "豆蔻紫",
+      "pinyin": "doukouzi",
+      "RGB": [173, 101, 152],
+      "CMYK": [31, 71, 15, 1]
+    },
+    {
+      "hex": "#158bb8",
+      "name": "鸢尾蓝",
+      "pinyin": "yuanweilan",
+      "RGB": [21, 139, 184],
+      "CMYK": [95, 25, 20, 4]
+    },
+    {
+      "hex": "#70887d",
+      "name": "淡绿灰",
+      "pinyin": "danlvhui",
+      "RGB": [112, 136, 125],
+      "CMYK": [63, 31, 50, 14]
+    },
+    {
+      "hex": "#229453",
+      "name": "孔雀绿",
+      "pinyin": "kongquelv",
+      "RGB": [34, 148, 83],
+      "CMYK": [99, 10, 91, 2]
+    },
+    {
+      "hex": "#6e8b74",
+      "name": "瓦松绿",
+      "pinyin": "wasonglv",
+      "RGB": [110, 139, 116],
+      "CMYK": [66, 29, 58, 12]
+    },
+    {
+      "hex": "#867e76",
+      "name": "瓦灰",
+      "pinyin": "wahui",
+      "RGB": [134, 126, 118],
+      "CMYK": [42, 40, 43, 23]
+    }
+  ]
+}

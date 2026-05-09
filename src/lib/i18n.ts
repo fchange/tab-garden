@@ -1,0 +1,243 @@
+import type { LanguagePreference } from '../types/settings';
+import type { ViewMode } from '../types/tab';
+
+const EN = {
+  viewOptions: {
+    all: 'All',
+    domain: 'Domain',
+    window: 'Window',
+    duplicate: 'Duplicate',
+  },
+  batch: {
+    closeDuplicate: 'Close duplicates',
+    closeSleeping: 'Close sleeping tabs',
+  },
+  empty: {
+    loading: 'Organizing current tabs...',
+    noMatches: 'No matching tabs',
+    noTabs: 'Nothing here yet',
+  },
+  header: {
+    openPrefix: 'You have',
+    openSuffix: 'tabs open',
+    duplicate: 'duplicates',
+    sleeping: 'sleeping',
+  },
+  accents: {
+    title: 'Accent color',
+    choose: 'Choose accent color',
+    current: 'Current',
+    default: 'Default',
+    use: 'Use',
+    setDefault: 'Set default',
+    currentColor: 'Current color',
+  },
+  controls: {
+    light: 'Switch to light',
+    dark: 'Switch to dark',
+    randomAccent: 'Use random accent color',
+    pause: 'Pause animation',
+    play: 'Resume animation',
+    settings: 'Settings',
+  },
+  settings: {
+    title: 'Settings',
+    language: 'Language',
+    english: 'English',
+    chinese: '中文',
+    defaultView: 'Default grouping',
+    theme: 'Theme',
+    system: 'System',
+    light: 'Light',
+    dark: 'Dark',
+    protection: 'Protection rules',
+    protectPinned: 'Protect pinned tabs',
+    protectAudible: 'Protect tabs playing audio',
+    protectActive: 'Protect active tab',
+    on: 'On',
+    off: 'Off',
+    whitelist: 'Whitelisted domains',
+    whitelistPlaceholder: 'e.g. github.com',
+    add: 'Add',
+    removeDomain: 'Remove',
+  },
+  search: {
+    placeholder: 'Search tabs...',
+    webPlaceholder: 'Search the web...',
+    tabsMode: 'Tabs',
+    webMode: 'Web',
+    tabsMenu: 'Search tabs',
+    webMenu: 'Web search',
+  },
+  domainCard: {
+    unnamedPage: 'Untitled page',
+    blankPage: 'Blank page',
+    windowLabel: (index: number) => `Window ${index}`,
+    tabCount: (count: number) => `${count} ${count === 1 ? 'tab' : 'tabs'}`,
+    menu: 'Group menu',
+    sleepAll: 'Sleep all',
+    closeAll: 'Close all',
+    more: (count: number) => `${count} more`,
+  },
+  tab: {
+    openExternal: 'Open in new window',
+    close: 'Close tab',
+    untitled: 'Untitled tab',
+    current: 'Current',
+    sleeping: 'Sleeping',
+    duplicate: 'Duplicate',
+  },
+  feedback: {
+    mockSwitch: 'Preview mode: simulated switching tabs.',
+    switched: 'Switched to target tab.',
+    mockData: 'Browser tabs are unavailable here, so sample data is being used.',
+    readError: 'Something went wrong while reading tabs.',
+    refreshed: 'Tab list refreshed.',
+    switchFailed: 'Failed to switch tabs.',
+    closedOne: 'Tab closed.',
+    closeFailed: 'Failed to close tabs.',
+    closedTabs: (count: number) => (count ? `Closed ${count} tabs.` : 'No tabs can be closed.'),
+    sleptOne: 'Tab put to sleep.',
+    sleepFailed: 'Failed to sleep tab.',
+    closedDuplicates: (count: number) =>
+      count ? `Closed ${count} duplicate tabs.` : 'No duplicate tabs can be closed.',
+    closeDuplicatesFailed: 'Failed to close duplicate tabs.',
+    closedSleeping: (count: number) =>
+      count ? `Closed ${count} sleeping tabs.` : 'No sleeping tabs can be closed.',
+    closeSleepingFailed: 'Failed to close sleeping tabs.',
+    discardedIdle: (count: number) =>
+      count ? `Released ${count} idle tabs.` : 'No idle tabs can be released.',
+    discardIdleFailed: 'Failed to release idle tabs.',
+    keptOne: (count: number) =>
+      count ? `Kept 1 tab and closed ${count} others.` : 'This group only has the kept tab left.',
+    keepOneFailed: 'Failed to keep one tab.',
+  },
+};
+
+const ZH: typeof EN = {
+  viewOptions: {
+    all: '全部',
+    domain: '域名',
+    window: '窗口',
+    duplicate: '重复',
+  },
+  batch: {
+    closeDuplicate: '关闭全部重复标签',
+    closeSleeping: '关闭全部休眠标签',
+  },
+  empty: {
+    loading: '正在整理当前标签...',
+    noMatches: '没有找到匹配的标签',
+    noTabs: '这里空空如也',
+  },
+  header: {
+    openPrefix: '你现在打开了',
+    openSuffix: '个标签',
+    duplicate: '个重复',
+    sleeping: '个休眠中',
+  },
+  accents: {
+    title: '强调色',
+    choose: '选择点缀色',
+    current: '当前',
+    default: '默认',
+    use: '使用',
+    setDefault: '设默认',
+    currentColor: '当前配色',
+  },
+  controls: {
+    light: '切换浅色',
+    dark: '切换深色',
+    randomAccent: '使用随机强调色',
+    pause: '暂停动画',
+    play: '继续动画',
+    settings: '设置',
+  },
+  settings: {
+    title: '设置',
+    language: '语言',
+    english: 'English',
+    chinese: '中文',
+    defaultView: '默认分组模式',
+    theme: '主题偏好',
+    system: '跟随系统',
+    light: '浅色',
+    dark: '深色',
+    protection: '保护规则',
+    protectPinned: '保护固定标签',
+    protectAudible: '保护正在播放音频的标签',
+    protectActive: '保护当前活跃标签',
+    on: '开启',
+    off: '关闭',
+    whitelist: '白名单域名',
+    whitelistPlaceholder: '例如 github.com',
+    add: '添加',
+    removeDomain: '移除',
+  },
+  search: {
+    placeholder: '搜索标签...',
+    webPlaceholder: '网络搜索...',
+    tabsMode: '标签',
+    webMode: '网络',
+    tabsMenu: '搜索标签',
+    webMenu: '网络搜索',
+  },
+  domainCard: {
+    unnamedPage: '未命名页面',
+    blankPage: '空白页',
+    windowLabel: (index: number) => `窗口 ${index}`,
+    tabCount: (count: number) => `${count} 个标签`,
+    menu: '分组菜单',
+    sleepAll: '全部休眠',
+    closeAll: '全部关闭',
+    more: (count: number) => `还有 ${count} 个`,
+  },
+  tab: {
+    openExternal: '在新窗口中打开',
+    close: '关闭标签',
+    untitled: '未命名标签',
+    current: '当前',
+    sleeping: '休眠',
+    duplicate: '重复',
+  },
+  feedback: {
+    mockSwitch: '当前为预览模式，已模拟切换标签。',
+    switched: '已切换到目标标签。',
+    mockData: '当前环境无法访问浏览器标签页，正在使用示例数据预览界面。',
+    readError: '读取标签页时发生异常。',
+    refreshed: '已刷新标签列表。',
+    switchFailed: '切换标签失败。',
+    closedOne: '已关闭标签。',
+    closeFailed: '关闭标签失败。',
+    closedTabs: (count: number) => (count ? `已关闭 ${count} 个标签。` : '当前没有可关闭的标签。'),
+    sleptOne: '已休眠标签。',
+    sleepFailed: '休眠标签失败。',
+    closedDuplicates: (count: number) =>
+      count ? `已关闭 ${count} 个重复标签。` : '当前没有可关闭的重复标签。',
+    closeDuplicatesFailed: '关闭重复标签失败。',
+    closedSleeping: (count: number) =>
+      count ? `已关闭 ${count} 个休眠标签。` : '当前没有可关闭的休眠标签。',
+    closeSleepingFailed: '关闭休眠标签失败。',
+    discardedIdle: (count: number) =>
+      count ? `已释放 ${count} 个闲置标签。` : '当前没有可释放的闲置标签。',
+    discardIdleFailed: '释放闲置标签失败。',
+    keptOne: (count: number) =>
+      count ? `已保留 1 个标签，并关闭 ${count} 个其余标签。` : '当前分组只剩可保留标签。',
+    keepOneFailed: '执行只保留一个失败。',
+  },
+};
+
+export type AppCopy = typeof EN;
+
+export function getCopy(language: LanguagePreference): AppCopy {
+  return language === 'zh' ? ZH : EN;
+}
+
+export function getViewOptions(copy: AppCopy): Array<{ value: ViewMode; label: string }> {
+  return [
+    { value: 'all', label: copy.viewOptions.all },
+    { value: 'domain', label: copy.viewOptions.domain },
+    { value: 'window', label: copy.viewOptions.window },
+    { value: 'duplicate', label: copy.viewOptions.duplicate },
+  ];
+}
