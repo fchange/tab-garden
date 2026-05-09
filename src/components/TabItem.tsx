@@ -1,5 +1,5 @@
 import { useMemo, useState, type CSSProperties, type MouseEvent } from 'react';
-import { ExternalLink, X } from 'lucide-react';
+import { Moon, X } from 'lucide-react';
 import { cn } from '../lib/cn';
 import { getBaseDomain, getDisplayUrl, isSpecialUrl, getFaviconUrl, getDomainColor } from '../lib/url';
 import type { BrowserTab } from '../types/tab';
@@ -9,7 +9,9 @@ interface TabItemProps {
   tab: BrowserTab;
   accentColor: string;
   onClose?: (tab: BrowserTab) => void;
+  onSleep?: (tab: BrowserTab) => void;
   onSwitch?: (tab: BrowserTab) => void;
+  canSleep?: boolean;
   showDuplicateBadge?: boolean;
   /** Compact variant used inside DomainCard / window cards */
   compact?: boolean;
@@ -81,12 +83,12 @@ function TabFavicon({ faviconUrl, domain, audible, compact }: TabFaviconProps) {
 interface TabActionsProps {
   visible: boolean;
   accentColor: string;
-  isSpecial: boolean;
-  onOpenExternal: (e: MouseEvent) => void;
+  canSleep: boolean;
+  onSleep: (e: MouseEvent) => void;
   onClose: (e: MouseEvent) => void;
 }
 
-function TabActions({ visible, accentColor, isSpecial, onOpenExternal, onClose, copy }: TabActionsProps & { copy: AppCopy }) {
+function TabActions({ visible, accentColor, canSleep, onSleep, onClose, copy }: TabActionsProps & { copy: AppCopy }) {
   return (
     <div
       className={cn(
@@ -95,15 +97,15 @@ function TabActions({ visible, accentColor, isSpecial, onOpenExternal, onClose, 
       )}
       style={{ background: accentColor }}
     >
-      {!isSpecial && (
-        <button
-          className="size-7 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center transition-all duration-100 opacity-60 hover:opacity-100 hover:scale-105 active:scale-95"
-          onClick={onOpenExternal}
-          title={copy.tab.openExternal}
-        >
-          <ExternalLink size={13} />
-        </button>
-      )}
+      <button
+        className="size-7 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center transition-all duration-100 opacity-60 hover:opacity-100 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-25 disabled:hover:scale-100"
+        onClick={onSleep}
+        title={copy.tab.sleep}
+        aria-label={copy.tab.sleep}
+        disabled={!canSleep}
+      >
+        <Moon size={13} />
+      </button>
       <button
         className="size-7 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center transition-all duration-100 opacity-60 hover:opacity-100 hover:scale-105 active:scale-95 hover:bg-[rgba(180,60,60,0.10)]"
         onClick={onClose}
@@ -119,7 +121,9 @@ export function TabItem({
   tab,
   accentColor,
   onClose,
+  onSleep,
   onSwitch,
+  canSleep = false,
   showDuplicateBadge,
   compact = false,
   copy,
@@ -131,7 +135,6 @@ export function TabItem({
   const faviconUrl = useMemo(() => tabFaviconUrl(tab), [tab]);
   const domain = useMemo(() => getBaseDomain(tab.url, copy.domainCard.unnamedPage), [copy, tab.url]);
   const domainColor = getDomainColor(domain);
-  const specialUrl = isSpecialUrl(tab.url);
 
   const handleClose = (e: MouseEvent) => {
     e.stopPropagation();
@@ -139,10 +142,10 @@ export function TabItem({
     window.setTimeout(() => onClose?.(tab), 280);
   };
 
-  const handleOpenExternal = (e: MouseEvent) => {
+  const handleSleep = (e: MouseEvent) => {
     e.stopPropagation();
-    if (!tab.url) return;
-    window.open(tab.url, '_blank', 'noopener,noreferrer');
+    if (!canSleep) return;
+    onSleep?.(tab);
   };
 
   const handleClick = () => {
@@ -174,8 +177,8 @@ export function TabItem({
         <TabActions
           visible={hovered}
           accentColor={accentColor}
-          isSpecial={specialUrl}
-          onOpenExternal={handleOpenExternal}
+          canSleep={canSleep}
+          onSleep={handleSleep}
           onClose={handleClose}
           copy={copy}
         />
@@ -246,8 +249,8 @@ export function TabItem({
         <TabActions
           visible={hovered}
           accentColor={accentColor}
-          isSpecial={specialUrl}
-          onOpenExternal={handleOpenExternal}
+          canSleep={canSleep}
+          onSleep={handleSleep}
           onClose={handleClose}
           copy={copy}
         />

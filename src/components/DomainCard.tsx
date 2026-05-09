@@ -15,12 +15,14 @@ interface DomainCardProps {
   accentColor?: string;
   onSwitch?: (tab: BrowserTab) => void;
   onClose?: (tab: BrowserTab) => void;
+  onSleep?: (tab: BrowserTab) => void;
   onCloseAll?: (tabs: BrowserTab[]) => void;
   onSleepAll?: (tabs: BrowserTab[]) => void;
+  canSleepTab?: (tab: BrowserTab) => boolean;
   copy: AppCopy;
 }
 
-export function DomainCard({ group, accentColor, onSwitch, onClose, onCloseAll, onSleepAll, copy }: DomainCardProps) {
+export function DomainCard({ group, accentColor, onSwitch, onClose, onSleep, onCloseAll, onSleepAll, canSleepTab, copy }: DomainCardProps) {
   const domainColor = getDomainColor(group.id);
 
   return (
@@ -80,6 +82,8 @@ export function DomainCard({ group, accentColor, onSwitch, onClose, onCloseAll, 
             accentColor={accentColor ?? domainColor}
             onSwitch={onSwitch}
             onClose={onClose}
+            onSleep={onSleep}
+            canSleep={canSleepTab?.(tab) ?? false}
             compact
             copy={copy}
           />

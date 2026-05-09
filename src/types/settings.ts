@@ -3,6 +3,7 @@ import type { ViewMode } from './tab';
 export type ThemePreference = 'system' | 'light' | 'dark';
 export type ThemeMode = 'light' | 'dark';
 export type LanguagePreference = 'en' | 'zh';
+export type SearchToggleDisplay = 'compact' | 'detailed';
 
 export interface ColorSample {
   hex: string;
@@ -39,4 +40,6 @@ export interface AppSettings {
   defaultAccentColor: string | null;
   randomAccentColor: boolean;
   animationEnabled: boolean;
+  searchToggleDisplay: SearchToggleDisplay;
+  customSlogan: string;
 }

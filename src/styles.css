@@ -1,7 +1,17 @@
 @import "@chinese-fonts/crgkk/dist/程荣光刻楷/result.css";
+@import "@chinese-fonts/fhst/dist/飞花宋体/result.css";
 @import "tailwindcss";
 
 @custom-variant dark (&:where([data-theme="dark"] *));
+
+@keyframes slogan-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
 
 @theme inline {
   --color-background: var(--theme-bg);
@@ -34,7 +44,7 @@
   --theme-bg: #f6faf8;
   --theme-fg: #223632;
   --theme-card: rgba(255, 255, 255, 0.46);
-  --theme-popover: rgba(255, 255, 255, 0.92);
+  --theme-popover: #ffffff;
   --theme-surface: rgba(255, 255, 255, 0.38);
   --theme-surface-strong: rgba(255, 255, 255, 0.56);
   --theme-surface-soft: rgba(255, 255, 255, 0.26);
@@ -72,18 +82,50 @@
   font-feature-settings: "liga" 1, "kern" 1;
 }
 
+.bottom-slogan {
+  align-items: center;
+  bottom: 0vh;
+  color: rgb(17, 17, 17);
+  display: flex;
+  font-family: "chengrongguangke", "PingFang SC", serif;
+  font-size: 30px;
+  justify-content: center;
+  left: 50vw;
+  opacity: 0.8;
+  position: absolute;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  transition: top 500ms ease-in-out;
+  animation: slogan-fade-in 1s ease-in;
+}
+
+.slogan-stamp {
+  background-color: #c20000;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 13px;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-left: 0.55em;
+  padding: 4px 5px 4px 4px;
+}
+
+[data-theme="dark"] .bottom-slogan {
+  color: rgb(255, 255, 255);
+}
+
 [data-theme="dark"] {
-  --theme-bg: #323232;
+  --theme-bg: #1e2a35;
   --theme-fg: #edf6f4;
-  --theme-card: rgba(14, 22, 28, 0.56);
-  --theme-popover: rgba(28, 28, 28, 0.94);
-  --theme-surface: rgba(255, 255, 255, 0.05);
-  --theme-surface-strong: rgba(255, 255, 255, 0.09);
+  --theme-card: rgba(14, 24, 32, 0.6);
+  --theme-popover: rgb(16, 26, 35);
+  --theme-surface: rgba(255, 255, 255, 0.055);
+  --theme-surface-strong: rgba(255, 255, 255, 0.1);
   --theme-surface-soft: rgba(255, 255, 255, 0.035);
   --theme-primary: rgba(237, 246, 244, 0.88);
   --theme-primary-fg: #132026;
-  --theme-secondary: rgba(255, 255, 255, 0.05);
-  --theme-muted: rgba(255, 255, 255, 0.07);
+  --theme-secondary: rgba(255, 255, 255, 0.06);
+  --theme-muted: rgba(255, 255, 255, 0.075);
   --theme-fg-soft: rgba(237, 246, 244, 0.68);
   --theme-accent: #4a7f86;
   --theme-destructive: #ef4444;

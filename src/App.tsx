@@ -6,12 +6,12 @@ import { Tabs, TabsContent } from './components/ui/tabs';
 
 import { SearchBar } from './components/SearchBar';
 import { DomainCard } from './components/DomainCard';
+import { SettingsSheet } from './components/settings/SettingsSheet';
 import { ViewToggle } from './components/ViewToggle';
 import { VirtualTabList } from './components/VirtualTabList';
 import { WaveBackground } from './components/WaveBackground';
 import { useSettings } from './hooks/useSettings';
 import { useTabs } from './hooks/useTabs';
-import { Badge } from './components/ui/badge';
 import { Button } from './components/ui/button';
 import {
   DropdownMenu,
@@ -21,12 +21,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './components/ui/dropdown-menu';
-import { Input } from './components/ui/input';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from './components/ui/sheet';
 import { ACCENT_COLORS, DEFAULT_ACCENT_COLOR, getAccentColorByHex, getNextAccentColor } from './lib/accentColors';
 import { buildDomainGroups, buildWindowGroups, filterTabs } from './lib/groups';
 import { getCopy, getViewOptions } from './lib/i18n';
-import { buildDuplicateGroups } from './lib/tabs';
+import { cn } from './lib/cn';
+import { DEFAULT_SETTINGS } from './lib/storage';
+import { buildDuplicateGroups, isDiscardable } from './lib/tabs';
 import { getThemePalette, paletteToShadcnVars } from './lib/theme';
 import type { ThemePreference } from './types/settings';
 import type { ActionFeedback, BrowserTab, ViewMode } from './types/tab';
@@ -77,15 +77,16 @@ export default function App() {
 
   const [colorSample, setColorSample] = useState(() => getAccentColorByHex(DEFAULT_ACCENT_COLOR));
   const accentColor = colorSample.hex;
+  const accentTextColor = getReadableTextColor(accentColor);
 
   const [view, setView] = useState<ViewMode>('all');
   const [query, setQuery] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [whitelistInput, setWhitelistInput] = useState('');
   const randomAccentInitializedRef = useRef(false);
 
   const deferredQuery = useDeferredValue(query);
   const tabState = useTabs(settings, copy);
+  const customSlogan = settings.customSlogan.trim();
 
   useEffect(() => {
     if (ready) {
@@ -184,9 +185,15 @@ export default function App() {
   const tabHandlers = {
     onSwitch: (tab: BrowserTab) => handleFeedback(tabState.switchToTab(tab)),
     onClose: (tab: BrowserTab) => handleFeedback(tabState.closeOne(tab)),
+    onSleep: (tab: BrowserTab) => handleFeedback(tabState.discardOne(tab)),
     onCloseAll: (tabs: BrowserTab[]) => handleFeedback(tabState.closeSelectedTabs(tabs)),
     onSleepAll: (tabs: BrowserTab[]) => handleFeedback(tabState.discardIdleTabs(tabs)),
   };
+
+  const canSleepTab = useCallback(
+    (tab: BrowserTab) => isDiscardable(tab, settings),
+    [settings],
+  );
 
   const batchAction = useMemo(() => {
     if (view === 'duplicate' && duplicateCount > 0) {
@@ -194,14 +201,6 @@ export default function App() {
         label: copy.batch.closeDuplicate,
         count: duplicateCount,
         action: () => handleFeedback(tabState.closeDuplicateTabs()),
-      };
-    }
-
-    if (view === 'all' && sleepingTabs.length > 0) {
-      return {
-        label: copy.batch.closeSleeping,
-        count: sleepingTabs.length,
-        action: () => handleFeedback(tabState.closeSleepingTabs()),
       };
     }
 
@@ -266,7 +265,9 @@ export default function App() {
           tabs={filteredTabs}
           accentColor={accentColor}
           onClose={tabHandlers.onClose}
+          onSleep={tabHandlers.onSleep}
           onSwitch={tabHandlers.onSwitch}
+          canSleepTab={canSleepTab}
           duplicateTabIds={duplicateTabIds}
           copy={copy}
         />
@@ -279,7 +280,9 @@ export default function App() {
           tabs={duplicateTabs}
           accentColor={accentColor}
           onClose={tabHandlers.onClose}
+          onSleep={tabHandlers.onSleep}
           onSwitch={tabHandlers.onSwitch}
+          canSleepTab={canSleepTab}
           showDuplicateBadge
           copy={copy}
         />
@@ -296,8 +299,10 @@ export default function App() {
               accentColor={accentColor}
               onSwitch={tabHandlers.onSwitch}
               onClose={tabHandlers.onClose}
+              onSleep={tabHandlers.onSleep}
               onCloseAll={tabHandlers.onCloseAll}
               onSleepAll={tabHandlers.onSleepAll}
+              canSleepTab={canSleepTab}
               copy={copy}
             />
           ))}
@@ -315,8 +320,10 @@ export default function App() {
             accentColor={accentColor}
             onSwitch={tabHandlers.onSwitch}
             onClose={tabHandlers.onClose}
+            onSleep={tabHandlers.onSleep}
             onCloseAll={tabHandlers.onCloseAll}
             onSleepAll={tabHandlers.onSleepAll}
+            canSleepTab={canSleepTab}
             copy={copy}
           />
         ))}
@@ -499,6 +506,7 @@ export default function App() {
               value={query}
               onChange={setQuery}
               accentColor={accentColor}
+              toggleDisplay={settings.searchToggleDisplay}
               labels={copy.search}
             />
           </div>
@@ -549,6 +557,13 @@ export default function App() {
         </div>
       </div>
 
+      {customSlogan && (
+        <p className="bottom-slogan z-10 w-[min(760px,calc(100vw-48px))] leading-relaxed tracking-[0.08em] max-[720px]:px-4">
+          <span>{customSlogan}</span>
+          <span className="slogan-stamp">沈蔚</span>
+        </p>
+      )}
+
       {/* Floating control bar — bottom-right */}
       <div className="group fixed bottom-4 right-5 z-[2] flex items-center gap-0 hover:gap-[6px] p-[10px_14px] rounded-full cursor-pointer border border-transparent hover:border-[rgba(255,255,255,0.35)] dark:hover:border-[rgba(255,255,255,0.07)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:bg-[color-mix(in_srgb,rgba(255,255,255,0.50)_65%,transparent)] dark:hover:bg-[color-mix(in_srgb,rgba(20,25,28,0.55)_65%,transparent)] transition-all duration-300">
         <button
@@ -593,159 +608,23 @@ export default function App() {
         />
       </div>
 
-      {/* Settings Sheet */}
-      <Sheet open={settingsOpen} onOpenChange={setSettingsOpen}>
-        <SheetContent side="right">
-          <SheetHeader>
-            <SheetTitle>{copy.settings.title}</SheetTitle>
-          </SheetHeader>
-
-          <div className="mt-6 flex-1 space-y-6 overflow-y-auto pr-1">
-            <section className="space-y-3">
-              <p className="text-base text-foreground">{copy.settings.language}</p>
-              <div className="flex flex-wrap gap-2">
-                {([['en', copy.settings.english], ['zh', copy.settings.chinese]] as const).map(([key, label]) => {
-                  const active = settings.language === key;
-                  return (
-                    <Button
-                      key={key}
-                      variant={active ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => updateSettings({ language: key })}
-                      className="rounded-full"
-                    >
-                      {label}
-                    </Button>
-                  );
-                })}
-              </div>
-            </section>
-
-            <section className="space-y-3">
-              <p className="text-base text-foreground">{copy.settings.defaultView}</p>
-              <div className="flex flex-wrap gap-2">
-                {viewOptions.map((option) => {
-                  const active = settings.defaultView === option.value;
-                  return (
-                    <Button
-                      key={option.value}
-                      variant={active ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => updateSettings({ defaultView: option.value })}
-                      className="rounded-full"
-                    >
-                      {option.label}
-                    </Button>
-                  );
-                })}
-              </div>
-            </section>
-
-            <section className="space-y-3">
-              <p className="text-base text-foreground">{copy.settings.theme}</p>
-              <div className="flex flex-wrap gap-2">
-                {([
-                  ['system', copy.settings.system],
-                  ['light', copy.settings.light],
-                  ['dark', copy.settings.dark],
-                ] as const).map(([key, label]) => {
-                  const active = settings.theme === key;
-                  return (
-                    <Button
-                      key={key}
-                      variant={active ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => updateSettings({ theme: key })}
-                      className="rounded-full"
-                    >
-                      {label}
-                    </Button>
-                  );
-                })}
-              </div>
-            </section>
-
-            <section className="space-y-3">
-              <p className="text-base text-foreground">{copy.settings.protection}</p>
-              <div className="space-y-2">
-                {([
-                  ['protectPinned', copy.settings.protectPinned],
-                  ['protectAudible', copy.settings.protectAudible],
-                  ['protectActive', copy.settings.protectActive],
-                ] as const).map(([key, label]) => (
-                  <label
-                    key={key}
-                    className="flex items-center justify-between rounded-[18px] border border-border bg-muted/30 px-4 py-3 cursor-pointer"
-                  >
-                    <span className="text-base text-foreground">{label}</span>
-                    <Button
-                      variant={settings[key] ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() =>
-                        updateSettings((current) => ({
-                          ...current,
-                          [key]: !current[key],
-                        }))
-                      }
-                      className="rounded-full text-sm"
-                    >
-                      {settings[key] ? copy.settings.on : copy.settings.off}
-                    </Button>
-                  </label>
-                ))}
-              </div>
-            </section>
-
-            <section className="space-y-3">
-              <p className="text-base text-foreground">{copy.settings.whitelist}</p>
-              <div className="flex gap-2">
-                <Input
-                  value={whitelistInput}
-                  onChange={(e) => setWhitelistInput(e.target.value)}
-                  placeholder={copy.settings.whitelistPlaceholder}
-                  className="flex-1 rounded-full h-10"
-                />
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    const value = whitelistInput.trim().toLowerCase();
-                    if (!value) return;
-                    updateSettings((current) => ({
-                      ...current,
-                      whitelistDomains: [...new Set([...current.whitelistDomains, value])],
-                    }));
-                    setWhitelistInput('');
-                  }}
-                  className="rounded-full"
-                >
-                  {copy.settings.add}
-                </Button>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {settings.whitelistDomains.map((domain) => (
-                  <Badge key={domain} variant="pill" className="gap-2">
-                    {domain}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        updateSettings((current) => ({
-                          ...current,
-                          whitelistDomains: current.whitelistDomains.filter((item) => item !== domain),
-                        }))
-                      }
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                      title={`${copy.settings.removeDomain} ${domain}`}
-                    >
-                      ×
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-            </section>
-          </div>
-        </SheetContent>
-      </Sheet>
+      <SettingsSheet
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        settings={settings}
+        copy={copy}
+        viewOptions={viewOptions}
+        colorSample={colorSample}
+        accentColor={accentColor}
+        accentTextColor={accentTextColor}
+        updateSettings={updateSettings}
+        onSetDefaultAccentColor={handleSetDefaultAccentColor}
+        onResetSettings={() => {
+          randomAccentInitializedRef.current = false;
+          setColorSample(getAccentColorByHex(DEFAULT_SETTINGS.defaultAccentColor ?? DEFAULT_ACCENT_COLOR));
+          void updateSettings(DEFAULT_SETTINGS);
+        }}
+      />
 
       <Toaster
         position="bottom-center"

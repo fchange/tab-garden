@@ -14,6 +14,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   defaultAccentColor: DEFAULT_ACCENT_COLOR,
   randomAccentColor: false,
   animationEnabled: true,
+  searchToggleDisplay: 'detailed',
+  customSlogan: '落日醉醒问，一春无此寒。',
 };
 
 type StoredSettings = Partial<AppSettings> & {

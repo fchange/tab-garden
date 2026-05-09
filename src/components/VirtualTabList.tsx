@@ -11,7 +11,9 @@ interface VirtualTabListProps {
   tabs: BrowserTab[];
   accentColor: string;
   onClose?: (tab: BrowserTab) => void;
+  onSleep?: (tab: BrowserTab) => void;
   onSwitch?: (tab: BrowserTab) => void;
+  canSleepTab?: (tab: BrowserTab) => boolean;
   duplicateTabIds?: Set<number>;
   showDuplicateBadge?: boolean;
   copy: AppCopy;
@@ -21,7 +23,9 @@ export function VirtualTabList({
   tabs,
   accentColor,
   onClose,
+  onSleep,
   onSwitch,
+  canSleepTab,
   duplicateTabIds,
   showDuplicateBadge,
   copy,
@@ -75,7 +79,9 @@ export function VirtualTabList({
               tab={tab}
               accentColor={accentColor}
               onClose={onClose}
+              onSleep={onSleep}
               onSwitch={onSwitch}
+              canSleep={canSleepTab?.(tab) ?? false}
               showDuplicateBadge={showDuplicateBadge || duplicateTabIds?.has(tab.id)}
               copy={copy}
             />
