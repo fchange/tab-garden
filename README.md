@@ -157,5 +157,5 @@ src/
 
 ## TODO
 
-- 字体：点缀字体集中在 `src/styles/点缀字体.css`；`font-ornament-1` 当前为 ZeoSeven CDN 的 `Huiwen-mincho`，用于底部诗文；`font-ornament-2` 当前为 `chengrongguangke`，用于颜色名称和颜色选择弹窗。
+- 字体：字体引入、基础字体栈和点缀字体变量统一集中在 `src/styles/点缀字体.css`；`font-ornament-1` 当前为 ZeoSeven CDN 的 `Huiwen-mincho`，用于底部诗文；`font-ornament-2` 当前为 `chengrongguangke`，用于颜色名称和颜色选择弹窗。
 - 字体：Chrome 扩展正式发布前，确认远程字体的授权、CSP、隐私和离线表现；如需上架，优先改成本地打包的 `woff2` 子集。

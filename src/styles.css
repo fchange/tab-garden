@@ -48,8 +48,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-ornament-1: "Huiwen-mincho", "chengrongguangke", "PingFang SC", serif;
-  --font-ornament-2: "chengrongguangke", "SF Pro Display", "PingFang SC", sans-serif;
+  --font-ornament-1: var(--font-family-ornament-1);
+  --font-ornament-2: var(--font-family-ornament-2);
 }
 
 :root {
@@ -76,22 +76,6 @@
   --theme-shadow-elevated: 0 30px 80px rgba(111, 131, 126, 0.16);
   --theme-inset-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.38);
   --radius: 0.75rem;
-  font-family:
-    "SF Pro Display",
-    "SF Pro Text",
-    "PingFang SC",
-    "PingFang TC",
-    "Hiragino Sans GB",
-    "Segoe UI Variable",
-    "Segoe UI",
-    "Helvetica Neue",
-    -apple-system,
-    BlinkMacSystemFont,
-    system-ui,
-    "Microsoft YaHei",
-    "Noto Sans CJK SC",
-    sans-serif;
-  font-feature-settings: "liga" 1, "kern" 1;
 }
 
 .bottom-poem {

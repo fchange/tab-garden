@@ -1,2 +1,11 @@
 @import url("https://fontsapi.zeoseven.com/256/main/result.css");
 @import "@chinese-fonts/crgkk/dist/程荣光刻楷/result.css";
+
+:root {
+  --font-family-base: "SF Pro Display", "SF Pro Text", "PingFang SC", "PingFang TC", "Hiragino Sans GB", "Segoe UI Variable", "Segoe UI", "Helvetica Neue", -apple-system, BlinkMacSystemFont, system-ui, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-family-ornament-1: "Huiwen-mincho", "chengrongguangke", "PingFang SC", serif;
+  --font-family-ornament-2: "chengrongguangke", "SF Pro Display", "PingFang SC", sans-serif;
+
+  font-family: var(--font-family-base);
+  font-feature-settings: "liga" 1, "kern" 1;
+}
