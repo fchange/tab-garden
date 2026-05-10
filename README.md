@@ -52,6 +52,8 @@ Tab Garden（枝理 Tab）是一个基于 WXT + React + TypeScript + Tailwind CS
 
 - `https://v2.jinrishici.com/*`：用于“展示诗文”功能，从今日诗词 API 获取诗词名句。
 
+隐私权政策见 [PRIVACY.md](./PRIVACY.md)。
+
 ## 快速开始
 
 ```bash
