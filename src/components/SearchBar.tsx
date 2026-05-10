@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Command, Globe2, Tags } from 'lucide-react';
+import { Command, Search, Tags } from 'lucide-react';
 
 import { cn } from '../lib/cn';
+import { buildSearchUrl, getSearchEngine } from '../lib/searchEngines';
+import type { SearchEngineId, SearchIconStyle } from '../types/settings';
 import { SearchModeToggle, type SearchMode } from './SearchModeToggle';
 import { Input } from './ui/input';
 
@@ -21,6 +23,8 @@ interface SearchBarProps {
   onChange: (value: string) => void;
   accentColor: string;
   toggleDisplay: 'compact' | 'detailed';
+  searchEngine: SearchEngineId;
+  searchIconStyle: SearchIconStyle;
   labels: {
     placeholder: string;
     webPlaceholder: string;
@@ -31,12 +35,22 @@ interface SearchBarProps {
   };
 }
 
-export function SearchBar({ value, onChange, accentColor, toggleDisplay, labels }: SearchBarProps) {
+export function SearchBar({
+  value,
+  onChange,
+  accentColor,
+  toggleDisplay,
+  searchEngine,
+  searchIconStyle,
+  labels,
+}: SearchBarProps) {
   const [mode, setMode] = useState<SearchMode>('tabs');
   const [webQuery, setWebQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const inputValue = mode === 'tabs' ? value : webQuery;
   const modeTextColor = getReadableTextColor(accentColor);
+  const activeSearchEngine = getSearchEngine(searchEngine);
+  const WebSearchIcon = searchIconStyle === 'provider' ? activeSearchEngine.Icon : Search;
   const nextMode = mode === 'tabs' ? 'web' : 'tabs';
   const isDetailedToggle = toggleDisplay === 'detailed';
 
@@ -44,7 +58,7 @@ export function SearchBar({ value, onChange, accentColor, toggleDisplay, labels 
     const searchValue = inputValue.trim();
     if (!searchValue || mode === 'tabs') return;
 
-    const url = `https://www.google.com/search?q=${encodeURIComponent(searchValue)}`;
+    const url = buildSearchUrl(searchEngine, searchValue);
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
@@ -70,7 +84,7 @@ export function SearchBar({ value, onChange, accentColor, toggleDisplay, labels 
           )}
           style={{ color: accentColor }}
         />
-        <Globe2
+        <WebSearchIcon
           className={cn(
             'absolute inset-0 size-[18px] transition-[opacity,transform,color] duration-200 ease-out',
             mode === 'web' ? 'translate-y-0 scale-100 opacity-100 rotate-0' : '-translate-y-1 scale-75 opacity-0 rotate-12',
@@ -114,6 +128,8 @@ export function SearchBar({ value, onChange, accentColor, toggleDisplay, labels 
           display={toggleDisplay}
           accentColor={accentColor}
           textColor={modeTextColor}
+          searchEngine={activeSearchEngine}
+          searchIconStyle={searchIconStyle}
           labels={labels}
           onToggle={() => {
             setMode(nextMode);

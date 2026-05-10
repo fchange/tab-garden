@@ -23,6 +23,7 @@ Tab Garden（枝理 Tab）是一个基于 WXT + React + TypeScript + Tailwind CS
 - 使用 `chrome.storage.local` 持久化设置
 - 支持浅色 / 深色主题与东方色盘
 - 支持关闭背景波浪动画
+- 支持通过今日诗词 API 展示底部诗文
 - 非扩展环境下自动回退到 mock 数据预览
 
 ## 技术栈
@@ -45,8 +46,11 @@ Tab Garden（枝理 Tab）是一个基于 WXT + React + TypeScript + Tailwind CS
 
 - `scripting`
 - `activeTab`
-- `host_permissions`
 - `content_scripts`
+
+站点访问权限：
+
+- `https://v2.jinrishici.com/*`：用于“展示诗文”功能，从今日诗词 API 获取诗词名句。
 
 ## 快速开始
 
@@ -130,7 +134,7 @@ src/
 ## 当前实现说明
 
 - 重复标签判断基于 `normalizeUrl(url)`，会移除 hash、尾部 slash 和常见追踪参数
-- 域名分组采用 MVP 规则：优先取 hostname 最后两段
+- 域名分组会识别常见二级公共后缀，例如 `google.com.hk`、`google.co.uk`
 - 默认保护固定标签、正在播放音频的标签、当前活跃标签和白名单域名
 - 不使用后端、IndexedDB、Dexie、AI API、content script
 - 不读取网页正文，不申请任何站点权限
@@ -150,3 +154,8 @@ src/
 - 为域名分组增加更细致的公共后缀判断
 - 在重复关闭前增加更明显的确认层
 - 增加导入 / 导出设置
+
+## TODO
+
+- 字体：点缀字体集中在 `src/styles/点缀字体.css`；`font-ornament-1` 当前为 ZeoSeven CDN 的 `Huiwen-mincho`，用于底部诗文；`font-ornament-2` 当前为 `chengrongguangke`，用于颜色名称和颜色选择弹窗。
+- 字体：Chrome 扩展正式发布前，确认远程字体的授权、CSP、隐私和离线表现；如需上架，优先改成本地打包的 `woff2` 子集。

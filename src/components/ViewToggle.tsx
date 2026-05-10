@@ -1,5 +1,6 @@
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import { motion } from 'motion/react';
+import { Badge } from './ui/badge';
 import type { ViewMode } from '../types/tab';
 
 interface ViewToggleProps {
@@ -31,9 +32,9 @@ export function ViewToggle({ value, onChange, accentColor, options, counts }: Vi
           <span className="relative z-[1] flex items-center gap-1.5">
             {opt.label}
             {counts[opt.value] > 0 && (
-              <span className="inline-flex items-center justify-center min-w-4 h-4 rounded-full px-[5px] text-[12px] font-semibold bg-[rgba(0,0,0,0.06)] dark:bg-[rgba(255,255,255,0.10)] group-data-[state=active]/trigger:bg-[rgba(255,255,255,0.20)]">
+              <Badge variant="count" className="bg-[rgba(0,0,0,0.06)] dark:bg-[rgba(255,255,255,0.10)] group-data-[state=active]/trigger:bg-[rgba(255,255,255,0.20)]">
                 {counts[opt.value]}
-              </span>
+              </Badge>
             )}
           </span>
         </TabsPrimitive.Trigger>

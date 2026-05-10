@@ -1,11 +1,12 @@
 import type { AppSettings } from '../types/settings';
 import { DEFAULT_ACCENT_COLOR } from './accentColors';
+import { isSearchEngineId } from './searchEngines';
 
 export const SETTINGS_KEY = 'zhi-li-tab:settings';
 
 export const DEFAULT_SETTINGS: AppSettings = {
   language: 'zh',
-  defaultView: 'domain',
+  defaultView: 'all',
   protectPinned: true,
   protectAudible: true,
   protectActive: true,
@@ -15,12 +16,15 @@ export const DEFAULT_SETTINGS: AppSettings = {
   randomAccentColor: false,
   animationEnabled: true,
   searchToggleDisplay: 'detailed',
-  customSlogan: '落日醉醒问，一春无此寒。',
+  searchEngine: 'google',
+  searchIconStyle: 'generic',
+  showPoem: true,
 };
 
 type StoredSettings = Partial<AppSettings> & {
   accentColor?: string;
   palette?: unknown;
+  customSlogan?: string;
 };
 
 function normalizeSettings(storedSettings?: StoredSettings): AppSettings {
@@ -30,6 +34,7 @@ function normalizeSettings(storedSettings?: StoredSettings): AppSettings {
 
   delete currentSettings.accentColor;
   delete currentSettings.palette;
+  delete currentSettings.customSlogan;
 
   const normalizedSettings = {
     ...DEFAULT_SETTINGS,
@@ -38,6 +43,14 @@ function normalizeSettings(storedSettings?: StoredSettings): AppSettings {
 
   if (!normalizedSettings.randomAccentColor && !normalizedSettings.defaultAccentColor) {
     normalizedSettings.defaultAccentColor = DEFAULT_SETTINGS.defaultAccentColor;
+  }
+
+  if (!isSearchEngineId(normalizedSettings.searchEngine)) {
+    normalizedSettings.searchEngine = DEFAULT_SETTINGS.searchEngine;
+  }
+
+  if (normalizedSettings.searchIconStyle !== 'generic' && normalizedSettings.searchIconStyle !== 'provider') {
+    normalizedSettings.searchIconStyle = DEFAULT_SETTINGS.searchIconStyle;
   }
 
   return normalizedSettings;

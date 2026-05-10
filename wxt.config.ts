@@ -13,6 +13,7 @@ export default defineConfig({
       128: '/icons/icon-128.png',
     },
     permissions: ['tabs', 'windows', 'storage'],
+    host_permissions: ['https://v2.jinrishici.com/*'],
     action: {
       default_title: '枝理 Tab',
       default_icon: {

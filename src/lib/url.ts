@@ -13,6 +13,21 @@ const TRACKING_PARAMS = new Set([
 const SPECIAL_PROTOCOLS = ['chrome:', 'edge:', 'about:', 'chrome-extension:'];
 const DEFAULT_UNNAMED_PAGE = 'Untitled page';
 const DEFAULT_BLANK_PAGE = 'Blank page';
+const COMMON_SECOND_LEVEL_PUBLIC_SUFFIXES = new Set([
+  'ac', 'co', 'com', 'edu', 'gov', 'net', 'org',
+]);
+
+function getSpecialPageLabel(url: string, blankPage = DEFAULT_BLANK_PAGE): string | null {
+  const normalizedUrl = url.toLowerCase();
+
+  if (normalizedUrl === 'about:blank') return blankPage;
+  if (normalizedUrl.startsWith('chrome://')) return 'chrome';
+  if (normalizedUrl.startsWith('edge://')) return 'edge';
+  if (normalizedUrl.startsWith('chrome-extension://')) return 'extension';
+  if (normalizedUrl.startsWith('about:')) return 'about';
+
+  return null;
+}
 
 export function isSpecialUrl(url: string): boolean {
   return SPECIAL_PROTOCOLS.some((protocol) => url.startsWith(protocol));
@@ -53,7 +68,16 @@ export function getHostname(url?: string | null, unnamedPage = DEFAULT_UNNAMED_P
   }
 }
 
-export function getBaseDomain(url?: string | null, unnamedPage = DEFAULT_UNNAMED_PAGE): string {
+export function getBaseDomain(
+  url?: string | null,
+  unnamedPage = DEFAULT_UNNAMED_PAGE,
+  blankPage = DEFAULT_BLANK_PAGE,
+): string {
+  if (url) {
+    const specialPageLabel = getSpecialPageLabel(url, blankPage);
+    if (specialPageLabel) return specialPageLabel;
+  }
+
   const hostname = getHostname(url, unnamedPage);
 
   if (!hostname || hostname === unnamedPage) return hostname;
@@ -63,11 +87,20 @@ export function getBaseDomain(url?: string | null, unnamedPage = DEFAULT_UNNAMED
   if (!hostname.includes('.')) return hostname;
 
   const segments = hostname.split('.');
+  const [secondLevel, topLevel] = segments.slice(-2);
+  const hasCountryCodeSuffix = topLevel.length === 2;
+  const hasCommonSecondLevelSuffix = COMMON_SECOND_LEVEL_PUBLIC_SUFFIXES.has(secondLevel);
+
+  if (segments.length > 2 && hasCountryCodeSuffix && hasCommonSecondLevelSuffix) {
+    return segments.slice(-3).join('.');
+  }
+
   return segments.slice(-2).join('.');
 }
 
 export function getDisplayUrl(url?: string | null, blankPage = DEFAULT_BLANK_PAGE): string {
   if (!url) return blankPage;
+  if (url.toLowerCase() === 'about:blank') return blankPage;
   if (isSpecialUrl(url)) return url;
 
   try {

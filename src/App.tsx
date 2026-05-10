@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useDeferredValue } from 'react';
-import { Check, ChevronDown, Layers, Moon, Shuffle, Star, Sun } from 'lucide-react';
+import { Check, ChevronDown, Moon, Shuffle, Star, Sun } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 
 import { Tabs, TabsContent } from './components/ui/tabs';
+import { Badge } from './components/ui/badge';
 
 import { SearchBar } from './components/SearchBar';
 import { DomainCard } from './components/DomainCard';
+import { EmptyState } from './components/EmptyState';
+import { PoemDisplay } from './components/PoemDisplay';
 import { SettingsSheet } from './components/settings/SettingsSheet';
 import { ViewToggle } from './components/ViewToggle';
 import { VirtualTabList } from './components/VirtualTabList';
@@ -82,17 +85,23 @@ export default function App() {
   const [view, setView] = useState<ViewMode>('all');
   const [query, setQuery] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [poemExpanded, setPoemExpanded] = useState(false);
   const randomAccentInitializedRef = useRef(false);
 
   const deferredQuery = useDeferredValue(query);
   const tabState = useTabs(settings, copy);
-  const customSlogan = settings.customSlogan.trim();
 
   useEffect(() => {
     if (ready) {
       setView(settings.defaultView);
     }
   }, [ready, settings.defaultView]);
+
+  useEffect(() => {
+    if (!settings.showPoem) {
+      setPoemExpanded(false);
+    }
+  }, [settings.showPoem]);
 
   useEffect(() => {
     if (ready) {
@@ -142,7 +151,10 @@ export default function App() {
     [settings, tabState.tabs],
   );
   const domainGroups = useMemo(
-    () => buildDomainGroups(filteredTabs, settings, { unnamedPage: copy.domainCard.unnamedPage }),
+    () => buildDomainGroups(filteredTabs, settings, {
+      unnamedPage: copy.domainCard.unnamedPage,
+      blankPage: copy.domainCard.blankPage,
+    }),
     [copy, filteredTabs, settings],
   );
   const windowGroups = useMemo(
@@ -243,19 +255,16 @@ export default function App() {
 
     if (tabState.loading && !tabState.tabs.length) {
       return (
-        <div className="flex flex-col items-center gap-2 py-10 text-[16px] text-muted-foreground">
-          <Layers size={26} strokeWidth={1.2} className="opacity-25" />
-          <span>{copy.empty.loading}</span>
-        </div>
+        <EmptyState title={copy.empty.loading} />
       );
     }
 
     if (isEmpty) {
       return (
-        <div className="flex flex-col items-center gap-2 py-10 text-[16px] text-muted-foreground">
-          <Layers size={26} strokeWidth={1.2} className="opacity-25" />
-          <span>{query.trim() ? copy.empty.noMatches : copy.empty.noTabs}</span>
-        </div>
+        <EmptyState
+          title={query.trim() ? copy.empty.noMatches : copy.empty.noTabs}
+          description={query.trim() ? copy.empty.noMatchesDescription : copy.empty.noTabsDescription}
+        />
       );
     }
 
@@ -339,7 +348,12 @@ export default function App() {
         paused={!settings.animationEnabled}
       />
 
-      <div className="relative z-10 w-[min(980px,calc(100vw-48px))] mt-[clamp(28px,5vh,60px)] rounded-[20px] overflow-hidden bg-card/65 backdrop-blur-sm backdrop-saturate-150 border border-border/90 shadow-[var(--theme-shadow-soft)] transition-[background,border-color,box-shadow] duration-600 max-[720px]:w-[calc(100vw-32px)] max-[720px]:mt-4">
+      <div
+        className={cn(
+          'relative z-10 w-[min(980px,calc(100vw-48px))] mt-[clamp(28px,5vh,60px)] rounded-[20px] overflow-hidden bg-card/65 backdrop-blur-sm backdrop-saturate-150 border border-border/90 shadow-[var(--theme-shadow-soft)] transition-[transform,opacity,background,border-color,box-shadow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] max-[720px]:w-[calc(100vw-32px)] max-[720px]:mt-4',
+          poemExpanded && '-translate-y-[calc(100%+96px)] opacity-0 pointer-events-none',
+        )}
+      >
         <div className="h-[3px] w-full transition-[background] duration-500" style={{ background: accentColor }} />
 
         <div className="px-6 pt-5 pb-5 min-w-0 max-[720px]:p-4">
@@ -363,7 +377,7 @@ export default function App() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="font-crgk inline-flex items-center gap-1.5 text-[16px] font-normal tracking-[0.04em] cursor-pointer px-[12px] py-[4px] rounded-[999px] transition-all duration-300 opacity-85 hover:opacity-100 hover:bg-accent/15 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="font-ornament-2 inline-flex items-center gap-1.5 text-[16px] font-normal tracking-[0.04em] cursor-pointer px-[12px] py-[4px] rounded-[999px] transition-all duration-300 opacity-85 hover:opacity-100 hover:bg-accent/15 outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     title={copy.accents.choose}
                     style={{ color: accentColor }}
                   >
@@ -429,7 +443,7 @@ export default function App() {
                           />
                           <span className="flex-1 min-w-0">
                             <span className="flex items-center gap-1.5 text-[14px] font-medium text-foreground transition-colors duration-200 group-hover/color:text-[var(--item-accent)]">
-                              <span className="font-crgk truncate">{color.name}</span>
+                              <span className="font-ornament-2 truncate">{color.name}</span>
                             </span>
                             <span className="block truncate text-[12px] text-muted-foreground">
                               {color.hex} · {color.pinyin}
@@ -438,8 +452,8 @@ export default function App() {
 
                           <span className={`flex items-center gap-1.5 shrink-0 transition-opacity duration-150 ${active || isDefault ? '' : 'opacity-0'} group-hover/color:opacity-0`}>
                             {active && (
-                              <span
-                                className="inline-flex h-5 items-center gap-1 rounded-full px-2 text-[12px] font-medium"
+                              <Badge
+                                variant="accent"
                                 style={{
                                   background: `color-mix(in srgb, ${color.hex} 16%, transparent)`,
                                   color: color.hex,
@@ -447,11 +461,11 @@ export default function App() {
                               >
                                 <Check size={12} />
                                 {copy.accents.current}
-                              </span>
+                              </Badge>
                             )}
                             {isDefault && (
-                              <span
-                                className="inline-flex h-5 items-center gap-1 rounded-full px-2 text-[12px] font-medium"
+                              <Badge
+                                variant="accent"
                                 style={{
                                   background: `color-mix(in srgb, ${color.hex} 16%, transparent)`,
                                   color: color.hex,
@@ -459,7 +473,7 @@ export default function App() {
                               >
                                 <Star size={11} className="fill-current" />
                                 {copy.accents.default}
-                              </span>
+                              </Badge>
                             )}
                           </span>
 
@@ -507,6 +521,8 @@ export default function App() {
               onChange={setQuery}
               accentColor={accentColor}
               toggleDisplay={settings.searchToggleDisplay}
+              searchEngine={settings.searchEngine}
+              searchIconStyle={settings.searchIconStyle}
               labels={copy.search}
             />
           </div>
@@ -539,9 +555,9 @@ export default function App() {
                   className="gap-2"
                 >
                   {batchAction.label}
-                  <span className="inline-flex items-center justify-center min-w-4 h-4 rounded-full px-[5px] text-[12px] font-semibold bg-[rgba(0,0,0,0.06)] dark:bg-[rgba(255,255,255,0.10)]">
+                  <Badge variant="count" className="bg-[rgba(0,0,0,0.06)] dark:bg-[rgba(255,255,255,0.10)]">
                     {batchAction.count}
-                  </span>
+                  </Badge>
                 </Button>
               )}
             </div>
@@ -557,12 +573,7 @@ export default function App() {
         </div>
       </div>
 
-      {customSlogan && (
-        <p className="bottom-slogan z-10 w-[min(760px,calc(100vw-48px))] leading-relaxed tracking-[0.08em] max-[720px]:px-4">
-          <span>{customSlogan}</span>
-          <span className="slogan-stamp">沈蔚</span>
-        </p>
-      )}
+      <PoemDisplay show={settings.showPoem} expanded={poemExpanded} onExpandedChange={setPoemExpanded} />
 
       {/* Floating control bar — bottom-right */}
       <div className="group fixed bottom-4 right-5 z-[2] flex items-center gap-0 hover:gap-[6px] p-[10px_14px] rounded-full cursor-pointer border border-transparent hover:border-[rgba(255,255,255,0.35)] dark:hover:border-[rgba(255,255,255,0.07)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:bg-[color-mix(in_srgb,rgba(255,255,255,0.50)_65%,transparent)] dark:hover:bg-[color-mix(in_srgb,rgba(20,25,28,0.55)_65%,transparent)] transition-all duration-300">

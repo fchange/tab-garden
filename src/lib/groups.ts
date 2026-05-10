@@ -17,12 +17,12 @@ export function filterTabs(tabs: BrowserTab[], query: string): BrowserTab[] {
 export function buildDomainGroups(
   tabs: BrowserTab[],
   settings: AppSettings,
-  options?: { unnamedPage?: string },
+  options?: { unnamedPage?: string; blankPage?: string },
 ): DomainGroupModel[] {
   const groups = new Map<string, BrowserTab[]>();
 
   for (const tab of tabs) {
-    const key = getBaseDomain(tab.url, options?.unnamedPage);
+    const key = getBaseDomain(tab.url, options?.unnamedPage, options?.blankPage);
     const current = groups.get(key) ?? [];
     current.push(tab);
     groups.set(key, current);
