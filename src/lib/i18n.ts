@@ -42,6 +42,13 @@ const EN = {
     play: 'Resume animation',
     settings: 'Settings',
   },
+  poem: {
+    back: 'Back',
+    copyText: 'Copy poem',
+    copied: 'Poem copied.',
+    copyFailed: 'Failed to copy poem.',
+    webSearch: 'Search this poem',
+  },
   settings: {
     title: 'Settings',
     appearance: 'Appearance',
@@ -177,6 +184,13 @@ const ZH: typeof EN = {
     pause: '暂停动画',
     play: '继续动画',
     settings: '设置',
+  },
+  poem: {
+    back: '返回',
+    copyText: '复制文案',
+    copied: '诗文已复制。',
+    copyFailed: '复制诗文失败。',
+    webSearch: '网络查询这篇诗文',
   },
   settings: {
     title: '设置',
