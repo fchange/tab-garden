@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Command, Search, Tags } from 'lucide-react';
 
 import { cn } from '../lib/cn';
@@ -63,6 +63,14 @@ export function SearchBar({
   };
 
   useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      inputRef.current?.focus({ preventScroll: true });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
@@ -75,21 +83,26 @@ export function SearchBar({
   }, []);
 
   return (
-    <div className="relative w-full" style={{ '--theme-ring': accentColor } as React.CSSProperties}>
-      <div className="pointer-events-none absolute left-3.5 top-1/2 size-[18px] -translate-y-1/2 overflow-hidden">
+    <div
+      className="tab-search-shell group relative w-full overflow-hidden rounded-full border backdrop-blur-md transition-all duration-500 ease-out"
+      style={{ '--theme-ring': accentColor, '--search-accent': accentColor } as CSSProperties}
+    >
+      <div className="pointer-events-none absolute inset-0 rounded-full opacity-0 blur-2xl transition-opacity duration-700 group-focus-within:opacity-100">
+        <div className="h-full w-full rounded-full bg-[color-mix(in_srgb,var(--search-accent)_20%,transparent)] animate-[search-breathe_5s_ease-in-out_infinite]" />
+      </div>
+
+      <div className="pointer-events-none absolute left-3.5 top-1/2 z-10 size-[18px] -translate-y-1/2 overflow-hidden">
         <Tags
           className={cn(
-            'absolute inset-0 size-[18px] transition-[opacity,transform,color] duration-200 ease-out',
+            'absolute inset-0 size-[18px] text-muted-foreground/65 transition-[opacity,transform,color] duration-300 ease-out group-focus-within:text-[var(--search-accent)] group-focus-within:scale-105',
             mode === 'tabs' ? 'translate-y-0 scale-100 opacity-100 rotate-0' : 'translate-y-1 scale-75 opacity-0 -rotate-12',
           )}
-          style={{ color: accentColor }}
         />
         <WebSearchIcon
           className={cn(
-            'absolute inset-0 size-[18px] transition-[opacity,transform,color] duration-200 ease-out',
+            'absolute inset-0 size-[18px] text-muted-foreground/65 transition-[opacity,transform,color] duration-300 ease-out group-focus-within:text-[var(--search-accent)] group-focus-within:scale-105',
             mode === 'web' ? 'translate-y-0 scale-100 opacity-100 rotate-0' : '-translate-y-1 scale-75 opacity-0 rotate-12',
           )}
-          style={{ color: accentColor }}
         />
       </div>
 
@@ -117,12 +130,13 @@ export function SearchBar({
           if (e.key === 'Enter') handleSubmit();
         }}
         className={cn(
-          'h-12 pl-10 text-[15px] focus-visible:!border-[var(--theme-ring)] focus-visible:ring-2',
+          'relative z-10 h-12 border-0 bg-transparent pl-10 text-[15px] shadow-none focus-visible:ring-0',
           isDetailedToggle ? 'pr-[174px] sm:pr-[224px]' : 'pr-[116px]',
         )}
+        style={{ background: 'transparent', borderColor: 'transparent', boxShadow: 'none' }}
       />
 
-      <div className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1.5">
+      <div className="absolute right-2 top-1/2 z-10 flex -translate-y-1/2 items-center gap-1.5">
         <SearchModeToggle
           mode={mode}
           display={toggleDisplay}
