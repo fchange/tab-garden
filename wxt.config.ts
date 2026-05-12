@@ -12,7 +12,7 @@ export default defineConfig({
       48: '/icons/icon-48.png',
       128: '/icons/icon-128.png',
     },
-    permissions: ['tabs', 'windows', 'storage'],
+    permissions: ['tabs', 'windows', 'storage', 'search'],
     host_permissions: ['https://v2.jinrishici.com/*'],
     action: {
       default_title: '枝理 Tab',

@@ -256,8 +256,6 @@ export default function App() {
             defaultAccentColor={settings.defaultAccentColor}
             isDarkMode={isDarkMode}
             searchToggleDisplay={settings.searchToggleDisplay}
-            searchEngine={settings.searchEngine}
-            searchIconStyle={settings.searchIconStyle}
             copy={copy}
             onQueryChange={setQuery}
             onUseAccentColor={useSelectedAccentColor}
@@ -289,7 +287,6 @@ export default function App() {
         show={settings.showPoem}
         expanded={poemExpanded}
         copy={copy.poem}
-        searchEngine={settings.searchEngine}
         onExpandedChange={setPoemExpanded}
       />
 

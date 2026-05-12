@@ -4,8 +4,6 @@ export type ThemePreference = 'system' | 'light' | 'dark';
 export type ThemeMode = 'light' | 'dark';
 export type LanguagePreference = 'en' | 'zh';
 export type SearchToggleDisplay = 'compact' | 'detailed';
-export type SearchEngineId = 'google' | 'duckduckgo' | 'bing' | 'baidu';
-export type SearchIconStyle = 'generic' | 'provider';
 
 export interface ColorSample {
   hex: string;
@@ -43,7 +41,5 @@ export interface AppSettings {
   randomAccentColor: boolean;
   animationEnabled: boolean;
   searchToggleDisplay: SearchToggleDisplay;
-  searchEngine: SearchEngineId;
-  searchIconStyle: SearchIconStyle;
   showPoem: boolean;
 }

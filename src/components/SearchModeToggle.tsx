@@ -1,8 +1,7 @@
 import { Search, Tags } from 'lucide-react';
 
 import { cn } from '../lib/cn';
-import type { SearchEngineDefinition } from '../lib/searchEngines';
-import type { SearchIconStyle, SearchToggleDisplay } from '../types/settings';
+import type { SearchToggleDisplay } from '../types/settings';
 import { Button } from './ui/button';
 
 export type SearchMode = 'tabs' | 'web';
@@ -12,8 +11,6 @@ interface SearchModeToggleProps {
   display: SearchToggleDisplay;
   accentColor: string;
   textColor: string;
-  searchEngine: SearchEngineDefinition;
-  searchIconStyle: SearchIconStyle;
   labels: {
     tabsMode: string;
     webMode: string;
@@ -29,23 +26,18 @@ export function SearchModeToggle({
   display,
   accentColor,
   textColor,
-  searchEngine,
-  searchIconStyle,
   labels,
   onToggle,
   className,
 }: SearchModeToggleProps) {
   const isDetailed = display === 'detailed';
-  const WebSearchIcon = searchIconStyle === 'provider' ? searchEngine.Icon : Search;
-  const webLabel = searchIconStyle === 'provider' ? searchEngine.shortName : labels.webMode;
-  const webTitle = `${labels.webMenu}: ${searchEngine.name}`;
 
   return (
     <Button
       type="button"
       variant="ghost"
-      aria-label={mode === 'tabs' ? webTitle : labels.tabsMenu}
-      title={mode === 'tabs' ? webTitle : labels.tabsMenu}
+      aria-label={mode === 'tabs' ? labels.webMenu : labels.tabsMenu}
+      title={mode === 'tabs' ? labels.webMenu : labels.tabsMenu}
       className={cn(
         'h-8 rounded-full border-border/50 bg-muted/35 p-0 text-muted-foreground shadow-none hover:border-border hover:bg-muted/55',
         className,
@@ -74,8 +66,8 @@ export function SearchModeToggle({
           className="relative z-10 flex h-7 items-center justify-center gap-1.5 text-[11px] font-medium transition-colors"
           style={{ color: mode === 'web' ? textColor : undefined }}
         >
-          <WebSearchIcon className="size-3.5" />
-          {isDetailed && <span>{webLabel}</span>}
+          <Search className="size-3.5" />
+          {isDetailed && <span>{labels.webMode}</span>}
         </span>
       </span>
     </Button>

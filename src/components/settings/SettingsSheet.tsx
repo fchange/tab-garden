@@ -14,8 +14,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
 import { ACCENT_COLORS } from '../../lib/accentColors';
 import { cn } from '../../lib/cn';
 import type { AppCopy } from '../../lib/i18n';
-import { getSearchEngine, SEARCH_ENGINES } from '../../lib/searchEngines';
-import type { AppSettings, ColorSample, SearchEngineId, ThemePreference } from '../../types/settings';
+import type { AppSettings, ColorSample, ThemePreference } from '../../types/settings';
 import type { ViewMode } from '../../types/tab';
 import {
   SettingsItem,
@@ -303,61 +302,9 @@ function SearchToggleSettingsSection({
   previewMode: SearchMode;
   onTogglePreview: () => void;
 }) {
-  const selectedSearchEngine = getSearchEngine(settings.searchEngine);
-  const SelectedSearchIcon = selectedSearchEngine.Icon;
-
   return (
     <SettingsSection title={copy.settings.moreDetails}>
       <SettingsSectionCard>
-        <SettingsItem
-          title={copy.settings.searchEngine}
-          description={copy.settings.searchEngineDescription}
-        >
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <SettingsSelectButton>
-                <SelectedSearchIcon className="size-4" />
-                <span>{selectedSearchEngine.name}</span>
-                <ChevronRight className="size-4 opacity-40" />
-              </SettingsSelectButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className={cn('w-44', DROPDOWN_CONTENT_CLASS)}>
-              {SEARCH_ENGINES.map((engine) => {
-                const EngineIcon = engine.Icon;
-
-                return (
-                  <DropdownMenuItem
-                    key={engine.id}
-                    onSelect={() => void updateSettings({ searchEngine: engine.id as SearchEngineId })}
-                    className="justify-between"
-                  >
-                    <span className="flex items-center gap-2">
-                      <EngineIcon className="size-4" />
-                      <span>{engine.name}</span>
-                    </span>
-                    {settings.searchEngine === engine.id && <Check className="size-4" />}
-                  </DropdownMenuItem>
-                );
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </SettingsItem>
-
-        <SettingsItem
-          title={copy.settings.searchIconStyle}
-          description={copy.settings.searchIconStyleDescription}
-        >
-          <SettingsSegmentedControl
-            value={settings.searchIconStyle}
-            accentColor={accentColor}
-            options={[
-              { value: 'generic', label: copy.settings.genericSearchIcon },
-              { value: 'provider', label: copy.settings.providerSearchIcon },
-            ]}
-            onChange={(searchIconStyle) => void updateSettings({ searchIconStyle })}
-          />
-        </SettingsItem>
-
         <SettingsItem
           title={copy.settings.searchToggleDisplay}
           description={copy.settings.searchToggleDisplayDescription}
@@ -369,8 +316,6 @@ function SearchToggleSettingsSection({
                 display={settings.searchToggleDisplay}
                 accentColor={accentColor}
                 textColor={accentTextColor}
-                searchEngine={selectedSearchEngine}
-                searchIconStyle={settings.searchIconStyle}
                 labels={copy.search}
                 onToggle={onTogglePreview}
               />

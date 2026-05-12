@@ -1,7 +1,7 @@
 import { AccentColorMenu } from './AccentColorMenu';
 import { SearchBar } from './SearchBar';
 import type { AppCopy } from '../lib/i18n';
-import type { ColorSample, SearchEngineId, SearchIconStyle, SearchToggleDisplay } from '../types/settings';
+import type { ColorSample, SearchToggleDisplay } from '../types/settings';
 
 interface AppHeaderProps {
   openTabCount: number;
@@ -15,8 +15,6 @@ interface AppHeaderProps {
   defaultAccentColor: string | null;
   isDarkMode: boolean;
   searchToggleDisplay: SearchToggleDisplay;
-  searchEngine: SearchEngineId;
-  searchIconStyle: SearchIconStyle;
   copy: AppCopy;
   onQueryChange: (query: string) => void;
   onUseAccentColor: (hex: string) => void;
@@ -37,8 +35,6 @@ export function AppHeader({
   defaultAccentColor,
   isDarkMode,
   searchToggleDisplay,
-  searchEngine,
-  searchIconStyle,
   copy,
   onQueryChange,
   onUseAccentColor,
@@ -81,8 +77,6 @@ export function AppHeader({
         onChange={onQueryChange}
         accentColor={accentColor}
         toggleDisplay={searchToggleDisplay}
-        searchEngine={searchEngine}
-        searchIconStyle={searchIconStyle}
         labels={copy.search}
       />
     </div>

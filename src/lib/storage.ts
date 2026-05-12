@@ -1,6 +1,5 @@
 import type { AppSettings } from '../types/settings';
 import { DEFAULT_ACCENT_COLOR } from './accentColors';
-import { isSearchEngineId } from './searchEngines';
 
 export const SETTINGS_KEY = 'zhi-li-tab:settings';
 
@@ -16,8 +15,6 @@ export const DEFAULT_SETTINGS: AppSettings = {
   randomAccentColor: false,
   animationEnabled: true,
   searchToggleDisplay: 'detailed',
-  searchEngine: 'google',
-  searchIconStyle: 'generic',
   showPoem: true,
 };
 
@@ -45,12 +42,8 @@ function normalizeSettings(storedSettings?: StoredSettings): AppSettings {
     normalizedSettings.defaultAccentColor = DEFAULT_SETTINGS.defaultAccentColor;
   }
 
-  if (!isSearchEngineId(normalizedSettings.searchEngine)) {
-    normalizedSettings.searchEngine = DEFAULT_SETTINGS.searchEngine;
-  }
-
-  if (normalizedSettings.searchIconStyle !== 'generic' && normalizedSettings.searchIconStyle !== 'provider') {
-    normalizedSettings.searchIconStyle = DEFAULT_SETTINGS.searchIconStyle;
+  if (normalizedSettings.searchToggleDisplay !== 'compact' && normalizedSettings.searchToggleDisplay !== 'detailed') {
+    normalizedSettings.searchToggleDisplay = DEFAULT_SETTINGS.searchToggleDisplay;
   }
 
   return normalizedSettings;

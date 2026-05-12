@@ -5,15 +5,13 @@ import { toast } from 'sonner';
 
 import { DEFAULT_POEM, loadPoem, type PoemLine } from '../lib/jinrishici';
 import { cn } from '../lib/cn';
+import { queryDefaultSearchProvider } from '../lib/defaultSearch';
 import type { AppCopy } from '../lib/i18n';
-import { buildSearchUrl } from '../lib/searchEngines';
-import type { SearchEngineId } from '../types/settings';
 
 interface PoemDisplayProps {
   show: boolean;
   expanded: boolean;
   copy: AppCopy['poem'];
-  searchEngine: SearchEngineId;
   onExpandedChange: (expanded: boolean) => void;
 }
 
@@ -41,7 +39,7 @@ const TITLE_WIDTH_TOLERANCE = 48;
 const POEM_LIFT_DELAY = 120;
 const HEAD_RESET_DELAY = 360;
 
-export function PoemDisplay({ show, expanded, copy, searchEngine, onExpandedChange }: PoemDisplayProps) {
+export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisplayProps) {
   const [poem, setPoem] = useState<PoemLine>(DEFAULT_POEM);
   const [showExpandedHead, setShowExpandedHead] = useState(false);
   const [poemLifted, setPoemLifted] = useState(false);
@@ -131,7 +129,7 @@ export function PoemDisplay({ show, expanded, copy, searchEngine, onExpandedChan
   };
 
   const handleSearchPoem = () => {
-    window.open(buildSearchUrl(searchEngine, getPoemSearchQuery(poem)), '_blank', 'noopener,noreferrer');
+    void queryDefaultSearchProvider(getPoemSearchQuery(poem));
   };
 
   return (

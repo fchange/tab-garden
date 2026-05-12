@@ -2,8 +2,8 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Command, Search, Tags } from 'lucide-react';
 
 import { cn } from '../lib/cn';
-import { buildSearchUrl, getSearchEngine } from '../lib/searchEngines';
-import type { SearchEngineId, SearchIconStyle } from '../types/settings';
+import { queryDefaultSearchProvider } from '../lib/defaultSearch';
+import type { SearchToggleDisplay } from '../types/settings';
 import { SearchModeToggle, type SearchMode } from './SearchModeToggle';
 import { Input } from './ui/input';
 
@@ -22,9 +22,7 @@ interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
   accentColor: string;
-  toggleDisplay: 'compact' | 'detailed';
-  searchEngine: SearchEngineId;
-  searchIconStyle: SearchIconStyle;
+  toggleDisplay: SearchToggleDisplay;
   labels: {
     placeholder: string;
     webPlaceholder: string;
@@ -40,8 +38,6 @@ export function SearchBar({
   onChange,
   accentColor,
   toggleDisplay,
-  searchEngine,
-  searchIconStyle,
   labels,
 }: SearchBarProps) {
   const [mode, setMode] = useState<SearchMode>('tabs');
@@ -49,17 +45,12 @@ export function SearchBar({
   const inputRef = useRef<HTMLInputElement>(null);
   const inputValue = mode === 'tabs' ? value : webQuery;
   const modeTextColor = getReadableTextColor(accentColor);
-  const activeSearchEngine = getSearchEngine(searchEngine);
-  const WebSearchIcon = searchIconStyle === 'provider' ? activeSearchEngine.Icon : Search;
   const nextMode = mode === 'tabs' ? 'web' : 'tabs';
   const isDetailedToggle = toggleDisplay === 'detailed';
 
   const handleSubmit = () => {
-    const searchValue = inputValue.trim();
-    if (!searchValue || mode === 'tabs') return;
-
-    const url = buildSearchUrl(searchEngine, searchValue);
-    window.open(url, '_blank', 'noopener,noreferrer');
+    if (mode === 'tabs') return;
+    void queryDefaultSearchProvider(webQuery);
   };
 
   useEffect(() => {
@@ -98,7 +89,7 @@ export function SearchBar({
             mode === 'tabs' ? 'translate-y-0 scale-100 opacity-100 rotate-0' : 'translate-y-1 scale-75 opacity-0 -rotate-12',
           )}
         />
-        <WebSearchIcon
+        <Search
           className={cn(
             'absolute inset-0 size-[18px] text-muted-foreground/65 transition-[opacity,transform,color] duration-300 ease-out group-focus-within:text-[var(--search-accent)] group-focus-within:scale-105',
             mode === 'web' ? 'translate-y-0 scale-100 opacity-100 rotate-0' : '-translate-y-1 scale-75 opacity-0 rotate-12',
@@ -142,8 +133,6 @@ export function SearchBar({
           display={toggleDisplay}
           accentColor={accentColor}
           textColor={modeTextColor}
-          searchEngine={activeSearchEngine}
-          searchIconStyle={searchIconStyle}
           labels={labels}
           onToggle={() => {
             setMode(nextMode);
