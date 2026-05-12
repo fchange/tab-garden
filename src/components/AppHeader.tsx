@@ -1,47 +1,28 @@
 import { AccentColorMenu } from './AccentColorMenu';
 import { SearchBar } from './SearchBar';
-import type { AppCopy } from '../lib/i18n';
-import type { ColorSample, SearchToggleDisplay } from '../types/settings';
+import { useAccent, useCopy, useSettingsContext } from '../lib/appContext';
 
 interface AppHeaderProps {
   openTabCount: number;
   duplicateCount: number;
   sleepingTabCount: number;
-  summarySeparator: string;
-  summaryEnd: string;
   query: string;
-  accentColor: string;
-  colorSample: ColorSample;
-  defaultAccentColor: string | null;
-  isDarkMode: boolean;
-  searchToggleDisplay: SearchToggleDisplay;
-  copy: AppCopy;
   onQueryChange: (query: string) => void;
-  onUseAccentColor: (hex: string) => void;
-  onSetDefaultAccentColor: (hex: string) => void;
-  onUseRandomAccentColor: () => void;
-  onToggleTheme: () => void;
 }
 
 export function AppHeader({
   openTabCount,
   duplicateCount,
   sleepingTabCount,
-  summarySeparator,
-  summaryEnd,
   query,
-  accentColor,
-  colorSample,
-  defaultAccentColor,
-  isDarkMode,
-  searchToggleDisplay,
-  copy,
   onQueryChange,
-  onUseAccentColor,
-  onSetDefaultAccentColor,
-  onUseRandomAccentColor,
-  onToggleTheme,
 }: AppHeaderProps) {
+  const copy = useCopy();
+  const { settings } = useSettingsContext();
+  const { accentColor } = useAccent();
+  const summarySeparator = settings.language === 'zh' ? '，' : ', ';
+  const summaryEnd = settings.language === 'zh' ? '。' : '.';
+
   return (
     <div className="flex flex-col gap-3.5">
       <div className="flex items-baseline justify-between max-[720px]:flex-col max-[720px]:gap-1">
@@ -59,25 +40,12 @@ export function AppHeader({
           )}
           {summaryEnd}
         </span>
-        <AccentColorMenu
-          accentColor={accentColor}
-          colorSample={colorSample}
-          defaultAccentColor={defaultAccentColor}
-          isDarkMode={isDarkMode}
-          copy={copy}
-          onUseAccentColor={onUseAccentColor}
-          onSetDefaultAccentColor={onSetDefaultAccentColor}
-          onUseRandomAccentColor={onUseRandomAccentColor}
-          onToggleTheme={onToggleTheme}
-        />
+        <AccentColorMenu />
       </div>
 
       <SearchBar
         value={query}
         onChange={onQueryChange}
-        accentColor={accentColor}
-        toggleDisplay={searchToggleDisplay}
-        labels={copy.search}
       />
     </div>
   );

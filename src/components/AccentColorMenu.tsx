@@ -2,8 +2,7 @@ import type { CSSProperties, MouseEvent } from 'react';
 import { Check, ChevronDown, Moon, Shuffle, Star, Sun } from 'lucide-react';
 
 import { ACCENT_COLORS } from '../lib/accentColors';
-import type { AppCopy } from '../lib/i18n';
-import type { ColorSample } from '../types/settings';
+import { useAccent, useCopy, useSettingsContext, useTheme } from '../lib/appContext';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import {
@@ -15,34 +14,24 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 
-interface AccentColorMenuProps {
-  accentColor: string;
-  colorSample: ColorSample;
-  defaultAccentColor: string | null;
-  isDarkMode: boolean;
-  copy: AppCopy;
-  onUseAccentColor: (hex: string) => void;
-  onSetDefaultAccentColor: (hex: string) => void;
-  onUseRandomAccentColor: () => void;
-  onToggleTheme: () => void;
-}
-
 const stopMenuEvent = (event: MouseEvent<HTMLButtonElement>) => {
   event.preventDefault();
   event.stopPropagation();
 };
 
-export function AccentColorMenu({
-  accentColor,
-  colorSample,
-  defaultAccentColor,
-  isDarkMode,
-  copy,
-  onUseAccentColor,
-  onSetDefaultAccentColor,
-  onUseRandomAccentColor,
-  onToggleTheme,
-}: AccentColorMenuProps) {
+export function AccentColorMenu() {
+  const copy = useCopy();
+  const { settings } = useSettingsContext();
+  const {
+    accentColor,
+    colorSample,
+    setDefaultAccentColor,
+    useAccentColor,
+    useRandomAccentColor,
+  } = useAccent();
+  const { isDarkMode, toggleTheme } = useTheme();
+  const defaultAccentColor = settings.defaultAccentColor;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -68,7 +57,7 @@ export function AccentColorMenu({
               size="icon-sm"
               onClick={(event) => {
                 stopMenuEvent(event);
-                onUseRandomAccentColor();
+                useRandomAccentColor();
               }}
               title={copy.controls.randomAccent}
               aria-label={copy.controls.randomAccent}
@@ -82,7 +71,7 @@ export function AccentColorMenu({
               size="icon-sm"
               onClick={(event) => {
                 stopMenuEvent(event);
-                onToggleTheme();
+                toggleTheme();
               }}
               title={isDarkMode ? copy.controls.light : copy.controls.dark}
               aria-label={isDarkMode ? copy.controls.light : copy.controls.dark}
@@ -156,7 +145,7 @@ export function AccentColorMenu({
                     className="h-7 rounded-md border-none bg-transparent px-2 text-[12px] text-white opacity-75 shadow-none hover:bg-[rgba(255,255,255,0.14)] hover:text-white hover:opacity-100"
                     onClick={(event) => {
                       stopMenuEvent(event);
-                      onUseAccentColor(color.hex);
+                      useAccentColor(color.hex);
                     }}
                   >
                     {copy.accents.use}
@@ -168,7 +157,7 @@ export function AccentColorMenu({
                     className="h-7 rounded-md border-none bg-transparent px-2 text-[12px] text-white opacity-75 shadow-none hover:bg-[rgba(255,255,255,0.14)] hover:text-white hover:opacity-100"
                     onClick={(event) => {
                       stopMenuEvent(event);
-                      onSetDefaultAccentColor(color.hex);
+                      setDefaultAccentColor(color.hex);
                     }}
                   >
                     {copy.accents.setDefault}

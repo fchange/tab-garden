@@ -3,7 +3,7 @@ import { Command, Search, Tags } from 'lucide-react';
 
 import { cn } from '../lib/cn';
 import { queryDefaultSearchProvider } from '../lib/defaultSearch';
-import type { SearchToggleDisplay } from '../types/settings';
+import { useAccent, useCopy, useSettingsContext } from '../lib/appContext';
 import { SearchModeToggle, type SearchMode } from './SearchModeToggle';
 import { Input } from './ui/input';
 
@@ -21,45 +21,28 @@ function getReadableTextColor(hex: string) {
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
-  accentColor: string;
-  toggleDisplay: SearchToggleDisplay;
-  labels: {
-    placeholder: string;
-    webPlaceholder: string;
-    tabsMode: string;
-    webMode: string;
-    tabsMenu: string;
-    webMenu: string;
-  };
 }
 
 export function SearchBar({
   value,
   onChange,
-  accentColor,
-  toggleDisplay,
-  labels,
 }: SearchBarProps) {
+  const copy = useCopy();
+  const { settings } = useSettingsContext();
+  const { accentColor } = useAccent();
+  const labels = copy.search;
   const [mode, setMode] = useState<SearchMode>('tabs');
   const [webQuery, setWebQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const inputValue = mode === 'tabs' ? value : webQuery;
   const modeTextColor = getReadableTextColor(accentColor);
   const nextMode = mode === 'tabs' ? 'web' : 'tabs';
-  const isDetailedToggle = toggleDisplay === 'detailed';
+  const isDetailedToggle = settings.searchToggleDisplay === 'detailed';
 
   const handleSubmit = () => {
     if (mode === 'tabs') return;
     void queryDefaultSearchProvider(webQuery);
   };
-
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      inputRef.current?.focus({ preventScroll: true });
-    });
-
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -75,24 +58,24 @@ export function SearchBar({
 
   return (
     <div
-      className="group relative w-full overflow-hidden rounded-full border border-[var(--theme-border-strong)] bg-[var(--theme-input)] shadow-[var(--theme-inset-highlight),var(--theme-shadow-soft)] backdrop-blur-md transition-all duration-500 ease-out hover:border-transparent hover:bg-[var(--theme-surface-strong)] hover:shadow-[var(--theme-inset-highlight),var(--theme-shadow-soft),0_0_0_2px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_7%,transparent)] focus-within:border-transparent focus-within:shadow-[var(--theme-inset-highlight),var(--theme-shadow-soft),0_0_0_2px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_10%,transparent),0_0_0_5px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_12%,transparent),0_10px_42px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_14%,transparent)]"
+      className="group relative w-full overflow-hidden rounded-full border border-[var(--theme-border-strong)] bg-[var(--theme-input)] shadow-none backdrop-blur-md transition-all duration-500 ease-out hover:border-[color-mix(in_srgb,var(--search-accent,var(--theme-border-strong))_16%,var(--theme-border-strong))] hover:bg-[var(--theme-surface-strong)] hover:shadow-[0_10px_28px_rgba(15,23,42,0.06)] focus-within:border-transparent focus-within:bg-[var(--theme-surface-strong)] focus-within:shadow-[var(--theme-inset-highlight),var(--theme-shadow-soft),0_0_0_2px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_10%,transparent),0_0_0_5px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_12%,transparent),0_10px_42px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_14%,transparent)] focus-within:hover:border-transparent focus-within:hover:bg-[var(--theme-surface-strong)] focus-within:hover:shadow-[var(--theme-inset-highlight),var(--theme-shadow-soft),0_0_0_2px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_10%,transparent),0_0_0_5px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_12%,transparent),0_10px_42px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_14%,transparent)]"
       style={{ '--theme-ring': accentColor, '--search-accent': accentColor } as CSSProperties}
     >
       <div className="pointer-events-none absolute inset-0 rounded-full opacity-0 blur-2xl transition-opacity duration-700 group-focus-within:opacity-100">
         <div className="h-full w-full rounded-full bg-[color-mix(in_srgb,var(--search-accent)_20%,transparent)] animate-[search-breathe_5s_ease-in-out_infinite]" />
       </div>
 
-      <div className="pointer-events-none absolute left-3.5 top-1/2 z-10 size-[18px] -translate-y-1/2 overflow-hidden">
+      <div className="pointer-events-none absolute left-3.5 top-1/2 z-10 size-[18px] -translate-y-1/2 overflow-hidden transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-focus-within:scale-[1.03]">
         <Tags
           className={cn(
-            'absolute inset-0 size-[18px] text-muted-foreground/65 transition-[opacity,transform,color] duration-300 ease-out group-focus-within:text-[var(--search-accent)] group-focus-within:scale-105',
-            mode === 'tabs' ? 'translate-y-0 scale-100 opacity-100 rotate-0' : 'translate-y-1 scale-75 opacity-0 -rotate-12',
+            'absolute inset-0 size-[18px] text-muted-foreground/65 will-change-transform transition-[opacity,transform,color] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] group-focus-within:text-[var(--search-accent)]',
+            mode === 'tabs' ? 'translate-y-0 scale-100 opacity-100 rotate-0' : 'translate-y-0.5 scale-90 opacity-0 -rotate-6',
           )}
         />
         <Search
           className={cn(
-            'absolute inset-0 size-[18px] text-muted-foreground/65 transition-[opacity,transform,color] duration-300 ease-out group-focus-within:text-[var(--search-accent)] group-focus-within:scale-105',
-            mode === 'web' ? 'translate-y-0 scale-100 opacity-100 rotate-0' : '-translate-y-1 scale-75 opacity-0 rotate-12',
+            'absolute inset-0 size-[18px] text-muted-foreground/65 will-change-transform transition-[opacity,transform,color] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] group-focus-within:text-[var(--search-accent)]',
+            mode === 'web' ? 'translate-y-0 scale-100 opacity-100 rotate-0' : '-translate-y-0.5 scale-90 opacity-0 rotate-6',
           )}
         />
       </div>
@@ -130,7 +113,7 @@ export function SearchBar({
       <div className="absolute right-2 top-1/2 z-10 flex -translate-y-1/2 items-center gap-1.5">
         <SearchModeToggle
           mode={mode}
-          display={toggleDisplay}
+          display={settings.searchToggleDisplay}
           accentColor={accentColor}
           textColor={modeTextColor}
           labels={labels}

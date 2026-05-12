@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { DEFAULT_SETTINGS, loadSettings, saveSettings, subscribeSettings } from '../lib/storage';
 import type { AppSettings } from '../types/settings';
@@ -33,7 +33,7 @@ export function useSettings() {
     };
   }, []);
 
-  async function updateSettings(
+  const updateSettings = useCallback(async function updateSettings(
     updater: Partial<AppSettings> | ((current: AppSettings) => AppSettings),
   ) {
     const nextSettings =
@@ -46,7 +46,7 @@ export function useSettings() {
 
     setSettings(nextSettings);
     await saveSettings(nextSettings);
-  }
+  }, [settings]);
 
   return {
     ready,

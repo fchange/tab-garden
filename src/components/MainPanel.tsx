@@ -1,15 +1,57 @@
-import type { ReactNode } from 'react';
+import { useDeferredValue, useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 
+import { useTabActions } from '../hooks/useTabActions';
+import { useTabs } from '../hooks/useTabs';
+import { useTabViewModel } from '../hooks/useTabViewModel';
+import { useCopy, useSettingsContext } from '../lib/appContext';
 import { cn } from '../lib/cn';
+import type { ViewMode } from '../types/tab';
+import { AppHeader } from './AppHeader';
+import { TabContentArea } from './TabContentArea';
+import { TabResults } from './TabResults';
 
 interface MainPanelProps {
   accentColor: string;
   poemExpanded: boolean;
-  children: ReactNode;
 }
 
-export function MainPanel({ accentColor, poemExpanded, children }: MainPanelProps) {
+export function MainPanel({ accentColor, poemExpanded }: MainPanelProps) {
+  const { ready, settings } = useSettingsContext();
+  const copy = useCopy();
+  const [view, setView] = useState<ViewMode>('all');
+  const [query, setQuery] = useState('');
+  const deferredQuery = useDeferredValue(query);
+  const tabState = useTabs(settings, copy);
+  const {
+    filteredTabs,
+    domainGroups,
+    windowGroups,
+    duplicateCount,
+    sleepingTabs,
+    duplicateTabIds,
+    duplicateTabs,
+    canSleepTab,
+  } = useTabViewModel({
+    tabs: tabState.tabs,
+    settings,
+    copy,
+    query: deferredQuery,
+  });
+
+  useEffect(() => {
+    if (ready) {
+      setView(settings.defaultView);
+    }
+  }, [ready, settings.defaultView]);
+
+  const { handlers: tabHandlers, batchAction } = useTabActions({
+    copy,
+    view,
+    duplicateCount,
+    tabState,
+  });
+
   return (
     <motion.div
       className={cn(
@@ -27,7 +69,40 @@ export function MainPanel({ accentColor, poemExpanded, children }: MainPanelProp
       <div className="h-[3px] w-full transition-[background] duration-500" style={{ background: accentColor }} />
 
       <div className="px-6 pt-5 pb-5 min-w-0 max-[720px]:p-4">
-        {children}
+        <AppHeader
+          openTabCount={tabState.tabs.length}
+          duplicateCount={duplicateCount}
+          sleepingTabCount={sleepingTabs.length}
+          query={query}
+          onQueryChange={setQuery}
+        />
+
+        <TabContentArea
+          view={view}
+          counts={{
+            all: tabState.tabs.length,
+            domain: domainGroups.length,
+            window: windowGroups.length,
+            duplicate: duplicateCount,
+          }}
+          batchAction={batchAction}
+          error={tabState.error}
+          onViewChange={setView}
+        >
+          <TabResults
+            view={view}
+            query={query}
+            loading={tabState.loading}
+            totalTabCount={tabState.tabs.length}
+            filteredTabs={filteredTabs}
+            duplicateTabs={duplicateTabs}
+            domainGroups={domainGroups}
+            windowGroups={windowGroups}
+            duplicateTabIds={duplicateTabIds}
+            canSleepTab={canSleepTab}
+            handlers={tabHandlers}
+          />
+        </TabContentArea>
       </div>
     </motion.div>
   );

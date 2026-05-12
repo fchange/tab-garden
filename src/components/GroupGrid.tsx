@@ -1,11 +1,9 @@
-import type { AppCopy } from '../lib/i18n';
+import { useAccent } from '../lib/appContext';
 import type { BrowserTab, DomainGroupModel, WindowGroupModel } from '../types/tab';
 import { DomainCard } from './DomainCard';
 
 interface GroupGridProps {
   groups: Array<DomainGroupModel | WindowGroupModel>;
-  accentColor: string;
-  copy: AppCopy;
   onSwitch: (tab: BrowserTab) => void;
   onClose: (tab: BrowserTab) => void;
   onSleep: (tab: BrowserTab) => void;
@@ -16,8 +14,6 @@ interface GroupGridProps {
 
 export function GroupGrid({
   groups,
-  accentColor,
-  copy,
   onSwitch,
   onClose,
   onSleep,
@@ -25,6 +21,8 @@ export function GroupGrid({
   onSleepAll,
   canSleepTab,
 }: GroupGridProps) {
+  const { accentColor } = useAccent();
+
   return (
     <div className="grid grid-cols-3 gap-2.5 min-w-0 max-h-[calc(100vh-330px)] overflow-y-auto overflow-x-hidden pb-2 max-[720px]:grid-cols-1">
       {groups.map((group) => (
@@ -38,7 +36,6 @@ export function GroupGrid({
           onCloseAll={onCloseAll}
           onSleepAll={onSleepAll}
           canSleepTab={canSleepTab}
-          copy={copy}
         />
       ))}
     </div>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import type { AppCopy } from '../lib/i18n';
+import { useAccent } from '../lib/appContext';
 import type { BrowserTab } from '../types/tab';
 import { TabItem } from './TabItem';
 
@@ -9,27 +9,24 @@ const OVERSCAN = 6;
 
 interface VirtualTabListProps {
   tabs: BrowserTab[];
-  accentColor: string;
   onClose?: (tab: BrowserTab) => void;
   onSleep?: (tab: BrowserTab) => void;
   onSwitch?: (tab: BrowserTab) => void;
   canSleepTab?: (tab: BrowserTab) => boolean;
   duplicateTabIds?: Set<number>;
   showDuplicateBadge?: boolean;
-  copy: AppCopy;
 }
 
 export function VirtualTabList({
   tabs,
-  accentColor,
   onClose,
   onSleep,
   onSwitch,
   canSleepTab,
   duplicateTabIds,
   showDuplicateBadge,
-  copy,
 }: VirtualTabListProps) {
+  const { accentColor } = useAccent();
   const viewportRef = useRef<HTMLDivElement>(null);
   const [scrollTop, setScrollTop] = useState(0);
   const [viewportHeight, setViewportHeight] = useState(0);
@@ -83,7 +80,6 @@ export function VirtualTabList({
               onSwitch={onSwitch}
               canSleep={canSleepTab?.(tab) ?? false}
               showDuplicateBadge={showDuplicateBadge || duplicateTabIds?.has(tab.id)}
-              copy={copy}
             />
           </div>
         ))}

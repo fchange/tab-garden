@@ -1,23 +1,16 @@
 import type { ReactNode } from 'react';
 
+import { useAccent, useCopy } from '../lib/appContext';
 import { getViewOptions } from '../lib/i18n';
-import type { AppCopy } from '../lib/i18n';
 import type { ViewMode } from '../types/tab';
+import type { BatchAction } from '../hooks/useTabActions';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Tabs, TabsContent } from './ui/tabs';
 import { ViewToggle } from './ViewToggle';
 
-interface BatchAction {
-  label: string;
-  count: number;
-  action: () => void;
-}
-
 interface TabContentAreaProps {
   view: ViewMode;
-  accentColor: string;
-  copy: AppCopy;
   counts: Record<ViewMode, number>;
   batchAction: BatchAction | null;
   error?: string | null;
@@ -27,14 +20,14 @@ interface TabContentAreaProps {
 
 export function TabContentArea({
   view,
-  accentColor,
-  copy,
   counts,
   batchAction,
   error,
   children,
   onViewChange,
 }: TabContentAreaProps) {
+  const copy = useCopy();
+  const { accentColor } = useAccent();
   const viewOptions = getViewOptions(copy);
 
   return (

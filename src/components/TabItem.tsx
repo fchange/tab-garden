@@ -2,9 +2,9 @@ import { useMemo, useState, type CSSProperties, type MouseEvent } from 'react';
 import { Moon, CirclePlus, X } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { cn } from '../lib/cn';
+import { useCopy } from '../lib/appContext';
 import { getBaseDomain, getDisplayUrl, isSpecialUrl, getFaviconUrl, getDomainColor } from '../lib/url';
 import type { BrowserTab } from '../types/tab';
-import type { AppCopy } from '../lib/i18n';
 
 interface TabItemProps {
   tab: BrowserTab;
@@ -16,7 +16,6 @@ interface TabItemProps {
   showDuplicateBadge?: boolean;
   /** Compact variant used inside DomainCard / window cards */
   compact?: boolean;
-  copy: AppCopy;
 }
 
 function tabFaviconUrl(tab: BrowserTab): string {
@@ -91,7 +90,9 @@ interface TabActionsProps {
   onClose: (e: MouseEvent) => void;
 }
 
-function TabActions({ visible, accentColor, canSleep, onSleep, onClose, copy }: TabActionsProps & { copy: AppCopy }) {
+function TabActions({ visible, accentColor, canSleep, onSleep, onClose }: TabActionsProps) {
+  const copy = useCopy();
+
   return (
     <div
       className={cn(
@@ -129,8 +130,8 @@ export function TabItem({
   canSleep = false,
   showDuplicateBadge,
   compact = false,
-  copy,
 }: TabItemProps) {
+  const copy = useCopy();
   const [hovered, setHovered] = useState(false);
   const [closing, setClosing] = useState(false);
 
@@ -187,7 +188,6 @@ export function TabItem({
           canSleep={canSleep}
           onSleep={handleSleep}
           onClose={handleClose}
-          copy={copy}
         />
       </div>
     );
@@ -257,10 +257,9 @@ export function TabItem({
           visible={hovered}
           accentColor={accentColor}
           canSleep={canSleep}
-          onSleep={handleSleep}
-          onClose={handleClose}
-          copy={copy}
-        />
+            onSleep={handleSleep}
+            onClose={handleClose}
+          />
       </div>
     </div>
   );

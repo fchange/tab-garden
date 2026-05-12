@@ -1,5 +1,6 @@
 import { MoreHorizontal, Moon, X } from 'lucide-react';
 import type { BrowserTab, DomainGroupModel } from '../types/tab';
+import { useCopy } from '../lib/appContext';
 import { getDomainColor } from '../lib/url';
 import { TabItem } from './TabItem';
 import {
@@ -8,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import type { AppCopy } from '../lib/i18n';
 
 interface DomainCardProps {
   group: DomainGroupModel;
@@ -19,10 +19,10 @@ interface DomainCardProps {
   onCloseAll?: (tabs: BrowserTab[]) => void;
   onSleepAll?: (tabs: BrowserTab[]) => void;
   canSleepTab?: (tab: BrowserTab) => boolean;
-  copy: AppCopy;
 }
 
-export function DomainCard({ group, accentColor, onSwitch, onClose, onSleep, onCloseAll, onSleepAll, canSleepTab, copy }: DomainCardProps) {
+export function DomainCard({ group, accentColor, onSwitch, onClose, onSleep, onCloseAll, onSleepAll, canSleepTab }: DomainCardProps) {
+  const copy = useCopy();
   const domainColor = getDomainColor(group.id);
 
   return (
@@ -85,7 +85,6 @@ export function DomainCard({ group, accentColor, onSwitch, onClose, onSleep, onC
             onSleep={onSleep}
             canSleep={canSleepTab?.(tab) ?? false}
             compact
-            copy={copy}
           />
         ))}
         {group.tabs.length > 5 && (

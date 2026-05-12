@@ -12,10 +12,11 @@ import {
 import { ScrollArea } from '../ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
 import { ACCENT_COLORS } from '../../lib/accentColors';
+import { useAccent, useCopy, useSettingsContext } from '../../lib/appContext';
 import { cn } from '../../lib/cn';
-import type { AppCopy } from '../../lib/i18n';
-import type { AppSettings, ColorSample, ThemePreference } from '../../types/settings';
-import type { ViewMode } from '../../types/tab';
+import { getViewOptions } from '../../lib/i18n';
+import { DEFAULT_SETTINGS } from '../../lib/storage';
+import type { ThemePreference } from '../../types/settings';
 import {
   SettingsItem,
   SettingsSection,
@@ -25,37 +26,20 @@ import {
   SettingsSwitch,
 } from './SettingsPrimitives';
 
-type UpdateSettings = (updater: Partial<AppSettings> | ((current: AppSettings) => AppSettings)) => Promise<void>;
-
 const DROPDOWN_CONTENT_CLASS = 'border-black/[0.08] bg-white text-foreground shadow-[0_16px_42px_rgba(40,24,34,0.16)] backdrop-blur-none dark:border-[var(--theme-border-strong)] dark:bg-[var(--theme-popover)] dark:shadow-[var(--theme-shadow-soft),var(--theme-inset-highlight)]';
 
 interface SettingsSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  settings: AppSettings;
-  copy: AppCopy;
-  viewOptions: Array<{ value: ViewMode; label: string }>;
-  colorSample: ColorSample;
-  accentColor: string;
-  accentTextColor: string;
-  updateSettings: UpdateSettings;
-  onSetDefaultAccentColor: (hex: string) => void;
-  onResetSettings: () => void;
 }
 
 export function SettingsSheet({
   open,
   onOpenChange,
-  settings,
-  copy,
-  viewOptions,
-  colorSample,
-  accentColor,
-  accentTextColor,
-  updateSettings,
-  onSetDefaultAccentColor,
-  onResetSettings,
 }: SettingsSheetProps) {
+  const copy = useCopy();
+  const { accentColor, accentTextColor, resetAccentColor } = useAccent();
+  const { updateSettings } = useSettingsContext();
   const [searchTogglePreviewMode, setSearchTogglePreviewMode] = useState<SearchMode>('tabs');
 
   return (
@@ -72,35 +56,27 @@ export function SettingsSheet({
 
         <ScrollArea className="min-h-0 flex-1">
           <div className="space-y-7 px-6 py-5">
-            <AppearanceSettingsSection
-              settings={settings}
-              copy={copy}
-              viewOptions={viewOptions}
-              colorSample={colorSample}
-              accentColor={accentColor}
-              updateSettings={updateSettings}
-              onSetDefaultAccentColor={onSetDefaultAccentColor}
-            />
+            <AppearanceSettingsSection />
 
-            <ProtectionSettingsSection settings={settings} copy={copy} accentColor={accentColor} updateSettings={updateSettings} />
+            <ProtectionSettingsSection accentColor={accentColor} />
 
-            <PoemSettingsSection settings={settings} copy={copy} accentColor={accentColor} updateSettings={updateSettings} />
+            <PoemSettingsSection accentColor={accentColor} />
 
             <SearchToggleSettingsSection
-              settings={settings}
-              copy={copy}
               accentColor={accentColor}
               accentTextColor={accentTextColor}
               previewMode={searchTogglePreviewMode}
               onTogglePreview={() => setSearchTogglePreviewMode((current) => (current === 'tabs' ? 'web' : 'tabs'))}
-              updateSettings={updateSettings}
             />
 
             <Button
               variant="ghost"
               className="h-10 w-full rounded-full border-none bg-[#f5ebf1] text-[14px] font-medium hover:bg-[#eedee8] dark:bg-[var(--theme-surface)] dark:hover:bg-[var(--theme-surface-strong)]"
               style={{ color: accentColor }}
-              onClick={onResetSettings}
+              onClick={() => {
+                resetAccentColor(DEFAULT_SETTINGS.defaultAccentColor);
+                void updateSettings(DEFAULT_SETTINGS);
+              }}
             >
               {copy.settings.resetAll}
             </Button>
@@ -111,15 +87,11 @@ export function SettingsSheet({
   );
 }
 
-function AppearanceSettingsSection({
-  settings,
-  copy,
-  viewOptions,
-  colorSample,
-  accentColor,
-  updateSettings,
-  onSetDefaultAccentColor,
-}: Pick<SettingsSheetProps, 'settings' | 'copy' | 'viewOptions' | 'colorSample' | 'accentColor' | 'updateSettings' | 'onSetDefaultAccentColor'>) {
+function AppearanceSettingsSection() {
+  const copy = useCopy();
+  const { settings, updateSettings } = useSettingsContext();
+  const { accentColor, colorSample, setDefaultAccentColor } = useAccent();
+
   return (
     <SettingsSection title={copy.settings.appearance}>
       <SettingsSectionCard>
@@ -132,11 +104,11 @@ function AppearanceSettingsSection({
                 <ChevronRight className="size-4 opacity-40" />
               </SettingsSelectButton>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className={cn("w-[260px] max-h-[360px] overflow-y-auto", DROPDOWN_CONTENT_CLASS)}>
+            <DropdownMenuContent align="end" className={cn('w-[260px] max-h-[360px] overflow-y-auto', DROPDOWN_CONTENT_CLASS)}>
               {ACCENT_COLORS.map((color) => (
                 <DropdownMenuItem
                   key={color.hex}
-                  onSelect={() => onSetDefaultAccentColor(color.hex)}
+                  onSelect={() => setDefaultAccentColor(color.hex)}
                   className="justify-between"
                 >
                   <span className="flex min-w-0 items-center gap-2">
@@ -150,8 +122,8 @@ function AppearanceSettingsSection({
           </DropdownMenu>
         </SettingsItem>
 
-        <ThemeSettingsItem settings={settings} copy={copy} updateSettings={updateSettings} />
-        <DefaultViewSettingsItem settings={settings} copy={copy} viewOptions={viewOptions} updateSettings={updateSettings} />
+        <ThemeSettingsItem />
+        <DefaultViewSettingsItem />
 
         <SettingsItem title={copy.settings.language} last>
           <SettingsSegmentedControl
@@ -169,11 +141,9 @@ function AppearanceSettingsSection({
   );
 }
 
-function ThemeSettingsItem({
-  settings,
-  copy,
-  updateSettings,
-}: Pick<SettingsSheetProps, 'settings' | 'copy' | 'updateSettings'>) {
+function ThemeSettingsItem() {
+  const copy = useCopy();
+  const { settings, updateSettings } = useSettingsContext();
   const themeLabel = settings.theme === 'system' ? copy.settings.system : settings.theme === 'light' ? copy.settings.light : copy.settings.dark;
 
   return (
@@ -186,7 +156,7 @@ function ThemeSettingsItem({
             <ChevronRight className="size-4 opacity-40" />
           </SettingsSelectButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className={cn("w-40", DROPDOWN_CONTENT_CLASS)}>
+        <DropdownMenuContent align="end" className={cn('w-40', DROPDOWN_CONTENT_CLASS)}>
           {([
             ['system', copy.settings.system],
             ['light', copy.settings.light],
@@ -202,12 +172,11 @@ function ThemeSettingsItem({
   );
 }
 
-function DefaultViewSettingsItem({
-  settings,
-  copy,
-  viewOptions,
-  updateSettings,
-}: Pick<SettingsSheetProps, 'settings' | 'copy' | 'viewOptions' | 'updateSettings'>) {
+function DefaultViewSettingsItem() {
+  const copy = useCopy();
+  const { settings, updateSettings } = useSettingsContext();
+  const viewOptions = getViewOptions(copy);
+
   return (
     <SettingsItem title={copy.settings.defaultView}>
       <DropdownMenu>
@@ -217,7 +186,7 @@ function DefaultViewSettingsItem({
             <ChevronRight className="size-4 opacity-40" />
           </SettingsSelectButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className={cn("w-40", DROPDOWN_CONTENT_CLASS)}>
+        <DropdownMenuContent align="end" className={cn('w-40', DROPDOWN_CONTENT_CLASS)}>
           {viewOptions.map((option) => (
             <DropdownMenuItem key={option.value} onSelect={() => void updateSettings({ defaultView: option.value })}>
               {option.label}
@@ -229,12 +198,9 @@ function DefaultViewSettingsItem({
   );
 }
 
-function ProtectionSettingsSection({
-  settings,
-  copy,
-  accentColor,
-  updateSettings,
-}: Pick<SettingsSheetProps, 'settings' | 'copy' | 'accentColor' | 'updateSettings'>) {
+function ProtectionSettingsSection({ accentColor }: { accentColor: string }) {
+  const copy = useCopy();
+  const { settings, updateSettings } = useSettingsContext();
   const rules = [
     ['protectPinned', copy.settings.protectPinned, copy.settings.protectPinnedDescription],
     ['protectAudible', copy.settings.protectAudible, copy.settings.protectAudibleDescription],
@@ -264,12 +230,10 @@ function ProtectionSettingsSection({
   );
 }
 
-function PoemSettingsSection({
-  settings,
-  copy,
-  accentColor,
-  updateSettings,
-}: Pick<SettingsSheetProps, 'settings' | 'copy' | 'accentColor' | 'updateSettings'>) {
+function PoemSettingsSection({ accentColor }: { accentColor: string }) {
+  const copy = useCopy();
+  const { settings, updateSettings } = useSettingsContext();
+
   return (
     <SettingsSection title={copy.settings.features}>
       <SettingsSectionCard>
@@ -291,17 +255,19 @@ function PoemSettingsSection({
 }
 
 function SearchToggleSettingsSection({
-  settings,
-  copy,
   accentColor,
   accentTextColor,
   previewMode,
   onTogglePreview,
-  updateSettings,
-}: Pick<SettingsSheetProps, 'settings' | 'copy' | 'accentColor' | 'accentTextColor' | 'updateSettings'> & {
+}: {
+  accentColor: string;
+  accentTextColor: string;
   previewMode: SearchMode;
   onTogglePreview: () => void;
 }) {
+  const copy = useCopy();
+  const { settings, updateSettings } = useSettingsContext();
+
   return (
     <SettingsSection title={copy.settings.moreDetails}>
       <SettingsSectionCard>

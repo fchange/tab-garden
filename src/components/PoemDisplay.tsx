@@ -6,12 +6,11 @@ import { toast } from 'sonner';
 import { DEFAULT_POEM, loadPoem, type PoemLine } from '../lib/jinrishici';
 import { cn } from '../lib/cn';
 import { queryDefaultSearchProvider } from '../lib/defaultSearch';
-import type { AppCopy } from '../lib/i18n';
+import { useCopy } from '../lib/appContext';
 
 interface PoemDisplayProps {
   show: boolean;
   expanded: boolean;
-  copy: AppCopy['poem'];
   onExpandedChange: (expanded: boolean) => void;
 }
 
@@ -39,7 +38,9 @@ const TITLE_WIDTH_TOLERANCE = 48;
 const POEM_LIFT_DELAY = 120;
 const HEAD_RESET_DELAY = 360;
 
-export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisplayProps) {
+export function PoemDisplay({ show, expanded, onExpandedChange }: PoemDisplayProps) {
+  const copy = useCopy();
+  const poemCopy = copy.poem;
   const [poem, setPoem] = useState<PoemLine>(DEFAULT_POEM);
   const [showExpandedHead, setShowExpandedHead] = useState(false);
   const [poemLifted, setPoemLifted] = useState(false);
@@ -122,9 +123,9 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
   const handleCopyText = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast(copy.copied);
+      toast(poemCopy.copied);
     } catch {
-      toast(copy.copyFailed);
+      toast(poemCopy.copyFailed);
     }
   };
 
@@ -205,8 +206,8 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
           <button
             type="button"
             className="flex size-7 items-center justify-center rounded-md border-0 bg-transparent p-0 text-black/35 opacity-70 transition-[background,opacity,transform] duration-100 ease-in cursor-pointer hover:scale-105 hover:bg-black/[0.045] hover:text-black/55 hover:opacity-100 active:scale-95 focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-black/20 dark:text-white/40 dark:hover:bg-white/[0.08] dark:hover:text-white/65 dark:focus-visible:outline-white/25"
-            title={copy.back}
-            aria-label={copy.back}
+            title={poemCopy.back}
+            aria-label={poemCopy.back}
             tabIndex={poemLifted ? 0 : -1}
             onClick={(event) => {
               event.stopPropagation();
@@ -226,8 +227,8 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
           <button
             type="button"
             className="flex size-7 items-center justify-center rounded-md border-0 bg-transparent p-0 text-black/35 opacity-70 transition-[background,opacity,transform] duration-100 ease-in cursor-pointer hover:scale-105 hover:bg-black/[0.045] hover:text-black/55 hover:opacity-100 active:scale-95 focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-black/20 dark:text-white/40 dark:hover:bg-white/[0.08] dark:hover:text-white/65 dark:focus-visible:outline-white/25"
-            title={copy.copyText}
-            aria-label={copy.copyText}
+            title={poemCopy.copyText}
+            aria-label={poemCopy.copyText}
             tabIndex={poemLifted ? 0 : -1}
             onClick={(event) => {
               event.stopPropagation();
@@ -239,8 +240,8 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
           <button
             type="button"
             className="flex size-7 items-center justify-center rounded-md border-0 bg-transparent p-0 text-black/35 opacity-70 transition-[background,opacity,transform] duration-100 ease-in cursor-pointer hover:scale-105 hover:bg-black/[0.045] hover:text-black/55 hover:opacity-100 active:scale-95 focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-black/20 dark:text-white/40 dark:hover:bg-white/[0.08] dark:hover:text-white/65 dark:focus-visible:outline-white/25"
-            title={copy.webSearch}
-            aria-label={copy.webSearch}
+            title={poemCopy.webSearch}
+            aria-label={poemCopy.webSearch}
             tabIndex={poemLifted ? 0 : -1}
             onClick={(event) => {
               event.stopPropagation();
@@ -275,8 +276,8 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
             <button
               type="button"
               className="flex size-6 -translate-x-1 items-center justify-center rounded-md border-0 bg-black/[0.045] p-0 text-black/35 opacity-0 transition-[background,opacity,transform] duration-100 ease-in cursor-pointer pointer-events-none group-hover/poem-line:pointer-events-auto group-hover/poem-line:translate-x-0 group-hover/poem-line:opacity-80 hover:scale-105 hover:bg-black/[0.065] hover:text-black/55 hover:opacity-100 active:scale-95 focus-visible:pointer-events-auto focus-visible:translate-x-0 focus-visible:rounded-full focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-black/20 dark:bg-white/[0.07] dark:text-white/40 dark:hover:bg-white/[0.1] dark:hover:text-white/65 dark:focus-visible:outline-white/25"
-              title={copy.copyText}
-              aria-label={copy.copyText}
+              title={poemCopy.copyText}
+              aria-label={poemCopy.copyText}
               tabIndex={poemLifted ? 0 : -1}
               onClick={(event) => {
                 event.stopPropagation();

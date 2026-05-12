@@ -89,8 +89,7 @@ const EN = {
     webPlaceholder: 'Search the web...',
     tabsMode: 'Tabs',
     webMode: 'Web',
-    tabsMenu: 'Search tabs',
-    webMenu: 'Web search',
+    toggleMode: 'Switch search mode',
   },
   domainCard: {
     unnamedPage: 'Untitled page',
@@ -226,8 +225,7 @@ const ZH: typeof EN = {
     webPlaceholder: '网络搜索...',
     tabsMode: '标签',
     webMode: '网络',
-    tabsMenu: '搜索标签',
-    webMenu: '网络搜索',
+    toggleMode: '切换搜索模式',
   },
   domainCard: {
     unnamedPage: '未命名页面',

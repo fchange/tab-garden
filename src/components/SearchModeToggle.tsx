@@ -14,8 +14,7 @@ interface SearchModeToggleProps {
   labels: {
     tabsMode: string;
     webMode: string;
-    tabsMenu: string;
-    webMenu: string;
+    toggleMode: string;
   };
   onToggle: () => void;
   className?: string;
@@ -36,8 +35,8 @@ export function SearchModeToggle({
     <Button
       type="button"
       variant="ghost"
-      aria-label={mode === 'tabs' ? labels.webMenu : labels.tabsMenu}
-      title={mode === 'tabs' ? labels.webMenu : labels.tabsMenu}
+      aria-label={labels.toggleMode}
+      title={labels.toggleMode}
       className={cn(
         'h-8 rounded-full border-border/50 bg-muted/35 p-0 text-muted-foreground shadow-none hover:border-border hover:bg-muted/55',
         className,
