@@ -4,182 +4,189 @@
   <img src="./public/logo.png" alt="Tab Garden logo" width="220" />
 </p>
 
-Tab Garden（枝理 Tab）是一个基于 WXT + React + TypeScript + Tailwind CSS 构建的 Chrome / Edge Manifest V3 浏览器扩展。
+<p align="center">
+  一个安静、清楚、轻盈的 Chrome / Edge 新标签页扩展。
+</p>
 
-它只做一件事：把当前浏览器里的标签页整理得更安静、更清楚、更轻盈。
+<p align="center">
+  <strong>整理枝叶，也整理标签。</strong>
+</p>
 
-## 功能概览
+Tab Garden（枝理 Tab）会接管浏览器的新标签页，把你当前打开的标签页重新整理成更容易理解和处理的视图：按域名归类、按窗口查看、找出重复标签、释放闲置标签，并提供一个不打扰的搜索入口。
 
-- 使用 `chrome_url_overrides.newtab` 接管 New Tab 页面
-- 点击浏览器工具栏图标会直接打开一个独立窗口
-- 读取当前所有窗口的标签页并实时展示
-- 支持按标题和 URL 搜索
-- 支持 4 种视图：全部 / 域名 / 窗口 / 重复
-- 支持切换、关闭、休眠单个标签
-- 支持一键关闭重复标签
-- 支持一键释放闲置标签
-- 支持域名组操作：只保留一个 / 关闭重复 / 休眠本组
-- 支持窗口组操作：关闭重复 / 休眠本组
-- 使用 `chrome.storage.local` 持久化设置
-- 支持浅色 / 深色主题与东方色盘
-- 支持关闭背景波浪动画
-- 支持通过今日诗词 API 展示底部诗文
-- 非扩展环境下自动回退到 mock 数据预览
+它不是生产力仪表盘，也不是信息流首页。它只想帮你在标签页变多的时候，重新获得一点秩序感。
 
-## 技术栈
+## 功能亮点
 
-- [WXT](https://wxt.dev/)
-- [React](https://react.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- Chrome Extension Manifest V3
+- **标签总览**：读取当前浏览器窗口中的标签页，在新标签页中集中展示。
+- **快速搜索**：按标题和 URL 搜索已打开标签页，也可以切换到网页搜索模式。
+- **多种视图**：支持全部、域名、窗口、重复 4 种视图。
+- **重复整理**：识别重复标签，并支持一键关闭可安全关闭的重复项。
+- **闲置释放**：把符合条件的标签页休眠，降低资源占用。
+- **分组操作**：在域名组或窗口组中批量关闭重复、休眠或只保留一个标签。
+- **保护规则**：默认保护固定标签、正在播放音频的标签和当前活跃标签。
+- **本地设置**：主题、语言、默认视图、强调色、动画和保护规则会保存在本地。
+- **东方色盘**：内置浅色 / 深色主题和一组偏东方审美的强调色。
+- **诗文角落**：可选展示今日诗词，让新标签页保留一点呼吸感。
+- **预览友好**：非扩展环境会自动使用 mock 数据，方便本地开发和调试 UI。
 
-## 权限
+## 截图
 
-项目只申请以下权限：
+项目目前还没有固定的截图资产。欢迎提交适合 README 的界面截图或演示 GIF。
 
-- `tabs`
-- `windows`
-- `storage`
+## 安装使用
 
-没有申请：
-
-- `scripting`
-- `activeTab`
-- `content_scripts`
-
-站点访问权限：
-
-- `https://v2.jinrishici.com/*`：用于“展示诗文”功能，从今日诗词 API 获取诗词名句。
-
-隐私权政策见 [PRIVACY.md](./PRIVACY.md)。
-
-## 快速开始
+### 从源码加载
 
 ```bash
 pnpm install
-pnpm dev
-```
-
-开发 Edge 版本：
-
-```bash
-pnpm dev:edge
-```
-
-构建 Chrome 版本：
-
-```bash
 pnpm build
 ```
 
-构建 Edge 版本：
-
-```bash
-pnpm build:edge
-```
-
-## 加载扩展
-
-Chrome：
+然后在 Chrome 中加载：
 
 1. 打开 `chrome://extensions`
 2. 开启“开发者模式”
 3. 点击“加载已解压的扩展程序”
 4. 选择 `.output/chrome-mv3`
 
-Edge：
+在 Edge 中加载：
 
 1. 打开 `edge://extensions`
 2. 开启“开发人员模式”
 3. 点击“加载解压缩的扩展”
 4. 选择 `.output/edge-mv3`
 
-加载完成后，新开一个标签页即可看到 Tab Garden / 枝理 Tab 主界面。
+加载完成后，新开一个标签页即可看到枝理 Tab。
 
-## 脚本
-
-- `pnpm dev`：启动 Chrome 开发模式
-- `pnpm dev:edge`：启动 Edge 开发模式
-- `pnpm build`：构建 Chrome MV3 产物
-- `pnpm build:edge`：构建 Edge MV3 产物
-- `pnpm zip`：打包扩展
-- `pnpm typecheck`：运行 TypeScript 类型检查
-
-## 发布流程
-
-GitHub Actions 会在推送 `v*` 标签时构建 Chrome / Edge 扩展包，并把 `.output/*.zip` 上传到 GitHub Release。
-
-1. 确认工作区干净，并查看上次版本：`git status --short`、`git tag --sort=-v:refname | head`。
-2. 更新 `package.json` 中的 `version`。
-3. 在 `CHANGELOG.md` 顶部新增本次版本记录，并写入本次题记，例如：`> 江畔何人初见月，江月何年初照人？`。
-4. 运行验证：`pnpm typecheck && pnpm test`。
-5. 提交发布记录：`git add package.json CHANGELOG.md && git commit -m "chore: release vX.Y.Z"`。
-6. 创建带题记的 annotated tag：`git tag -a vX.Y.Z -m $'vX.Y.Z\n\n本次题记'`。
-7. 推送代码与标签：`git push origin main && git push origin vX.Y.Z`。
-8. 检查 release workflow：`gh run list --limit 5`，等待对应 tag 的 Release workflow 完成。
-
-如果标签已经推送但漏写题记，可重新写 tag message 并强制更新同一个标签：
+### 开发模式
 
 ```bash
-git tag -f -a vX.Y.Z -m $'vX.Y.Z\n\n本次题记' <release-commit-sha>
-git push --force origin vX.Y.Z
+pnpm install
+pnpm dev
 ```
 
-注意：题记需要同时出现在 `CHANGELOG.md` 和 annotated tag message 中；前者用于源码记录，后者用于发布产物 / Release 关联信息。
+Edge 开发模式：
+
+```bash
+pnpm dev:edge
+```
+
+## 常用脚本
+
+- `pnpm dev`：启动 Chrome 开发模式。
+- `pnpm dev:edge`：启动 Edge 开发模式。
+- `pnpm build`：构建 Chrome MV3 扩展。
+- `pnpm build:edge`：构建 Edge MV3 扩展。
+- `pnpm zip`：打包扩展 zip。
+- `pnpm typecheck`：运行 TypeScript 类型检查。
+- `pnpm test`：运行 Node test runner 测试。
+
+## 技术栈
+
+- [WXT](https://wxt.dev/)：浏览器扩展开发框架。
+- [React](https://react.dev/)：界面渲染。
+- [TypeScript](https://www.typescriptlang.org/)：类型系统。
+- [Tailwind CSS](https://tailwindcss.com/)：样式系统。
+- Chrome Extension Manifest V3。
 
 ## 项目结构
 
 ```text
-entrypoints/
-  background.ts
-  newtab/
+entrypoints/              WXT 扩展入口
+  background.ts           工具栏图标点击行为
+  newtab/                 新标签页入口
     index.html
     main.tsx
 
+public/                   图标、Logo 等静态资源
 src/
-  components/
-  hooks/
-  lib/
-  types/
-  App.tsx
-  styles.css
+  components/             页面组件和业务组件
+  components/settings/    设置面板相关组件
+  components/ui/          基础 UI 组件
+  hooks/                  React hooks
+  lib/                    标签、搜索、存储、主题、URL 等核心逻辑
+  styles/                 字体和样式资源
+  types/                  共享类型定义
+  App.tsx                 新标签页主应用
+  styles.css              全局样式入口
+
+tests/                    测试
+tools/                    调色和设计辅助工具
 ```
 
-核心模块说明：
+核心模块：
 
-- `src/hooks/useTabs.ts`：标签查询、监听、刷新与批量动作
-- `src/hooks/useSettings.ts`：设置加载、更新、持久化
-- `src/lib/url.ts`：URL 标准化、域名提取、特殊页面安全处理
-- `src/lib/groups.ts`：搜索过滤、域名分组、窗口分组
-- `src/lib/tabs.ts`：重复检测、保留策略、关闭与休眠逻辑
-- `src/components/*`：新标签页 UI 组件
+- `src/hooks/useTabs.ts`：标签查询、监听、刷新与批量动作。
+- `src/hooks/useSettings.ts`：设置加载、更新和持久化。
+- `src/lib/tabs.ts`：重复检测、保留策略、关闭与休眠逻辑。
+- `src/lib/groups.ts`：搜索过滤、域名分组和窗口分组。
+- `src/lib/url.ts`：URL 标准化、域名提取和特殊页面处理。
+- `src/lib/defaultSearch.ts`：调用浏览器默认搜索服务。
+- `src/lib/jinrishici.ts`：今日诗词 API 请求。
+- `src/lib/storage.ts`：扩展环境和预览环境的设置存储适配。
 
-## 当前实现说明
+## 权限与隐私
 
-- 重复标签判断基于 `normalizeUrl(url)`，会移除 hash、尾部 slash 和常见追踪参数
-- 域名分组会识别常见二级公共后缀，例如 `google.com.hk`、`google.co.uk`
-- 默认保护固定标签、正在播放音频的标签、当前活跃标签和白名单域名
-- 不使用后端、IndexedDB、Dexie、AI API、content script
-- 不读取网页正文，不申请任何站点权限
+枝理 Tab 的核心逻辑在浏览器本地运行，不需要账号，也没有开发者服务器。
 
-## 验证结果
+当前扩展权限：
 
-已在本地完成以下验证：
+- `tabs`：读取和管理已打开的标签页，用于展示、搜索、切换、关闭和休眠。
+- `windows`：读取窗口信息，用于按窗口分组。
+- `storage`：保存主题、视图、保护规则等本地设置。
+- `search`：在你主动切换到网页搜索模式并提交关键词时，使用浏览器默认搜索引擎打开搜索结果。
 
-- `pnpm install`
-- `pnpm typecheck`
-- `pnpm build`
-- `pnpm build:edge`
+站点访问权限：
 
-## 可继续扩展的方向
+- `https://v2.jinrishici.com/*`：当“展示诗文”功能开启时，用于获取诗词内容。
 
-- 增加一个极简 popup，显示重复标签数量与快速入口
-- 为域名分组增加更细致的公共后缀判断
-- 在重复关闭前增加更明显的确认层
-- 增加导入 / 导出设置
+枝理 Tab 不申请 `scripting`、`activeTab`，也不注入 content script；不会读取网页正文、表单内容或页面脚本上下文。
 
-## TODO
+更多说明见 [PRIVACY.md](./PRIVACY.md)。
 
-- 字体：字体引入、基础字体栈和点缀字体变量统一集中在 `src/styles/点缀字体.css`；`font-ornament-1` 当前为 ZeoSeven CDN 的 `Huiwen-mincho`，用于底部诗文；`font-ornament-2` 当前为 `chengrongguangke`，用于颜色名称和颜色选择弹窗。
-- 字体：Chrome 扩展正式发布前，确认远程字体的授权、CSP、隐私和离线表现；如需上架，优先改成本地打包的 `woff2` 子集。
+## 实现细节
+
+- 新标签页由 WXT 的 `entrypoints/newtab` 提供。
+- 点击工具栏图标会打开一个新的标签页。
+- 重复标签判断基于 `normalizeUrl(url)`，会移除 hash、尾部 slash 和常见追踪参数。
+- 域名分组会识别常见多段公共后缀，例如 `google.com.hk`、`google.co.uk`。
+- 关闭和休眠操作会跳过受保护标签，避免误关固定、播放中或当前活跃的标签页。
+- 网页搜索使用 `chrome.search.query`，跟随用户浏览器的默认搜索引擎。
+- 设置优先使用 `chrome.storage.local`；非扩展预览环境会回退到 `localStorage`。
+
+## 参与贡献
+
+欢迎提交 issue、建议、设计反馈或 pull request。比较适合贡献的方向：
+
+- 补充 README 截图、演示 GIF 或使用说明。
+- 改进重复标签识别和公共后缀判断。
+- 增加更安全、清晰的批量操作确认体验。
+- 改善无障碍访问和键盘操作体验。
+- 增加更多测试，尤其是 URL 归一化和标签保留策略。
+- 协助检查字体授权、CSP、离线资源和扩展商店发布细节。
+
+提交前建议运行：
+
+```bash
+pnpm typecheck
+pnpm test
+```
+
+## 发布说明
+
+版本变化记录见 [CHANGELOG.md](./CHANGELOG.md)。
+
+项目的 GitHub Actions 会在推送 `v*` 标签时构建 Chrome / Edge 扩展包，并把 `.output/*.zip` 上传到 GitHub Release。
+
+维护者发布新版本时通常需要：
+
+1. 更新 `package.json` 中的 `version`。
+2. 在 `CHANGELOG.md` 顶部新增版本记录。
+3. 运行 `pnpm typecheck && pnpm test`。
+4. 提交版本变更。
+5. 创建 annotated tag 并推送。
+
+## License
+
+PolyForm Strict License 1.0.0. You may use the project for permitted non-commercial purposes, but the license does not grant permission to distribute the software or make modified/new works based on it. See [LICENSE](./LICENSE).
