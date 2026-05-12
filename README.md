@@ -106,6 +106,28 @@ Edge：
 - `pnpm zip`：打包扩展
 - `pnpm typecheck`：运行 TypeScript 类型检查
 
+## 发布流程
+
+GitHub Actions 会在推送 `v*` 标签时构建 Chrome / Edge 扩展包，并把 `.output/*.zip` 上传到 GitHub Release。
+
+1. 确认工作区干净，并查看上次版本：`git status --short`、`git tag --sort=-v:refname | head`。
+2. 更新 `package.json` 中的 `version`。
+3. 在 `CHANGELOG.md` 顶部新增本次版本记录，并写入本次题记，例如：`> 江畔何人初见月，江月何年初照人？`。
+4. 运行验证：`pnpm typecheck && pnpm test`。
+5. 提交发布记录：`git add package.json CHANGELOG.md && git commit -m "chore: release vX.Y.Z"`。
+6. 创建带题记的 annotated tag：`git tag -a vX.Y.Z -m $'vX.Y.Z\n\n本次题记'`。
+7. 推送代码与标签：`git push origin main && git push origin vX.Y.Z`。
+8. 检查 release workflow：`gh run list --limit 5`，等待对应 tag 的 Release workflow 完成。
+
+如果标签已经推送但漏写题记，可重新写 tag message 并强制更新同一个标签：
+
+```bash
+git tag -f -a vX.Y.Z -m $'vX.Y.Z\n\n本次题记' <release-commit-sha>
+git push --force origin vX.Y.Z
+```
+
+注意：题记需要同时出现在 `CHANGELOG.md` 和 annotated tag message 中；前者用于源码记录，后者用于发布产物 / Release 关联信息。
+
 ## 项目结构
 
 ```text
