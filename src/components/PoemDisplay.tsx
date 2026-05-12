@@ -119,13 +119,17 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
   const poemLines = getPoemLines(poem);
   const titleWidth = titleWidths[showExpandedHead ? 'expanded' : 'collapsed'] || 'auto';
 
-  const handleCopyPoem = async () => {
+  const handleCopyText = async (text: string) => {
     try {
-      await navigator.clipboard.writeText(formatPoemText(poem, poemLines));
+      await navigator.clipboard.writeText(text);
       toast(copy.copied);
     } catch {
       toast(copy.copyFailed);
     }
+  };
+
+  const handleCopyPoem = async () => {
+    await handleCopyText(formatPoemText(poem, poemLines));
   };
 
   const handleSearchPoem = () => {
@@ -146,7 +150,7 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
       }}
       transition={{ duration: 0.74, ease: [0.22, 1, 0.36, 1] }}
     >
-      <span className="flex min-h-[1.5em] w-full max-w-full flex-wrap items-center justify-center gap-x-2.5 gap-y-0">
+      <span className="group/title flex min-h-[1.5em] w-full max-w-full flex-wrap items-center justify-center gap-x-2.5 gap-y-0">
         <button
           type="button"
           className="inline-flex min-w-0 flex-wrap items-center justify-center gap-x-[0.55em] gap-y-0 border-0 bg-transparent p-0 text-center [font:inherit] [letter-spacing:inherit] text-inherit outline-none cursor-pointer focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-[color-mix(in_srgb,var(--accent,#8fbfaf)_70%,transparent)]"
@@ -211,6 +215,14 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
           >
             <ArrowLeft size={15} strokeWidth={1.9} />
           </button>
+        </span>
+        <span
+          className={cn(
+            'inline-flex flex-[0_0_auto] -translate-x-1 items-center gap-0.5 rounded-lg bg-black/[0.045] p-0.5 opacity-0 transition-[opacity,transform] duration-150 ease-in pointer-events-none focus-within:pointer-events-auto focus-within:translate-x-0 focus-within:opacity-100 dark:bg-white/[0.07]',
+            poemLifted && 'group-hover/title:pointer-events-auto group-hover/title:translate-x-0 group-hover/title:opacity-100',
+          )}
+          aria-hidden={!poemLifted}
+        >
           <button
             type="button"
             className="flex size-7 items-center justify-center rounded-md border-0 bg-transparent p-0 text-black/35 opacity-70 transition-[background,opacity,transform] duration-100 ease-in cursor-pointer hover:scale-105 hover:bg-black/[0.045] hover:text-black/55 hover:opacity-100 active:scale-95 focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-black/20 dark:text-white/40 dark:hover:bg-white/[0.08] dark:hover:text-white/65 dark:focus-visible:outline-white/25"
@@ -258,7 +270,22 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
         transition={{ duration: 0.78, ease: [0.22, 1, 0.36, 1] }}
       >
         {poemLines.map((line, index) => (
-          <span key={`${line}-${index}`}>{line}</span>
+          <span key={`${line}-${index}`} className="group/poem-line !inline-flex items-center justify-center gap-2">
+            <span>{line}</span>
+            <button
+              type="button"
+              className="flex size-6 -translate-x-1 items-center justify-center rounded-md border-0 bg-black/[0.045] p-0 text-black/35 opacity-0 transition-[background,opacity,transform] duration-100 ease-in cursor-pointer pointer-events-none group-hover/poem-line:pointer-events-auto group-hover/poem-line:translate-x-0 group-hover/poem-line:opacity-80 hover:scale-105 hover:bg-black/[0.065] hover:text-black/55 hover:opacity-100 active:scale-95 focus-visible:pointer-events-auto focus-visible:translate-x-0 focus-visible:rounded-full focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-black/20 dark:bg-white/[0.07] dark:text-white/40 dark:hover:bg-white/[0.1] dark:hover:text-white/65 dark:focus-visible:outline-white/25"
+              title={copy.copyText}
+              aria-label={copy.copyText}
+              tabIndex={poemLifted ? 0 : -1}
+              onClick={(event) => {
+                event.stopPropagation();
+                void handleCopyText(line);
+              }}
+            >
+              <Copy size={13} strokeWidth={1.9} />
+            </button>
+          </span>
         ))}
       </motion.div>
     </motion.div>
