@@ -4,7 +4,7 @@
 :root {
   --font-family-base: "SF Pro Display", "SF Pro Text", "PingFang SC", "PingFang TC", "Hiragino Sans GB", "Segoe UI Variable", "Segoe UI", "Helvetica Neue", -apple-system, BlinkMacSystemFont, system-ui, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   --font-family-ornament-1: "Huiwen-mincho", "chengrongguangke", "PingFang SC", serif;
-  --font-family-ornament-2: "chengrongguangke", "SF Pro Display", "PingFang SC", sans-serif;
+  --font-family-ornament-2: "New York", "Iowan Old Style", Georgia, "Times New Roman", "chengrongguangke", "PingFang SC", serif;
 
   font-family: var(--font-family-base);
   font-feature-settings: "liga" 1, "kern" 1;

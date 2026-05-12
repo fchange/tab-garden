@@ -75,7 +75,7 @@ export function SearchBar({
 
   return (
     <div
-      className="tab-search-shell group relative w-full overflow-hidden rounded-full border backdrop-blur-md transition-all duration-500 ease-out"
+      className="group relative w-full overflow-hidden rounded-full border border-[var(--theme-border-strong)] bg-[var(--theme-input)] shadow-[var(--theme-inset-highlight),var(--theme-shadow-soft)] backdrop-blur-md transition-all duration-500 ease-out hover:border-transparent hover:bg-[var(--theme-surface-strong)] hover:shadow-[var(--theme-inset-highlight),var(--theme-shadow-soft),0_0_0_2px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_7%,transparent)] focus-within:border-transparent focus-within:shadow-[var(--theme-inset-highlight),var(--theme-shadow-soft),0_0_0_2px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_10%,transparent),0_0_0_5px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_12%,transparent),0_10px_42px_color-mix(in_srgb,var(--search-accent,var(--theme-ring))_14%,transparent)]"
       style={{ '--theme-ring': accentColor, '--search-accent': accentColor } as CSSProperties}
     >
       <div className="pointer-events-none absolute inset-0 rounded-full opacity-0 blur-2xl transition-opacity duration-700 group-focus-within:opacity-100">

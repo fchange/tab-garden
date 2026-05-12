@@ -47,7 +47,7 @@ const EN = {
     copyText: 'Copy poem',
     copied: 'Poem copied.',
     copyFailed: 'Failed to copy poem.',
-    webSearch: 'Search this poem with browser default search engine',
+    webSearch: 'Search this poem',
   },
   settings: {
     title: 'Settings',
@@ -184,7 +184,7 @@ const ZH: typeof EN = {
     copyText: '复制文案',
     copied: '诗文已复制。',
     copyFailed: '复制诗文失败。',
-    webSearch: '用浏览器默认搜索引擎查询这篇诗文',
+    webSearch: '查询这篇诗文',
   },
   settings: {
     title: '设置',

@@ -135,8 +135,8 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
   return (
     <motion.div
       className={cn(
-        'bottom-poem font-ornament-1 z-10 w-[min(760px,calc(100vw-48px))] leading-relaxed tracking-[0.08em] max-[720px]:px-4',
-        poemLifted && 'bottom-poem-expanded',
+        'group/poem absolute left-[50vw] top-[calc(100%-54px)] z-10 flex w-[min(760px,calc(100vw-48px))] flex-col items-center justify-center gap-0 bg-transparent p-0 text-center font-ornament-1 text-[30px] leading-relaxed tracking-[0.08em] text-[rgb(17,17,17)] opacity-80 transition-[color,opacity] duration-300 ease-in animate-[poem-fade-in_1s_ease-in] dark:text-white max-[720px]:px-4',
+        poemLifted && 'opacity-[0.92]',
       )}
       aria-expanded={expanded}
       initial={false}
@@ -146,44 +146,44 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
       }}
       transition={{ duration: 0.74, ease: [0.22, 1, 0.36, 1] }}
     >
-      <span className="poem-head">
+      <span className="flex min-h-[1.5em] w-full max-w-full flex-wrap items-center justify-center gap-x-2.5 gap-y-0">
         <button
           type="button"
-          className="poem-head-button"
+          className="inline-flex min-w-0 flex-wrap items-center justify-center gap-x-[0.55em] gap-y-0 border-0 bg-transparent p-0 text-center [font:inherit] [letter-spacing:inherit] text-inherit outline-none cursor-pointer focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-[color-mix(in_srgb,var(--accent,#8fbfaf)_70%,transparent)]"
           aria-label={expanded ? `收起诗文：${title || poem.content}` : `展开诗文：${poem.content}`}
           title={expanded ? '收起诗文' : '展开诗文'}
           onClick={() => onExpandedChange(!expanded)}
         >
           <motion.span
-            className="poem-title-stack"
+            className="relative inline-grid min-w-0 max-w-[calc(100%-4.5em)] flex-[0_1_auto] place-items-center overflow-hidden"
             aria-hidden="true"
             animate={{ width: titleWidth }}
             transition={{ duration: 0 }}
           >
             <motion.span
-              className="poem-title-layer"
+              className="col-start-1 row-start-1 inline-block max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
               animate={{ opacity: showExpandedHead ? 0 : 1 }}
               transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
             >
               {poem.content}
             </motion.span>
             <motion.span
-              className="poem-title-layer"
+              className="col-start-1 row-start-1 inline-block max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
               animate={{ opacity: showExpandedHead ? 1 : 0 }}
               transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
             >
               {title || poem.content}
             </motion.span>
-            <span ref={collapsedTitleRef} className="poem-title-measure">
+            <span ref={collapsedTitleRef} className="pointer-events-none absolute col-start-1 row-start-1 whitespace-nowrap opacity-0 [font:inherit]">
               {poem.content}
             </span>
-            <span ref={expandedTitleRef} className="poem-title-measure">
+            <span ref={expandedTitleRef} className="pointer-events-none absolute col-start-1 row-start-1 whitespace-nowrap opacity-0 [font:inherit]">
               {title || poem.content}
             </span>
           </motion.span>
           {credit && (
             <motion.span
-              className="poem-stamp font-ornament-1"
+              className="rounded-[3px] bg-[#c20000] py-1 pr-[5px] pl-1 font-ornament-1 text-[13px] leading-none tracking-[-1px] text-white"
               animate={{ opacity: showExpandedHead ? 1 : 0.88 }}
               transition={{ duration: 0.74, ease: [0.22, 1, 0.36, 1] }}
             >
@@ -191,10 +191,16 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
             </motion.span>
           )}
         </button>
-        <span className="poem-head-actions" aria-hidden={!poemLifted}>
+        <span
+          className={cn(
+            'inline-flex flex-[0_0_auto] -translate-x-1 items-center gap-0.5 rounded-lg bg-black/[0.045] p-0.5 opacity-0 transition-[opacity,transform] duration-150 ease-in pointer-events-none focus-within:pointer-events-auto focus-within:translate-x-0 focus-within:opacity-100 dark:bg-white/[0.07]',
+            poemLifted && 'group-hover/poem:pointer-events-auto group-hover/poem:translate-x-0 group-hover/poem:opacity-100',
+          )}
+          aria-hidden={!poemLifted}
+        >
           <button
             type="button"
-            className="poem-head-action"
+            className="flex size-7 items-center justify-center rounded-md border-0 bg-transparent p-0 text-black/35 opacity-70 transition-[background,opacity,transform] duration-100 ease-in cursor-pointer hover:scale-105 hover:bg-black/[0.045] hover:text-black/55 hover:opacity-100 active:scale-95 focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-black/20 dark:text-white/40 dark:hover:bg-white/[0.08] dark:hover:text-white/65 dark:focus-visible:outline-white/25"
             title={copy.back}
             aria-label={copy.back}
             tabIndex={poemLifted ? 0 : -1}
@@ -207,7 +213,7 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
           </button>
           <button
             type="button"
-            className="poem-head-action"
+            className="flex size-7 items-center justify-center rounded-md border-0 bg-transparent p-0 text-black/35 opacity-70 transition-[background,opacity,transform] duration-100 ease-in cursor-pointer hover:scale-105 hover:bg-black/[0.045] hover:text-black/55 hover:opacity-100 active:scale-95 focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-black/20 dark:text-white/40 dark:hover:bg-white/[0.08] dark:hover:text-white/65 dark:focus-visible:outline-white/25"
             title={copy.copyText}
             aria-label={copy.copyText}
             tabIndex={poemLifted ? 0 : -1}
@@ -220,7 +226,7 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
           </button>
           <button
             type="button"
-            className="poem-head-action"
+            className="flex size-7 items-center justify-center rounded-md border-0 bg-transparent p-0 text-black/35 opacity-70 transition-[background,opacity,transform] duration-100 ease-in cursor-pointer hover:scale-105 hover:bg-black/[0.045] hover:text-black/55 hover:opacity-100 active:scale-95 focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-black/20 dark:text-white/40 dark:hover:bg-white/[0.08] dark:hover:text-white/65 dark:focus-visible:outline-white/25"
             title={copy.webSearch}
             aria-label={copy.webSearch}
             tabIndex={poemLifted ? 0 : -1}
@@ -235,7 +241,10 @@ export function PoemDisplay({ show, expanded, copy, onExpandedChange }: PoemDisp
       </span>
 
       <motion.div
-        className={cn('poem-body', expanded && 'poem-body-expanded')}
+        className={cn(
+          'box-border flex w-full flex-col gap-[0.18em] overflow-hidden px-[clamp(16px,4vw,48px)] [scrollbar-width:none] [text-shadow:0_1px_18px_rgba(255,255,255,0.42)] transition-[padding] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none [&::-webkit-scrollbar]:hidden [&>span]:block dark:[text-shadow:0_1px_18px_rgba(0,0,0,0.36)]',
+          expanded && 'cursor-pointer overflow-y-auto pb-[clamp(18px,3vw,34px)] pointer-events-auto',
+        )}
         aria-hidden={!poemLifted}
         onClick={() => {
           if (poemLifted) onExpandedChange(false);
