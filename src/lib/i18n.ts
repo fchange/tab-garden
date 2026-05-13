@@ -51,6 +51,11 @@ const EN = {
   },
   settings: {
     title: 'Settings',
+    brandName: 'Tab Garden',
+    brandDescription: 'Quiet, elegant tab management for Chrome and Edge',
+    about: 'About',
+    productInfo: 'Tab Garden (枝理 Tab)',
+    versionLabel: 'Version',
     appearance: 'Appearance',
     features: 'Features',
     language: 'Language',
@@ -187,6 +192,11 @@ const ZH: typeof EN = {
   },
   settings: {
     title: '设置',
+    brandName: '枝理 Tab',
+    brandDescription: '整理枝叶，也整理标签。',
+    about: '关于',
+    productInfo: 'Tab Garden (枝理 Tab)',
+    versionLabel: '版本',
     appearance: '外观',
     features: '功能',
     language: '语言',

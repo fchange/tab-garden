@@ -48,7 +48,7 @@ export function SettingsSheet({
         side="right"
         className="right-4 top-6 bottom-6 flex h-auto w-[min(500px,calc(100vw-32px))] flex-col overflow-hidden rounded-[32px] border border-white/40 bg-white/72 p-0 shadow-[0_8px_40px_rgba(180,120,160,0.12)] backdrop-blur-2xl dark:border-[var(--theme-border-strong)] dark:bg-[rgba(16,26,35,0.82)] dark:shadow-[0_28px_90px_rgba(4,10,16,0.42),var(--theme-inset-highlight)] sm:max-w-none"
       >
-        <SheetHeader className="h-16 justify-center border-b border-black/[0.04] px-6 pr-14 dark:border-[var(--theme-border)]">
+        <SheetHeader className="border-b border-black/[0.04] px-6 py-5 pr-14 dark:border-[var(--theme-border)]">
           <SheetTitle className="text-[20px] font-semibold tracking-tight text-[#2f2f2f] dark:text-foreground">
             {copy.settings.title}
           </SheetTitle>
@@ -69,6 +69,8 @@ export function SettingsSheet({
               onTogglePreview={() => setSearchTogglePreviewMode((current) => (current === 'tabs' ? 'web' : 'tabs'))}
             />
 
+            <AboutSettingsSection />
+
             <Button
               variant="ghost"
               className="h-10 w-full rounded-full border-none bg-[#f5ebf1] text-[14px] font-medium hover:bg-[#eedee8] dark:bg-[var(--theme-surface)] dark:hover:bg-[var(--theme-surface-strong)]"
@@ -84,6 +86,26 @@ export function SettingsSheet({
         </ScrollArea>
       </SheetContent>
     </Sheet>
+  );
+}
+
+function AboutSettingsSection() {
+  const copy = useCopy();
+
+  return (
+    <SettingsSection title={copy.settings.about}>
+      <SettingsSectionCard>
+        <SettingsItem
+          title={copy.settings.productInfo}
+          description={copy.settings.brandDescription}
+          last
+        >
+          <span className="text-[12px] font-medium tracking-[0.02em] text-black/38 dark:text-muted-foreground/80">
+            {copy.settings.versionLabel} {__APP_VERSION__}
+          </span>
+        </SettingsItem>
+      </SettingsSectionCard>
+    </SettingsSection>
   );
 }
 

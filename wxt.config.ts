@@ -1,5 +1,10 @@
 import tailwindcss from '@tailwindcss/vite';
+import { readFileSync } from 'node:fs';
 import { defineConfig } from 'wxt';
+
+const packageJson = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8')) as {
+  version: string;
+};
 
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
@@ -25,6 +30,9 @@ export default defineConfig({
     },
   },
   vite: () => ({
+    define: {
+      __APP_VERSION__: JSON.stringify(packageJson.version),
+    },
     plugins: [tailwindcss()],
   }),
 });
