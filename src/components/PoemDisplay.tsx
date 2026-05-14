@@ -333,8 +333,8 @@ export function PoemDisplay({ show, expanded, onExpandedChange }: PoemDisplayPro
 
       <motion.div
         className={cn(
-          'box-border flex w-full flex-col gap-[0.18em] overflow-hidden px-[clamp(16px,4vw,48px)] [scrollbar-width:none] [text-shadow:0_1px_18px_rgba(255,255,255,0.42)] transition-[padding] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none [&::-webkit-scrollbar]:hidden [&>span]:block dark:[text-shadow:0_1px_18px_rgba(0,0,0,0.36)]',
-          expanded && 'cursor-pointer overflow-y-auto pb-[clamp(18px,3vw,34px)] pointer-events-auto',
+          'box-border flex w-full flex-col gap-[0.18em] overflow-hidden px-[clamp(16px,4vw,48px)] [scrollbar-width:none] [text-shadow:0_1px_18px_rgba(255,255,255,0.42)] transition-[margin,padding] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none [&::-webkit-scrollbar]:hidden [&>span]:block dark:[text-shadow:0_1px_18px_rgba(0,0,0,0.36)]',
+          expanded && 'mt-[0.72em] cursor-pointer overflow-y-auto pb-[clamp(18px,3vw,34px)] pointer-events-auto max-[720px]:mt-[0.56em]',
         )}
         aria-hidden={!poemLifted}
         onClick={() => {
