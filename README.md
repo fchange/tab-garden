@@ -187,6 +187,14 @@ pnpm test
 4. 提交版本变更。
 5. 创建 annotated tag 并推送。
 
+GitHub Release 页面正文沿用 annotated tag message，保持极简题记格式；不要在 GitHub Release body 里重复写完整 changelog。tag message 示例：
+
+```txt
+v0.1.6
+
+何时一樽酒，重与细论文。
+```
+
 ## License
 
 PolyForm Strict License 1.0.0. You may use the project for permitted non-commercial purposes, but the license does not grant permission to distribute the software or make modified/new works based on it. See [LICENSE](./LICENSE).
