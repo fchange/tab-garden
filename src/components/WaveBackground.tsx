@@ -15,7 +15,10 @@ interface RgbColor {
 }
 
 const TARGET_FRAME_MS = 1000 / 30;
-const MAX_DEVICE_PIXEL_RATIO = 1.5;
+const MAX_RENDER_SCALE = 1;
+const MIN_RENDER_SCALE = 0.5;
+const MAX_CANVAS_PIXELS = 1_600_000;
+const WAVE_POINT_STEP = 32;
 
 function hexToRgb(hex: string): RgbColor {
   return {
@@ -31,6 +34,10 @@ function lerpRgb(from: RgbColor, to: RgbColor, t: number): RgbColor {
     g: Math.round(from.g + (to.g - from.g) * t),
     b: Math.round(from.b + (to.b - from.b) * t),
   };
+}
+
+function sameRgb(a: RgbColor, b: RgbColor): boolean {
+  return a.r === b.r && a.g === b.g && a.b === b.b;
 }
 
 function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
@@ -104,6 +111,17 @@ interface Mountain {
   t: number;      // animation time (incremented per frame)
 }
 
+interface CanvasSize {
+  width: number;
+  height: number;
+  scale: number;
+}
+
+function getRenderScale(width: number, height: number): number {
+  const pixelBudgetScale = Math.sqrt(MAX_CANVAS_PIXELS / Math.max(1, width * height));
+  return Math.max(MIN_RENDER_SCALE, Math.min(MAX_RENDER_SCALE, pixelBudgetScale));
+}
+
 function createMountains(canvasH: number): Mountain[] {
   // p5 order: i=0 is bottom (alpha 255, lowest y=height-0)
   // i=4 is top (alpha 55, highest y=height-200)
@@ -125,7 +143,9 @@ function createMountains(canvasH: number): Mountain[] {
 export function WaveBackground({ palette, accentColor, paused }: WaveBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef(0);
-  const sizeRef = useRef({ width: 0, height: 0, dpr: 0 });
+  const scheduleRenderRef = useRef<(() => void) | null>(null);
+  const sizeRef = useRef<CanvasSize>({ width: 0, height: 0, scale: 0 });
+  const visibleRef = useRef(typeof document === 'undefined' || document.visibilityState !== 'hidden');
 
   // Palette transition for bg
   const fromBgRef = useRef(hexToRgb(palette.bg));
@@ -140,44 +160,63 @@ export function WaveBackground({ palette, accentColor, paused }: WaveBackgroundP
   const pausedRef = useRef(paused);
   const mtnRef = useRef<Mountain[]>([]);
 
-  useEffect(() => { pausedRef.current = paused; }, [paused]);
+  useEffect(() => {
+    pausedRef.current = paused;
+    if (!paused) scheduleRenderRef.current?.();
+  }, [paused]);
 
   // Palette bg transition
   useEffect(() => {
+    const nextBg = hexToRgb(palette.bg);
+    if (bgTransRef.current === 1 && sameRgb(toBgRef.current, nextBg)) return;
+
     const t = bgTransRef.current;
     fromBgRef.current = lerpRgb(fromBgRef.current, toBgRef.current, t);
-    toBgRef.current = hexToRgb(palette.bg);
+    toBgRef.current = nextBg;
     bgTransRef.current = 0;
+    scheduleRenderRef.current?.();
   }, [palette.bg]);
 
   // accentColor transition
   useEffect(() => {
+    const nextWave = hexToRgb(accentColor);
+    if (waveTransRef.current === 1 && sameRgb(toWaveRef.current, nextWave)) return;
+
     const t = waveTransRef.current;
     fromWaveRef.current = lerpRgb(fromWaveRef.current, toWaveRef.current, t);
-    toWaveRef.current = hexToRgb(accentColor);
+    toWaveRef.current = nextWave;
     waveTransRef.current = 0;
+    scheduleRenderRef.current?.();
   }, [accentColor]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
+    const releaseCanvasMemory = () => {
+      canvas.width = 1;
+      canvas.height = 1;
+      sizeRef.current = { width: 0, height: 0, scale: 0 };
+    };
+
     const draw = (dt: number, advanceMountains: boolean) => {
+      if (!visibleRef.current) return true;
+
       const w = window.innerWidth;
       const h = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DEVICE_PIXEL_RATIO);
+      const scale = getRenderScale(w, h);
       const size = sizeRef.current;
 
       // Re-seed mountains on resize
-      if (w !== size.width || h !== size.height || dpr !== size.dpr) {
-        sizeRef.current = { width: w, height: h, dpr };
-        canvas.width = w * dpr;
-        canvas.height = h * dpr;
+      if (w !== size.width || h !== size.height || scale !== size.scale) {
+        sizeRef.current = { width: w, height: h, scale };
+        canvas.width = Math.max(1, Math.ceil(w * scale));
+        canvas.height = Math.max(1, Math.ceil(h * scale));
         canvas.style.width = `${w}px`;
         canvas.style.height = `${h}px`;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.setTransform(scale, 0, 0, scale, 0, 0);
         mtnRef.current = createMountains(h);
       }
 
@@ -188,8 +227,10 @@ export function WaveBackground({ palette, accentColor, paused }: WaveBackgroundP
       const bgCol = lerpRgb(fromBgRef.current, toBgRef.current, bgTransRef.current);
       const waveCol = lerpRgb(fromWaveRef.current, toWaveRef.current, waveTransRef.current);
 
-      ctx.clearRect(0, 0, w, h);
-      canvas.style.background = `rgb(${bgCol.r},${bgCol.g},${bgCol.b})`;
+      const bgStyle = `rgb(${bgCol.r},${bgCol.g},${bgCol.b})`;
+      ctx.fillStyle = bgStyle;
+      ctx.fillRect(0, 0, w, h);
+      canvas.style.background = bgStyle;
 
       const mtn = mtnRef.current;
       for (let i = 0; i < mtn.length; i++) {
@@ -199,7 +240,7 @@ export function WaveBackground({ palette, accentColor, paused }: WaveBackgroundP
         ctx.moveTo(0, h);
 
         let xoff = 0;
-        for (let x = 0; x <= w + 25; x += 25) {
+        for (let x = 0; x <= w + WAVE_POINT_STEP; x += WAVE_POINT_STEP) {
           const n = p5Noise(xoff + m.offset, m.t + m.offset);
           const yoff = n * 200;
           ctx.lineTo(x, m.y - yoff);
@@ -226,6 +267,11 @@ export function WaveBackground({ palette, accentColor, paused }: WaveBackgroundP
     let lastDrawTime = performance.now();
 
     const render = (now: number) => {
+      if (!visibleRef.current) {
+        rafRef.current = 0;
+        return;
+      }
+
       if (lastFrameTime && now - lastFrameTime < TARGET_FRAME_MS) {
         rafRef.current = requestAnimationFrame(render);
         return;
@@ -244,11 +290,35 @@ export function WaveBackground({ palette, accentColor, paused }: WaveBackgroundP
       }
     };
 
-    rafRef.current = requestAnimationFrame(render);
+    const scheduleRender = () => {
+      if (!visibleRef.current || rafRef.current) return;
+      lastFrameTime = 0;
+      lastDrawTime = performance.now();
+      rafRef.current = requestAnimationFrame(render);
+    };
+
+    scheduleRenderRef.current = scheduleRender;
+    scheduleRender();
+
+    const visibilityListener = () => {
+      visibleRef.current = document.visibilityState !== 'hidden';
+
+      if (visibleRef.current) {
+        scheduleRender();
+        return;
+      }
+
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
+      releaseCanvasMemory();
+    };
+
+    document.addEventListener('visibilitychange', visibilityListener);
 
     const resizeListener = () => {
-      sizeRef.current = { width: 0, height: 0, dpr: 0 };
+      sizeRef.current = { width: 0, height: 0, scale: 0 };
 
+      if (!visibleRef.current) return;
       if (!pausedRef.current || rafRef.current) return;
       draw(TARGET_FRAME_MS, false);
     };
@@ -257,9 +327,11 @@ export function WaveBackground({ palette, accentColor, paused }: WaveBackgroundP
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = 0;
+      scheduleRenderRef.current = null;
+      document.removeEventListener('visibilitychange', visibilityListener);
       window.removeEventListener('resize', resizeListener);
     };
-  }, [accentColor, palette.bg, paused]);
+  }, []);
 
   return (
     <canvas
