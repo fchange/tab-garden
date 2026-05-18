@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, ChevronRight, Moon, Sun } from 'lucide-react';
+import { Check, ChevronRight, ExternalLink, Github, Moon, Sun } from 'lucide-react';
 
 import { SearchModeToggle, type SearchMode } from '../SearchModeToggle';
 import { Button } from '../ui/button';
@@ -26,7 +26,8 @@ import {
   SettingsSwitch,
 } from './SettingsPrimitives';
 
-const DROPDOWN_CONTENT_CLASS = 'border-black/[0.08] bg-white text-foreground shadow-[0_16px_42px_rgba(40,24,34,0.16)] backdrop-blur-none dark:border-[var(--theme-border-strong)] dark:bg-[var(--theme-popover)] dark:shadow-[var(--theme-shadow-soft),var(--theme-inset-highlight)]';
+const DROPDOWN_CONTENT_CLASS = 'border-border/80 bg-popover/92 text-foreground shadow-[var(--theme-shadow-soft),var(--theme-inset-highlight)] backdrop-blur-xl dark:border-[var(--theme-border-strong)] dark:bg-[var(--theme-popover)]';
+const PROJECT_REPOSITORY_URL = 'https://github.com/fchange/tab-garden';
 
 interface SettingsSheetProps {
   open: boolean;
@@ -46,10 +47,10 @@ export function SettingsSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="right-4 top-6 bottom-6 flex h-auto w-[min(500px,calc(100vw-32px))] flex-col overflow-hidden rounded-[32px] border border-white/40 bg-white/72 p-0 shadow-[0_8px_40px_rgba(180,120,160,0.12)] backdrop-blur-2xl dark:border-[var(--theme-border-strong)] dark:bg-[rgba(16,26,35,0.82)] dark:shadow-[0_28px_90px_rgba(4,10,16,0.42),var(--theme-inset-highlight)] sm:max-w-none"
+        className="right-4 top-6 bottom-6 flex h-auto w-[min(500px,calc(100vw-32px))] flex-col overflow-hidden rounded-[28px] border border-border/90 bg-popover p-0 shadow-[var(--theme-shadow-elevated),var(--theme-inset-highlight)] dark:border-[var(--theme-border-strong)] dark:bg-[var(--theme-popover)] sm:max-w-none"
       >
-        <SheetHeader className="border-b border-black/[0.04] px-6 py-5 pr-14 dark:border-[var(--theme-border)]">
-          <SheetTitle className="text-[20px] font-semibold tracking-tight text-[#2f2f2f] dark:text-foreground">
+        <SheetHeader className="border-b border-border/55 px-6 py-5 pr-14">
+          <SheetTitle className="text-[20px] font-semibold tracking-tight text-[rgba(0,0,0,0.82)] dark:text-[rgba(255,255,255,0.88)]">
             {copy.settings.title}
           </SheetTitle>
         </SheetHeader>
@@ -72,9 +73,8 @@ export function SettingsSheet({
             <AboutSettingsSection />
 
             <Button
-              variant="ghost"
-              className="h-10 w-full rounded-full border-none bg-[#f5ebf1] text-[14px] font-medium hover:bg-[#eedee8] dark:bg-[var(--theme-surface)] dark:hover:bg-[var(--theme-surface-strong)]"
-              style={{ color: accentColor }}
+              variant="destructive"
+              className="h-10 w-full rounded-full border border-destructive/35 bg-destructive text-[14px] font-semibold text-destructive-foreground shadow-[0_12px_28px_rgba(220,38,38,0.20),var(--theme-inset-highlight)] transition-all duration-200 hover:bg-destructive/90 active:scale-[0.99] dark:shadow-[0_14px_30px_rgba(239,68,68,0.16),var(--theme-inset-highlight)]"
               onClick={() => {
                 resetAccentColor(DEFAULT_SETTINGS.defaultAccentColor);
                 void updateSettings(DEFAULT_SETTINGS);
@@ -91,6 +91,7 @@ export function SettingsSheet({
 
 function AboutSettingsSection() {
   const copy = useCopy();
+  const { accentColor, accentTextColor } = useAccent();
 
   return (
     <SettingsSection title={copy.settings.about}>
@@ -98,11 +99,32 @@ function AboutSettingsSection() {
         <SettingsItem
           title={copy.settings.productInfo}
           description={copy.settings.brandDescription}
-          last
         >
           <span className="text-[12px] font-medium tracking-[0.02em] text-black/38 dark:text-muted-foreground/80">
             {copy.settings.versionLabel} {__APP_VERSION__}
           </span>
+        </SettingsItem>
+
+        <SettingsItem
+          title={copy.settings.githubProject}
+          description={copy.settings.githubProjectDescription}
+          last
+        >
+          <a
+            href={PROJECT_REPOSITORY_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-9 items-center gap-2.5 rounded-xl border px-3 text-[13px] font-semibold shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(30,50,45,0.10)] transition-all duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98] dark:shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(0,0,0,0.22)]"
+            style={{
+              background: accentColor,
+              borderColor: `color-mix(in srgb, ${accentColor} 72%, transparent)`,
+              color: accentTextColor,
+            }}
+          >
+            <Github className="size-4" />
+            <span>{copy.settings.openGithub}</span>
+            <ExternalLink className="size-3.5 opacity-45" />
+          </a>
         </SettingsItem>
       </SettingsSectionCard>
     </SettingsSection>
@@ -121,7 +143,7 @@ function AppearanceSettingsSection() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <SettingsSelectButton className="max-w-[164px]">
-                <span className="size-4 rounded-full" style={{ background: accentColor }} />
+                <span className="size-4 rounded-full shadow-[0_0_0_2px_rgba(255,255,255,0.42),0_2px_8px_rgba(0,0,0,0.10)] dark:shadow-[0_0_0_2px_rgba(255,255,255,0.18)]" style={{ background: accentColor }} />
                 <span className="font-ornament-2 truncate">{colorSample.name}</span>
                 <ChevronRight className="size-4 opacity-40" />
               </SettingsSelectButton>
@@ -131,13 +153,14 @@ function AppearanceSettingsSection() {
                 <DropdownMenuItem
                   key={color.hex}
                   onSelect={() => setDefaultAccentColor(color.hex)}
-                  className="justify-between"
+                  className="justify-between rounded-xl px-2.5 py-2.5 transition-all duration-200 focus:bg-[color-mix(in_srgb,var(--item-accent)_10%,transparent)]"
+                  style={{ '--item-accent': color.hex } as React.CSSProperties}
                 >
                   <span className="flex min-w-0 items-center gap-2">
-                    <span className="size-4 shrink-0 rounded-full" style={{ background: color.hex }} />
+                    <span className="size-4 shrink-0 rounded-full shadow-[0_0_0_2px_rgba(255,255,255,0.42),0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-[0_0_0_2px_rgba(255,255,255,0.16)]" style={{ background: color.hex }} />
                     <span className="font-ornament-2 truncate">{color.name}</span>
                   </span>
-                  {color.hex === accentColor && <Check className="size-4" />}
+                  {color.hex === accentColor && <Check className="size-4" style={{ color: accentColor }} />}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -297,7 +320,7 @@ function SearchToggleSettingsSection({
           title={copy.settings.searchToggleDisplay}
           description={copy.settings.searchToggleDisplayDescription}
           below={
-            <div className="flex items-center justify-between gap-3 rounded-[14px] bg-white/60 px-3 py-2 dark:bg-[var(--theme-surface)]">
+            <div className="flex items-center justify-between gap-3 rounded-[14px] border border-border/45 bg-muted/30 px-3 py-2 shadow-[var(--theme-inset-highlight)]">
               <span className="text-[12px] font-medium text-muted-foreground">{copy.settings.preview}</span>
               <SearchModeToggle
                 mode={previewMode}
