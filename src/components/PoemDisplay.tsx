@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { DEFAULT_POEM, loadPoem, type PoemLine } from '../lib/jinrishici';
 import { cn } from '../lib/cn';
 import { queryDefaultSearchProvider } from '../lib/defaultSearch';
-import { useCopy } from '../lib/appContext';
+import { useCopy, useSettingsContext } from '../lib/appContext';
 
 interface PoemDisplayProps {
   show: boolean;
@@ -14,9 +14,14 @@ interface PoemDisplayProps {
   onExpandedChange: (expanded: boolean) => void;
 }
 
-function getPoemCredit(poem: PoemLine) {
-  const parts = [poem.origin?.dynasty, poem.origin?.author].filter(Boolean);
-  return parts.join(' · ') || poem.origin?.title || DEFAULT_POEM.origin?.author || '';
+function getPoemCredit(poem: PoemLine, showDynasty: boolean) {
+  const author = poem.origin?.author;
+
+  if (showDynasty && poem.origin?.dynasty && author) {
+    return `${poem.origin.dynasty} · ${author}`;
+  }
+
+  return author || poem.origin?.title || DEFAULT_POEM.origin?.author || '';
 }
 
 function getPoemLines(poem: PoemLine) {
@@ -24,9 +29,9 @@ function getPoemLines(poem: PoemLine) {
   return originContent?.length ? originContent : [poem.content];
 }
 
-function formatPoemText(poem: PoemLine, lines: string[]) {
+function formatPoemText(poem: PoemLine, lines: string[], showDynasty: boolean) {
   const title = poem.origin?.title;
-  const credit = getPoemCredit(poem);
+  const credit = getPoemCredit(poem, showDynasty);
   return [title, credit, ...lines].filter(Boolean).join('\n');
 }
 
@@ -45,6 +50,7 @@ const POEM_ACTION_BUTTON_CLASS =
 
 export function PoemDisplay({ show, expanded, onExpandedChange }: PoemDisplayProps) {
   const copy = useCopy();
+  const { settings } = useSettingsContext();
   const poemCopy = copy.poem;
   const [poem, setPoem] = useState<PoemLine>(DEFAULT_POEM);
   const [showExpandedHead, setShowExpandedHead] = useState(false);
@@ -152,7 +158,7 @@ export function PoemDisplay({ show, expanded, onExpandedChange }: PoemDisplayPro
 
   if (!show) return null;
 
-  const credit = getPoemCredit(poem);
+  const credit = getPoemCredit(poem, settings.showPoemDynasty);
   const poemLines = getPoemLines(poem);
   const visibleHead = showExpandedHead ? 'expanded' : 'collapsed';
   const textWidth = textWidths[visibleHead] || 'auto';
@@ -177,7 +183,7 @@ export function PoemDisplay({ show, expanded, onExpandedChange }: PoemDisplayPro
   };
 
   const handleCopyPoem = async () => {
-    await handleCopyText(formatPoemText(poem, poemLines));
+    await handleCopyText(formatPoemText(poem, poemLines, settings.showPoemDynasty));
   };
 
   const handleSearchPoem = () => {

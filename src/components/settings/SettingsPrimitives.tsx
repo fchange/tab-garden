@@ -58,32 +58,36 @@ export function SettingsItem({
   title,
   description,
   children,
-  below,
+  more,
   last = false,
 }: {
   title: string;
   description?: string;
   children: React.ReactNode;
-  below?: React.ReactNode;
+  more?: React.ReactNode;
   last?: boolean;
 }) {
   return (
     <>
       <div
-        className={cn(
-          'group/item flex min-h-[64px] justify-between gap-3 px-4 transition-colors duration-200 hover:bg-[rgba(128,128,128,0.055)] dark:hover:bg-[rgba(255,255,255,0.045)]',
-          description || below ? 'items-start py-3.5' : 'items-center',
-        )}
+        className="group/item transition-colors duration-200 hover:bg-[rgba(128,128,128,0.055)] dark:hover:bg-[rgba(255,255,255,0.045)]"
       >
-        <span className="min-w-0 flex-1 pr-2">
-          <span className="block text-[14px] font-semibold leading-snug text-[rgba(0,0,0,0.78)] transition-colors duration-200 group-hover/item:text-[rgba(0,0,0,0.64)] dark:text-[rgba(255,255,255,0.82)] dark:group-hover/item:text-[rgba(255,255,255,0.68)]">{title}</span>
-          {description && (
-            <span className="mt-1 block text-[12px] leading-snug text-[rgba(0,0,0,0.40)] dark:text-[rgba(255,255,255,0.38)]">{description}</span>
+        <div
+          className={cn(
+            'flex min-h-[64px] justify-between gap-3 px-4',
+            description || more ? 'items-start py-3.5' : 'items-center',
           )}
-        </span>
-        <div className="shrink-0">{children}</div>
+        >
+          <span className="min-w-0 flex-1 pr-2">
+            <span className="block text-[14px] font-semibold leading-snug text-[rgba(0,0,0,0.78)] transition-colors duration-200 group-hover/item:text-[rgba(0,0,0,0.64)] dark:text-[rgba(255,255,255,0.82)] dark:group-hover/item:text-[rgba(255,255,255,0.68)]">{title}</span>
+            {description && (
+              <span className="mt-1 block text-[12px] leading-snug text-[rgba(0,0,0,0.40)] dark:text-[rgba(255,255,255,0.38)]">{description}</span>
+            )}
+          </span>
+          <div className="shrink-0">{children}</div>
+        </div>
+        {more && <div className="px-4 pb-3.5">{more}</div>}
       </div>
-      {below && <div className="px-4 pb-3.5">{below}</div>}
       {!last && <div className="mx-4 h-px bg-border/55" />}
     </>
   );

@@ -280,18 +280,30 @@ function PoemSettingsSection({ accentColor }: { accentColor: string }) {
   const { settings, updateSettings } = useSettingsContext();
 
   return (
-    <SettingsSection title={copy.settings.features}>
+    <SettingsSection title={copy.settings.poemSettings}>
       <SettingsSectionCard>
         <SettingsItem
           title={copy.settings.showPoem}
           description={copy.settings.showPoemDescription}
-          last
         >
           <SettingsSwitch
             checked={settings.showPoem}
             accentColor={accentColor}
             ariaLabel={copy.settings.showPoem}
             onClick={() => void updateSettings((current) => ({ ...current, showPoem: !current.showPoem }))}
+          />
+        </SettingsItem>
+
+        <SettingsItem
+          title={copy.settings.showPoemDynasty}
+          description={copy.settings.showPoemDynastyDescription}
+          last
+        >
+          <SettingsSwitch
+            checked={settings.showPoemDynasty}
+            accentColor={accentColor}
+            ariaLabel={copy.settings.showPoemDynasty}
+            onClick={() => void updateSettings((current) => ({ ...current, showPoemDynasty: !current.showPoemDynasty }))}
           />
         </SettingsItem>
       </SettingsSectionCard>
@@ -319,7 +331,7 @@ function SearchToggleSettingsSection({
         <SettingsItem
           title={copy.settings.searchToggleDisplay}
           description={copy.settings.searchToggleDisplayDescription}
-          below={
+          more={
             <div className="flex items-center justify-between gap-3 rounded-[14px] border border-border/45 bg-muted/30 px-3 py-2 shadow-[var(--theme-inset-highlight)]">
               <span className="text-[12px] font-medium text-muted-foreground">{copy.settings.preview}</span>
               <SearchModeToggle

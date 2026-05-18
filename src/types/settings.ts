@@ -42,4 +42,5 @@ export interface AppSettings {
   animationEnabled: boolean;
   searchToggleDisplay: SearchToggleDisplay;
   showPoem: boolean;
+  showPoemDynasty: boolean;
 }
