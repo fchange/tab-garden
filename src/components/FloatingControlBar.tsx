@@ -15,7 +15,7 @@ export function FloatingControlBar() {
 
   return (
     <>
-      <div className="group fixed bottom-4 right-5 z-[2] flex items-center gap-0 hover:gap-[6px] p-[10px_14px] rounded-full cursor-pointer border border-transparent hover:border-[rgba(255,255,255,0.35)] dark:hover:border-[rgba(255,255,255,0.07)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:bg-[color-mix(in_srgb,rgba(255,255,255,0.50)_65%,transparent)] dark:hover:bg-[color-mix(in_srgb,rgba(20,25,28,0.55)_65%,transparent)] transition-all duration-300">
+      <div className="group fixed bottom-4 right-5 z-30 flex items-center gap-0 hover:gap-[6px] p-[10px_14px] rounded-full cursor-pointer border border-transparent hover:border-[rgba(255,255,255,0.35)] dark:hover:border-[rgba(255,255,255,0.07)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:bg-[color-mix(in_srgb,rgba(255,255,255,0.50)_65%,transparent)] dark:hover:bg-[color-mix(in_srgb,rgba(20,25,28,0.55)_65%,transparent)] transition-all duration-300">
         <button
           className={controlButtonClass}
           onClick={toggleTheme}
