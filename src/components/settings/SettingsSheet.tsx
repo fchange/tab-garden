@@ -19,14 +19,14 @@ import { DEFAULT_SETTINGS } from '../../lib/storage';
 import type { ThemePreference } from '../../types/settings';
 import {
   SettingsItem,
+  SettingsAnimatedSegmentedControl,
   SettingsSection,
   SettingsSectionCard,
-  SettingsSegmentedControl,
   SettingsSelectButton,
   SettingsSwitch,
 } from './SettingsPrimitives';
 
-const DROPDOWN_CONTENT_CLASS = 'border-border/80 bg-popover/92 text-foreground shadow-[var(--theme-shadow-soft),var(--theme-inset-highlight)] backdrop-blur-xl dark:border-[var(--theme-border-strong)] dark:bg-[var(--theme-popover)]';
+const DROPDOWN_CONTENT_CLASS = 'rounded-xl border-[rgba(34,54,50,0.14)] bg-popover/98 text-foreground shadow-[0_18px_44px_rgba(34,54,50,0.16),var(--theme-inset-highlight)] backdrop-blur-xl dark:border-white/10 dark:bg-[var(--theme-popover)] dark:shadow-[0_18px_44px_rgba(0,0,0,0.36),var(--theme-inset-highlight)]';
 const PROJECT_REPOSITORY_URL = 'https://github.com/fchange/tab-garden';
 
 interface SettingsSheetProps {
@@ -47,16 +47,16 @@ export function SettingsSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="right-4 top-6 bottom-6 flex h-auto w-[min(500px,calc(100vw-32px))] flex-col overflow-hidden rounded-[28px] border border-border/90 bg-popover p-0 shadow-[var(--theme-shadow-elevated),var(--theme-inset-highlight)] dark:border-[var(--theme-border-strong)] dark:bg-[var(--theme-popover)] sm:max-w-none"
+        className="right-4 top-6 bottom-6 flex h-auto w-[min(500px,calc(100vw-32px))] flex-col overflow-hidden rounded-2xl border border-[rgba(34,54,50,0.14)] bg-popover/98 p-0 shadow-[0_26px_80px_rgba(34,54,50,0.20),var(--theme-inset-highlight)] dark:border-white/12 dark:bg-[var(--theme-popover)] dark:shadow-[0_30px_86px_rgba(0,0,0,0.48),var(--theme-inset-highlight)] sm:max-w-none"
       >
-        <SheetHeader className="border-b border-border/55 px-6 py-5 pr-14">
-          <SheetTitle className="text-[20px] font-semibold tracking-tight text-[rgba(0,0,0,0.82)] dark:text-[rgba(255,255,255,0.88)]">
+        <SheetHeader className="border-b border-[rgba(34,54,50,0.11)] bg-white/42 px-6 py-5 pr-14 dark:border-white/10 dark:bg-white/[0.025]">
+          <SheetTitle className="text-[20px] font-semibold tracking-tight text-foreground/90 dark:text-foreground/92">
             {copy.settings.title}
           </SheetTitle>
         </SheetHeader>
 
         <ScrollArea className="min-h-0 flex-1">
-          <div className="space-y-7 px-6 py-5">
+          <div className="space-y-6 px-6 py-5">
             <AppearanceSettingsSection />
 
             <ProtectionSettingsSection accentColor={accentColor} />
@@ -74,7 +74,7 @@ export function SettingsSheet({
 
             <Button
               variant="destructive"
-              className="h-10 w-full rounded-full border border-destructive/35 bg-destructive text-[14px] font-semibold text-destructive-foreground shadow-[0_12px_28px_rgba(220,38,38,0.20),var(--theme-inset-highlight)] transition-all duration-200 hover:bg-destructive/90 active:scale-[0.99] dark:shadow-[0_14px_30px_rgba(239,68,68,0.16),var(--theme-inset-highlight)]"
+              className="h-10 w-full rounded-lg border border-destructive/35 bg-destructive text-[14px] font-semibold text-destructive-foreground shadow-[0_12px_28px_rgba(220,38,38,0.22),var(--theme-inset-highlight)] transition-all duration-200 hover:bg-destructive/90 active:scale-[0.99] dark:shadow-[0_14px_30px_rgba(239,68,68,0.18),var(--theme-inset-highlight)]"
               onClick={() => {
                 resetAccentColor(DEFAULT_SETTINGS.defaultAccentColor);
                 void updateSettings(DEFAULT_SETTINGS);
@@ -100,7 +100,7 @@ function AboutSettingsSection() {
           title={copy.settings.productInfo}
           description={copy.settings.brandDescription}
         >
-          <span className="text-[12px] font-medium tracking-[0.02em] text-black/38 dark:text-muted-foreground/80">
+          <span className="rounded-md border border-[rgba(34,54,50,0.12)] bg-[rgba(34,54,50,0.06)] px-2 py-1 text-[12px] font-medium tracking-[0.02em] text-foreground/62 dark:border-white/10 dark:bg-white/[0.06] dark:text-muted-foreground/86">
             {copy.settings.versionLabel} {__APP_VERSION__}
           </span>
         </SettingsItem>
@@ -114,7 +114,7 @@ function AboutSettingsSection() {
             href={PROJECT_REPOSITORY_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex h-9 items-center gap-2.5 rounded-xl border px-3 text-[13px] font-semibold shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(30,50,45,0.10)] transition-all duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98] dark:shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(0,0,0,0.22)]"
+            className="inline-flex h-9 items-center gap-2.5 rounded-lg border px-3 text-[13px] font-semibold shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(30,50,45,0.14)] transition-all duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98] dark:shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(0,0,0,0.26)]"
             style={{
               background: accentColor,
               borderColor: `color-mix(in srgb, ${accentColor} 72%, transparent)`,
@@ -134,7 +134,7 @@ function AboutSettingsSection() {
 function AppearanceSettingsSection() {
   const copy = useCopy();
   const { settings, updateSettings } = useSettingsContext();
-  const { accentColor, colorSample, setDefaultAccentColor } = useAccent();
+  const { accentColor, accentTextColor, colorSample, setDefaultAccentColor } = useAccent();
 
   return (
     <SettingsSection title={copy.settings.appearance}>
@@ -153,7 +153,7 @@ function AppearanceSettingsSection() {
                 <DropdownMenuItem
                   key={color.hex}
                   onSelect={() => setDefaultAccentColor(color.hex)}
-                  className="justify-between rounded-xl px-2.5 py-2.5 transition-all duration-200 focus:bg-[color-mix(in_srgb,var(--item-accent)_10%,transparent)]"
+                  className="justify-between rounded-lg px-2.5 py-2.5 transition-all duration-200 focus:bg-[color-mix(in_srgb,var(--item-accent)_12%,transparent)]"
                   style={{ '--item-accent': color.hex } as React.CSSProperties}
                 >
                   <span className="flex min-w-0 items-center gap-2">
@@ -171,9 +171,11 @@ function AppearanceSettingsSection() {
         <DefaultViewSettingsItem />
 
         <SettingsItem title={copy.settings.language} last>
-          <SettingsSegmentedControl
+          <SettingsAnimatedSegmentedControl
             value={settings.language}
             accentColor={accentColor}
+            activeTextColor={accentTextColor}
+            layoutId="settings-language-indicator"
             options={[
               { value: 'zh', label: copy.settings.chinese },
               { value: 'en', label: copy.settings.english },
@@ -332,8 +334,14 @@ function SearchToggleSettingsSection({
           title={copy.settings.searchToggleDisplay}
           description={copy.settings.searchToggleDisplayDescription}
           more={
-            <div className="flex items-center justify-between gap-3 rounded-[14px] border border-border/45 bg-muted/30 px-3 py-2 shadow-[var(--theme-inset-highlight)]">
-              <span className="text-[12px] font-medium text-muted-foreground">{copy.settings.preview}</span>
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-[rgba(34,54,50,0.13)] bg-white/62 px-3 py-2 shadow-[0_1px_2px_rgba(34,54,50,0.05),var(--theme-inset-highlight)] dark:border-white/10 dark:bg-white/[0.055]">
+              <div className="flex min-w-0 items-center gap-2">
+                <span
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ background: accentColor }}
+                />
+                <span className="truncate text-[12px] font-semibold text-foreground/72 dark:text-muted-foreground/90">{copy.settings.preview}</span>
+              </div>
               <SearchModeToggle
                 mode={previewMode}
                 display={settings.searchToggleDisplay}
@@ -341,14 +349,17 @@ function SearchToggleSettingsSection({
                 textColor={accentTextColor}
                 labels={copy.search}
                 onToggle={onTogglePreview}
+                variant="preview"
               />
             </div>
           }
           last
         >
-          <SettingsSegmentedControl
+          <SettingsAnimatedSegmentedControl
             value={settings.searchToggleDisplay}
             accentColor={accentColor}
+            activeTextColor={accentTextColor}
+            layoutId="settings-search-toggle-display-indicator"
             options={[
               { value: 'detailed', label: copy.settings.detailed },
               { value: 'compact', label: copy.settings.compact },
