@@ -32,9 +32,15 @@ Tab Garden（枝理 Tab）会接管浏览器的新标签页，把你当前打开
 
 ## 截图
 
-项目目前还没有固定的截图资产。欢迎提交适合 README 的界面截图或演示 GIF。
+<p align="center">
+  <img src="./截图.png" alt="枝理 Tab 界面截图" />
+</p>
 
 ## 安装使用
+
+### 从 Chrome Web Store 安装
+
+[在 Chrome Web Store 安装枝理 Tab](https://chromewebstore.google.com/detail/%E6%9E%9D%E7%90%86-tab/mdgmfopabppoboeoblbjgpdfjiandjlp)
 
 ### 从源码加载
 
