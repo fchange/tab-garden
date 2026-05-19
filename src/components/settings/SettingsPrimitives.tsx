@@ -2,6 +2,7 @@ import * as React from 'react';
 import { motion } from 'motion/react';
 
 import { cn } from '../../lib/cn';
+import { buttonVariants } from '../ui/button';
 
 export function SettingsSwitch({
   checked,
@@ -23,15 +24,15 @@ export function SettingsSwitch({
       onClick={onClick}
       data-state={checked ? 'checked' : 'unchecked'}
       className={cn(
-        'group/switch inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-[rgba(34,54,50,0.12)] bg-[rgba(34,54,50,0.12)] p-0.5 shadow-[var(--theme-inset-highlight)] transition-colors duration-200 ease-out hover:bg-[rgba(34,54,50,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-transparent active:scale-[0.98] dark:border-white/10 dark:bg-white/12 dark:hover:bg-white/16',
-        checked && 'border-transparent shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(30,50,45,0.14)] dark:shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(0,0,0,0.26)]',
+        'relative h-6 w-10 shrink-0 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        checked ? 'shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)]' : 'bg-[rgba(120,128,126,0.28)] dark:bg-[var(--theme-muted)]',
       )}
       style={checked ? { background: accentColor } : undefined}
     >
       <span
         className={cn(
-          'pointer-events-none block size-5 rounded-full bg-white shadow-[0_2px_8px_rgba(30,50,45,0.18)] ring-0 transition-transform duration-200 ease-out group-hover/switch:shadow-[0_3px_10px_rgba(30,50,45,0.22)] dark:bg-[rgba(245,251,249,0.92)] dark:shadow-[0_2px_10px_rgba(0,0,0,0.32)]',
-          checked && 'translate-x-5',
+          'absolute left-0 top-1 size-4 rounded-full bg-white shadow-sm transition-transform duration-200',
+          checked ? 'translate-x-5' : 'translate-x-1',
         )}
       />
     </button>
@@ -220,7 +221,8 @@ export const SettingsSelectButton = React.forwardRef<
     ref={ref}
     type={type}
     className={cn(
-      'inline-flex h-9 items-center gap-2.5 rounded-lg border border-[rgba(34,54,50,0.13)] bg-white/78 px-3 text-[13px] font-medium text-foreground/72 shadow-[0_1px_2px_rgba(34,54,50,0.06),var(--theme-inset-highlight)] transition-all duration-200 hover:border-[rgba(34,54,50,0.20)] hover:bg-white/92 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98] dark:border-white/10 dark:bg-white/[0.07] dark:text-muted-foreground dark:hover:border-white/15 dark:hover:bg-white/[0.10] dark:hover:text-foreground',
+      buttonVariants({ variant: 'ghost' }),
+      'h-9 cursor-pointer gap-2.5 rounded-lg border-[rgba(34,54,50,0.18)] bg-white/72 px-3 text-[13px] font-medium text-foreground/74 shadow-[0_1px_2px_rgba(34,54,50,0.06),var(--theme-inset-highlight)] transition-all duration-200 hover:border-[rgba(34,54,50,0.30)] hover:bg-white/92 hover:text-foreground active:scale-[0.98] dark:border-white/14 dark:bg-white/[0.075] dark:text-muted-foreground dark:hover:border-white/24 dark:hover:bg-white/[0.12] dark:hover:text-foreground [&>svg:last-child]:ml-0.5 [&>svg:last-child]:rounded-md [&>svg:last-child]:bg-[rgba(34,54,50,0.07)] [&>svg:last-child]:p-0.5 [&>svg:last-child]:opacity-55 dark:[&>svg:last-child]:bg-white/[0.08]',
       className,
     )}
     {...props}

@@ -35,14 +35,17 @@ export function AccentColorMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button
-          className="font-ornament-2 inline-flex items-center gap-1.5 text-[16px] font-normal tracking-[0.04em] cursor-pointer px-[12px] py-[4px] rounded-[999px] transition-all duration-300 opacity-85 hover:opacity-100 hover:bg-accent/15 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="h-8 cursor-pointer rounded-full border-none bg-transparent px-3 text-[16px] font-normal tracking-[0.04em] opacity-85 shadow-none hover:bg-accent/15 hover:opacity-100"
           title={copy.accents.choose}
           style={{ color: accentColor }}
         >
-          <span>{colorSample.name}</span>
-          <ChevronDown size={14} strokeWidth={1.8} />
-        </button>
+          <span className="font-ornament-2 leading-[1.15]">{colorSample.name}</span>
+          <ChevronDown className="size-3.5 opacity-70" strokeWidth={1.8} />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"

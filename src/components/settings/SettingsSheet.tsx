@@ -73,8 +73,9 @@ export function SettingsSheet({
             <AboutSettingsSection />
 
             <Button
-              variant="destructive"
-              className="h-10 w-full rounded-lg border border-destructive/35 bg-destructive text-[14px] font-semibold text-destructive-foreground shadow-[0_12px_28px_rgba(220,38,38,0.22),var(--theme-inset-highlight)] transition-all duration-200 hover:bg-destructive/90 active:scale-[0.99] dark:shadow-[0_14px_30px_rgba(239,68,68,0.18),var(--theme-inset-highlight)]"
+              variant="ghost"
+              className="h-10 w-full rounded-lg text-[14px] font-medium shadow-[var(--theme-inset-highlight)] transition-all duration-200 active:scale-[0.99]"
+              style={{ color: accentColor }}
               onClick={() => {
                 resetAccentColor(DEFAULT_SETTINGS.defaultAccentColor);
                 void updateSettings(DEFAULT_SETTINGS);
@@ -110,21 +111,26 @@ function AboutSettingsSection() {
           description={copy.settings.githubProjectDescription}
           last
         >
-          <a
-            href={PROJECT_REPOSITORY_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex h-9 items-center gap-2.5 rounded-lg border px-3 text-[13px] font-semibold shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(30,50,45,0.14)] transition-all duration-200 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98] dark:shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(0,0,0,0.26)]"
+          <Button
+            asChild
+            size="sm"
+            className="h-9 gap-2.5 rounded-lg border px-3 text-[13px] font-semibold shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(30,50,45,0.14)] transition-all duration-200 hover:opacity-90 active:scale-[0.98] dark:shadow-[var(--theme-inset-highlight),0_8px_20px_rgba(0,0,0,0.26)]"
             style={{
               background: accentColor,
               borderColor: `color-mix(in srgb, ${accentColor} 72%, transparent)`,
               color: accentTextColor,
             }}
           >
-            <Github className="size-4" />
-            <span>{copy.settings.openGithub}</span>
-            <ExternalLink className="size-3.5 opacity-45" />
-          </a>
+            <a
+              href={PROJECT_REPOSITORY_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Github className="size-4" />
+              <span>{copy.settings.openGithub}</span>
+              <ExternalLink className="size-3.5 opacity-45" />
+            </a>
+          </Button>
         </SettingsItem>
       </SettingsSectionCard>
     </SettingsSection>
@@ -143,8 +149,8 @@ function AppearanceSettingsSection() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <SettingsSelectButton className="max-w-[164px]">
-                <span className="size-4 rounded-full shadow-[0_0_0_2px_rgba(255,255,255,0.42),0_2px_8px_rgba(0,0,0,0.10)] dark:shadow-[0_0_0_2px_rgba(255,255,255,0.18)]" style={{ background: accentColor }} />
-                <span className="font-ornament-2 truncate">{colorSample.name}</span>
+                <span className="size-4 shrink-0 rounded-full shadow-[0_0_0_2px_rgba(255,255,255,0.42),0_2px_8px_rgba(0,0,0,0.10)] dark:shadow-[0_0_0_2px_rgba(255,255,255,0.18)]" style={{ background: accentColor }} />
+                <span className="min-w-0 truncate font-ornament-2 leading-[1.15]">{colorSample.name}</span>
                 <ChevronRight className="size-4 opacity-40" />
               </SettingsSelectButton>
             </DropdownMenuTrigger>
