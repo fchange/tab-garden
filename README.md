@@ -42,6 +42,10 @@ Tab Garden（枝理 Tab）会接管浏览器的新标签页，把你当前打开
 
 [在 Chrome Web Store 安装枝理 Tab](https://chromewebstore.google.com/detail/%E6%9E%9D%E7%90%86-tab/mdgmfopabppoboeoblbjgpdfjiandjlp)
 
+### 从 Microsoft Edge Add-ons 安装
+
+[在 Microsoft Edge Add-ons 安装枝理 Tab](https://microsoftedge.microsoft.com/addons/detail/%E6%9E%9D%E7%90%86-tab/kiofelfncdejnllgnfklboigccpkbhjo?hl=zh-CN)
+
 ### 从源码加载
 
 ```bash
