@@ -207,4 +207,4 @@ v0.1.6
 
 ## License
 
-PolyForm Strict License 1.0.0. You may use the project for permitted non-commercial purposes, but the license does not grant permission to distribute the software or make modified/new works based on it. See [LICENSE](./LICENSE).
+MIT. See [LICENSE](./LICENSE).
