@@ -43,4 +43,5 @@ export interface AppSettings {
   searchToggleDisplay: SearchToggleDisplay;
   showPoem: boolean;
   showPoemDynasty: boolean;
+  showBookmarksBar: boolean;
 }

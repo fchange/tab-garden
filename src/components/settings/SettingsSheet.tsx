@@ -59,6 +59,8 @@ export function SettingsSheet({
           <div className="space-y-6 px-6 py-5">
             <AppearanceSettingsSection />
 
+            <NewTabSettingsSection accentColor={accentColor} />
+
             <ProtectionSettingsSection accentColor={accentColor} />
 
             <PoemSettingsSection accentColor={accentColor} />
@@ -187,6 +189,30 @@ function AppearanceSettingsSection() {
               { value: 'en', label: copy.settings.english },
             ]}
             onChange={(language) => void updateSettings({ language })}
+          />
+        </SettingsItem>
+      </SettingsSectionCard>
+    </SettingsSection>
+  );
+}
+
+function NewTabSettingsSection({ accentColor }: { accentColor: string }) {
+  const copy = useCopy();
+  const { settings, updateSettings } = useSettingsContext();
+
+  return (
+    <SettingsSection title={copy.settings.newTabPage}>
+      <SettingsSectionCard>
+        <SettingsItem
+          title={copy.settings.bookmarksBar}
+          description={copy.settings.bookmarksBarDescription}
+          last
+        >
+          <SettingsSwitch
+            checked={settings.showBookmarksBar}
+            accentColor={accentColor}
+            ariaLabel={copy.settings.bookmarksBar}
+            onClick={() => void updateSettings((current) => ({ ...current, showBookmarksBar: !current.showBookmarksBar }))}
           />
         </SettingsItem>
       </SettingsSectionCard>

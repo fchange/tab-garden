@@ -3,6 +3,7 @@ import { Toaster } from 'sonner';
 
 import { FloatingControlBar } from './components/FloatingControlBar';
 import { MainPanel } from './components/MainPanel';
+import { BookmarksBar } from './components/BookmarksBar';
 import { PoemDisplay } from './components/PoemDisplay';
 import { WaveBackground } from './components/WaveBackground';
 import {
@@ -45,6 +46,8 @@ function AppShell() {
   return (
     <div className="relative w-full h-full flex flex-col items-center">
       <WaveBackground palette={currentPalette} accentColor={accentColor} paused={!settings.animationEnabled} />
+
+      {settings.showBookmarksBar && <BookmarksBar />}
 
       <MainPanel accentColor={accentColor} poemExpanded={poemExpanded} />
 

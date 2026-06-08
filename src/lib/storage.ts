@@ -17,6 +17,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   searchToggleDisplay: 'detailed',
   showPoem: true,
   showPoemDynasty: false,
+  showBookmarksBar: false,
 };
 
 type StoredSettings = Partial<AppSettings> & {
