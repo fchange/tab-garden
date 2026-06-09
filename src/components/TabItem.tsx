@@ -156,7 +156,8 @@ export function TabItem({
     onSleep?.(tab);
   };
 
-  const handleClick = () => {
+  const handleClick = (e: MouseEvent) => {
+    e.stopPropagation();
     onSwitch?.(tab);
   };
 

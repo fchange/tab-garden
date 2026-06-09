@@ -134,7 +134,7 @@ export function DomainCard({
             <TabItem
               tab={tab}
               accentColor={accentColor ?? domainColor}
-              onSwitch={focused ? onSwitch : undefined}
+              onSwitch={onSwitch}
               onClose={onClose}
               onSleep={onSleep}
               canSleep={canSleepTab?.(tab) ?? false}
