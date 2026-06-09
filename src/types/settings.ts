@@ -4,6 +4,7 @@ export type ThemePreference = 'system' | 'light' | 'dark';
 export type ThemeMode = 'light' | 'dark';
 export type LanguagePreference = 'en' | 'zh';
 export type SearchToggleDisplay = 'compact' | 'detailed';
+export type BookmarksBarStyle = 'standard' | 'borderless';
 
 export interface ColorSample {
   hex: string;
@@ -44,4 +45,5 @@ export interface AppSettings {
   showPoem: boolean;
   showPoemDynasty: boolean;
   showBookmarksBar: boolean;
+  bookmarksBarStyle: BookmarksBarStyle;
 }

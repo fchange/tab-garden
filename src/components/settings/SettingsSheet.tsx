@@ -199,6 +199,7 @@ function AppearanceSettingsSection() {
 function NewTabSettingsSection({ accentColor }: { accentColor: string }) {
   const copy = useCopy();
   const { settings, updateSettings } = useSettingsContext();
+  const { accentTextColor } = useAccent();
 
   return (
     <SettingsSection title={copy.settings.newTabPage}>
@@ -206,13 +207,25 @@ function NewTabSettingsSection({ accentColor }: { accentColor: string }) {
         <SettingsItem
           title={copy.settings.bookmarksBar}
           description={copy.settings.bookmarksBarDescription}
-          last
         >
           <SettingsSwitch
             checked={settings.showBookmarksBar}
             accentColor={accentColor}
             ariaLabel={copy.settings.bookmarksBar}
             onClick={() => void updateSettings((current) => ({ ...current, showBookmarksBar: !current.showBookmarksBar }))}
+          />
+        </SettingsItem>
+        <SettingsItem title={copy.settings.bookmarksBarStyle} last>
+          <SettingsAnimatedSegmentedControl
+            value={settings.bookmarksBarStyle}
+            accentColor={accentColor}
+            activeTextColor={accentTextColor}
+            layoutId="settings-bookmarks-bar-style-indicator"
+            options={[
+              { value: 'standard', label: copy.settings.standardBookmarksBar },
+              { value: 'borderless', label: copy.settings.borderlessBookmarksBar },
+            ]}
+            onChange={(bookmarksBarStyle) => void updateSettings({ bookmarksBarStyle })}
           />
         </SettingsItem>
       </SettingsSectionCard>
