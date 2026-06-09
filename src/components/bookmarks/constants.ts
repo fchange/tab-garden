@@ -1,0 +1,14 @@
+export const BOOKMARK_BAR_INDEX = 0;
+export const BOOKMARK_MENU_MAX_VISIBLE_DEPTH = 5;
+export const BOOKMARK_MENU_PANEL_WIDTH = 220;
+export const BOOKMARK_MENU_ITEM_HEIGHT = 32;
+export const STANDARD_COLLAPSE_DELAY_MS = 120;
+export const BORDERLESS_COLLAPSE_DELAY_MS = 150;
+export const BOOKMARK_MENU_NESTED_OPEN_DELAY_MS = 90;
+export const BOOKMARK_MENU_VIEWPORT_GAP = 12;
+export const BOOKMARK_MENU_MIN_HEIGHT = 180;
+
+export const BOOKMARK_MENU_TRANSITION = {
+  duration: 0.14,
+  ease: [0.22, 1, 0.36, 1],
+} as const;
