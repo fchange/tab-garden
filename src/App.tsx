@@ -47,7 +47,7 @@ function AppShell() {
     <div className="relative w-full h-full flex flex-col items-center">
       <WaveBackground palette={currentPalette} accentColor={accentColor} paused={!settings.animationEnabled} />
 
-      {settings.showBookmarksBar && <BookmarksBar />}
+      {settings.showBookmarksBar && <BookmarksBar style={settings.bookmarksBarStyle} />}
 
       <MainPanel accentColor={accentColor} poemExpanded={poemExpanded} />
 

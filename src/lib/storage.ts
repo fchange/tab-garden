@@ -18,6 +18,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   showPoem: true,
   showPoemDynasty: false,
   showBookmarksBar: false,
+  bookmarksBarStyle: 'standard',
 };
 
 type StoredSettings = Partial<AppSettings> & {
@@ -46,6 +47,10 @@ function normalizeSettings(storedSettings?: StoredSettings): AppSettings {
 
   if (normalizedSettings.searchToggleDisplay !== 'compact' && normalizedSettings.searchToggleDisplay !== 'detailed') {
     normalizedSettings.searchToggleDisplay = DEFAULT_SETTINGS.searchToggleDisplay;
+  }
+
+  if (normalizedSettings.bookmarksBarStyle !== 'standard' && normalizedSettings.bookmarksBarStyle !== 'borderless') {
+    normalizedSettings.bookmarksBarStyle = DEFAULT_SETTINGS.bookmarksBarStyle;
   }
 
   return normalizedSettings;
