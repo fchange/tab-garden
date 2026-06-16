@@ -32,7 +32,7 @@ function BookmarkMenuBar({ bookmarks, variant }: { bookmarks: BookmarkItem[]; va
   } = useBookmarkMenuState(bookmarks, variant);
 
   const barClassName = cn(
-    'relative z-20 flex w-full max-w-full items-center gap-1 px-3 py-1.5',
+    'absolute inset-x-0 top-0 z-20 flex w-full max-w-full items-center gap-1 px-3 py-1.5',
     variant === 'standard'
       ? 'overflow-visible border-b border-white/20 bg-white/22 shadow-[var(--theme-inset-highlight)] backdrop-blur-md dark:border-white/[0.06] dark:bg-black/10'
       : 'h-10 overflow-visible',
