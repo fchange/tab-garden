@@ -72,7 +72,7 @@ export function BookmarkMenuEntry({
     'group flex w-full items-center text-left text-[13px] transition-colors duration-150',
     variant === 'standard'
       ? 'gap-2 px-3 py-1.5 text-foreground/78 hover:bg-foreground/[0.06] dark:text-foreground/82 dark:hover:bg-white/[0.08]'
-      : 'h-8 gap-2 rounded-md px-3 leading-none text-foreground/74 hover:bg-foreground/[0.065] hover:text-foreground/90 dark:text-foreground/78 dark:hover:bg-white/[0.075] dark:hover:text-foreground/92',
+      : 'h-8 gap-2 rounded-md px-3 leading-[1.25] text-foreground/74 hover:bg-foreground/[0.065] hover:text-foreground/90 dark:text-foreground/78 dark:hover:bg-white/[0.075] dark:hover:text-foreground/92',
     active && 'bg-foreground/[0.075] text-foreground/92 dark:bg-white/[0.085]',
   );
   const content = (
