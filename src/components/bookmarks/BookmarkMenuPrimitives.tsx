@@ -77,7 +77,7 @@ export function BookmarkMenuEntry({
   );
   const content = (
     <>
-      <BookmarkItemIcon item={item} />
+      {variant === 'standard' && <BookmarkItemIcon item={item} />}
       <span className="min-w-0 flex-1 truncate">{getBookmarkLabel(item)}</span>
       {children}
     </>
