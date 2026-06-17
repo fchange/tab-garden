@@ -121,6 +121,27 @@ input::placeholder {
   background: color-mix(in srgb, var(--accent, #8fbfaf) 30%, transparent);
 }
 
+.poem-author-seal {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.14em;
+  border-radius: 9px;
+}
+
+.poem-author-seal::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: 0;
+  border-radius: inherit;
+  background: #c20000;
+  opacity: 0.94;
+  filter: url("#poem-seal-edge");
+}
+
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
