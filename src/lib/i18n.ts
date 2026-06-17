@@ -44,6 +44,7 @@ const EN = {
   },
   poem: {
     back: 'Back',
+    shuffle: "Shuffle today's poem",
     copyText: 'Copy poem',
     copied: 'Poem copied.',
     copyFailed: 'Failed to copy poem.',
@@ -197,6 +198,7 @@ const ZH: typeof EN = {
   },
   poem: {
     back: '返回',
+    shuffle: '换一首',
     copyText: '复制文案',
     copied: '诗文已复制。',
     copyFailed: '复制诗文失败。',

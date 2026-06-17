@@ -133,7 +133,7 @@ tools/                    调色和设计辅助工具
 - `src/lib/groups.ts`：搜索过滤、域名分组和窗口分组。
 - `src/lib/url.ts`：URL 标准化、域名提取和特殊页面处理。
 - `src/lib/defaultSearch.ts`：调用浏览器默认搜索服务。
-- `src/lib/jinrishici.ts`：今日诗词 API 请求。
+- `src/lib/jinrishici.ts`：本地每日诗文选择、缓存和兜底逻辑。
 - `src/lib/storage.ts`：扩展环境和预览环境的设置存储适配。
 
 ## 权限与隐私
@@ -149,7 +149,7 @@ tools/                    调色和设计辅助工具
 
 站点访问权限：
 
-- `https://v2.jinrishici.com/*`：当“展示诗文”功能开启时，用于获取诗词内容。
+- 无。诗文数据随扩展内置，“展示诗文”功能不依赖外部诗词接口。
 
 枝理 Tab 不申请 `scripting`、`activeTab`，也不注入 content script；不会读取网页正文、表单内容或页面脚本上下文。
 

@@ -1,9 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { ArrowLeft, Copy, Search } from 'lucide-react';
+import { ArrowLeft, Copy, Search, Shuffle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { toast } from 'sonner';
 
-import { DEFAULT_POEM, loadPoem, type PoemLine } from '../lib/jinrishici';
+import { DEFAULT_POEM, loadDailyPoems, type PoemLine } from '../lib/jinrishici';
 import { cn } from '../lib/cn';
 import { queryDefaultSearchProvider } from '../lib/defaultSearch';
 import { useCopy, useSettingsContext } from '../lib/appContext';
@@ -53,6 +53,8 @@ export function PoemDisplay({ show, expanded, onExpandedChange }: PoemDisplayPro
   const { settings } = useSettingsContext();
   const poemCopy = copy.poem;
   const [poem, setPoem] = useState<PoemLine>(DEFAULT_POEM);
+  const [dailyPoems, setDailyPoems] = useState<PoemLine[]>([]);
+  const [dailyPoemIndex, setDailyPoemIndex] = useState(0);
   const [showExpandedHead, setShowExpandedHead] = useState(false);
   const [poemLifted, setPoemLifted] = useState(false);
   const collapsedTextMeasureRef = useRef<HTMLSpanElement>(null);
@@ -67,14 +69,19 @@ export function PoemDisplay({ show, expanded, onExpandedChange }: PoemDisplayPro
 
     let cancelled = false;
 
-    loadPoem()
-      .then((nextPoem) => {
+    loadDailyPoems()
+      .then((nextPoems) => {
         if (!cancelled) {
-          setPoem(nextPoem);
+          const firstPoem = nextPoems[0] || DEFAULT_POEM;
+          setDailyPoems(nextPoems);
+          setDailyPoemIndex(0);
+          setPoem(firstPoem);
         }
       })
       .catch(() => {
         if (!cancelled) {
+          setDailyPoems([]);
+          setDailyPoemIndex(0);
           setPoem(DEFAULT_POEM);
         }
       });
@@ -190,6 +197,18 @@ export function PoemDisplay({ show, expanded, onExpandedChange }: PoemDisplayPro
     void queryDefaultSearchProvider(getPoemSearchQuery(poem));
   };
 
+  const handleNextDailyPoem = () => {
+    if (dailyPoems.length <= 1) return;
+
+    setDailyPoemIndex((currentIndex) => {
+      const nextIndex = (currentIndex + 1) % dailyPoems.length;
+      setPoem(dailyPoems[nextIndex]);
+      return nextIndex;
+    });
+  };
+
+  const showDailyPoemShuffle = dailyPoems.length > 1;
+
   return (
     <motion.div
       className={cn(
@@ -290,6 +309,21 @@ export function PoemDisplay({ show, expanded, onExpandedChange }: PoemDisplayPro
               >
                 <ArrowLeft size={15} strokeWidth={1.9} />
               </button>
+              {showDailyPoemShuffle && (
+                <button
+                  type="button"
+                  className={POEM_ACTION_BUTTON_CLASS}
+                  title={poemCopy.shuffle}
+                  aria-label={poemCopy.shuffle}
+                  tabIndex={poemLifted ? 0 : -1}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleNextDailyPoem();
+                  }}
+                >
+                  <Shuffle size={15} strokeWidth={1.9} />
+                </button>
+              )}
             </span>
           </span>
           <span
