@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { getBaseDomain, getDisplayUrl } from '../src/lib/url.ts';
+import { getBaseDomain, getChromeFaviconUrl, getDisplayUrl } from '../src/lib/url.ts';
 
 describe('getBaseDomain', () => {
   it('keeps the registrable domain for multi-part public suffixes', () => {
@@ -23,5 +23,30 @@ describe('getBaseDomain', () => {
     assert.equal(getBaseDomain('about:blank', '未命名页面', '空白页'), '空白页');
     assert.equal(getDisplayUrl('about:blank', '空白页'), '空白页');
     assert.equal(getDisplayUrl('chrome://extensions/', '空白页'), 'chrome://extensions/');
+  });
+});
+
+describe('getChromeFaviconUrl', () => {
+  it('stays empty outside an extension runtime', () => {
+    assert.equal(getChromeFaviconUrl('https://example.com/page'), '');
+  });
+
+  it('builds Chrome extension favicon URLs when runtime support exists', () => {
+    const originalChrome = globalThis.chrome;
+    globalThis.chrome = {
+      runtime: {
+        getURL: (path: string) => `chrome-extension://extension-id${path}`,
+      },
+    } as typeof chrome;
+
+    try {
+      assert.equal(
+        getChromeFaviconUrl('https://example.com/page?q=1', 48),
+        'chrome-extension://extension-id/_favicon/?pageUrl=https%3A%2F%2Fexample.com%2Fpage%3Fq%3D1&size=48',
+      );
+      assert.equal(getChromeFaviconUrl('chrome://extensions/'), '');
+    } finally {
+      globalThis.chrome = originalChrome;
+    }
   });
 });

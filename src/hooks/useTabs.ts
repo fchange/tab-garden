@@ -29,6 +29,7 @@ export function useTabs(settings: AppSettings, copy: AppCopy) {
   const [usingMockData, setUsingMockData] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const refreshTimerRef = useRef<number | null>(null);
+  const followUpRefreshTimersRef = useRef<number[]>([]);
 
   const load = useCallback(async () => {
     try {
@@ -55,6 +56,13 @@ export function useTabs(settings: AppSettings, copy: AppCopy) {
   useEffect(() => {
     if (!hasChromeTabEvents()) return;
 
+    const clearFollowUpRefreshes = () => {
+      for (const timer of followUpRefreshTimersRef.current) {
+        window.clearTimeout(timer);
+      }
+      followUpRefreshTimersRef.current = [];
+    };
+
     const scheduleRefresh = () => {
       if (refreshTimerRef.current !== null) {
         window.clearTimeout(refreshTimerRef.current);
@@ -62,18 +70,44 @@ export function useTabs(settings: AppSettings, copy: AppCopy) {
       refreshTimerRef.current = window.setTimeout(() => handleRefresh(), 120);
     };
 
-    chrome.tabs.onCreated.addListener(scheduleRefresh);
+    const scheduleFollowUpRefreshes = (delays: number[]) => {
+      for (const delay of delays) {
+        const timer = window.setTimeout(() => {
+          followUpRefreshTimersRef.current = followUpRefreshTimersRef.current.filter((item) => item !== timer);
+          handleRefresh();
+        }, delay);
+        followUpRefreshTimersRef.current.push(timer);
+      }
+    };
+
+    const handleCreated = () => {
+      scheduleRefresh();
+      scheduleFollowUpRefreshes([600, 1_600]);
+    };
+
+    const handleUpdated = (_tabId: number, changeInfo: chrome.tabs.OnUpdatedInfo) => {
+      const mayAffectFavicon = !!changeInfo.url || changeInfo.status === 'complete' || !!changeInfo.favIconUrl;
+      if (!mayAffectFavicon) return;
+
+      scheduleRefresh();
+      if (changeInfo.url || changeInfo.status === 'complete') {
+        scheduleFollowUpRefreshes([600, 1_600]);
+      }
+    };
+
+    chrome.tabs.onCreated.addListener(handleCreated);
     chrome.tabs.onRemoved.addListener(scheduleRefresh);
-    chrome.tabs.onUpdated.addListener(scheduleRefresh);
+    chrome.tabs.onUpdated.addListener(handleUpdated);
     chrome.tabs.onActivated.addListener(scheduleRefresh);
 
     return () => {
       if (refreshTimerRef.current !== null) {
         window.clearTimeout(refreshTimerRef.current);
       }
-      chrome.tabs.onCreated.removeListener(scheduleRefresh);
+      clearFollowUpRefreshes();
+      chrome.tabs.onCreated.removeListener(handleCreated);
       chrome.tabs.onRemoved.removeListener(scheduleRefresh);
-      chrome.tabs.onUpdated.removeListener(scheduleRefresh);
+      chrome.tabs.onUpdated.removeListener(handleUpdated);
       chrome.tabs.onActivated.removeListener(scheduleRefresh);
     };
   }, [handleRefresh]);

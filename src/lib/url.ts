@@ -111,10 +111,23 @@ export function getDisplayUrl(url?: string | null, blankPage = DEFAULT_BLANK_PAG
   }
 }
 
-export function getFaviconUrl(domain: string, existingFavicon?: string): string {
+export function getChromeFaviconUrl(pageUrl?: string | null, size = 32): string {
+  if (!pageUrl || isSpecialUrl(pageUrl)) return '';
+  if (typeof chrome === 'undefined' || !chrome.runtime?.getURL) return '';
+
+  try {
+    const faviconUrl = new URL(chrome.runtime.getURL('/_favicon/'));
+    faviconUrl.searchParams.set('pageUrl', pageUrl);
+    faviconUrl.searchParams.set('size', String(size));
+    return faviconUrl.toString();
+  } catch {
+    return '';
+  }
+}
+
+export function getFaviconUrl(pageUrl: string, existingFavicon?: string): string {
   if (existingFavicon) return existingFavicon;
-  if (!domain) return '';
-  return `https://api.iowen.cn/favicon/${domain}.png`;
+  return getChromeFaviconUrl(pageUrl);
 }
 
 const domainColors = [

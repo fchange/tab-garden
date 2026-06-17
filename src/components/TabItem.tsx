@@ -1,4 +1,4 @@
-import { useMemo, useState, type CSSProperties, type MouseEvent } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties, type MouseEvent } from 'react';
 import { Moon, CirclePlus, X } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { cn } from '../lib/cn';
@@ -20,10 +20,9 @@ interface TabItemProps {
 
 function tabFaviconUrl(tab: BrowserTab): string {
   if (!tab.url) return '';
-  const domain = getBaseDomain(tab.url);
   if (tab.favIconUrl) return tab.favIconUrl;
-  if (!domain || isSpecialUrl(tab.url)) return '';
-  return getFaviconUrl(domain);
+  if (isSpecialUrl(tab.url)) return '';
+  return getFaviconUrl(tab.url);
 }
 
 interface TabFaviconProps {
@@ -35,20 +34,26 @@ interface TabFaviconProps {
 }
 
 function TabFavicon({ faviconUrl, domain, isBlankPage, audible, compact }: TabFaviconProps) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const showImage = !!faviconUrl && !imageFailed;
   const fallbackLabel = domain[0]?.toUpperCase() || '?';
   const fallbackIcon = isBlankPage ? <CirclePlus size={compact ? 11 : 14} strokeWidth={1.9} /> : fallbackLabel;
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [faviconUrl]);
 
   if (compact) {
     return (
       <div className="relative shrink-0 size-4 flex items-center justify-center">
-        {faviconUrl ? (
+        {showImage ? (
           <img
             src={faviconUrl}
             alt=""
             width={16}
             height={16}
             className="rounded-[3px] shrink-0 object-contain"
-            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            onError={() => setImageFailed(true)}
           />
         ) : (
           <span className="size-4 rounded-[4px] flex items-center justify-center text-[10px] font-semibold bg-[rgba(128,128,128,0.10)] text-[rgba(0,0,0,0.45)] dark:text-[rgba(255,255,255,0.35)]">
@@ -61,14 +66,14 @@ function TabFavicon({ faviconUrl, domain, isBlankPage, audible, compact }: TabFa
 
   return (
     <div className="relative shrink-0 size-[26px] flex items-center justify-center">
-      {faviconUrl ? (
+      {showImage ? (
         <img
           src={faviconUrl}
           alt=""
           width={22}
           height={22}
           className="rounded object-contain"
-          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          onError={() => setImageFailed(true)}
         />
       ) : (
         <span className="size-[22px] rounded flex items-center justify-center text-[13px] font-semibold bg-[rgba(128,128,128,0.10)] text-[rgba(0,0,0,0.45)] dark:text-[rgba(255,255,255,0.35)]">

@@ -1,4 +1,5 @@
 import type { BookmarkItem } from './types';
+import { getChromeFaviconUrl } from '../../lib/url';
 import {
   BOOKMARK_MENU_ITEM_HEIGHT,
   BOOKMARK_MENU_MAX_VISIBLE_DEPTH,
@@ -7,12 +8,7 @@ import {
 } from './constants';
 
 export function getFaviconUrl(url: string): string {
-  try {
-    const u = new URL(url);
-    return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=32`;
-  } catch {
-    return '';
-  }
+  return getChromeFaviconUrl(url);
 }
 
 export function getBookmarkLabel(item: BookmarkItem): string {
