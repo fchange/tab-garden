@@ -197,12 +197,28 @@ pnpm test
 4. 提交版本变更。
 5. 创建 annotated tag 并推送。
 
-GitHub Release 页面正文沿用 annotated tag message，保持极简题记格式；不要在 GitHub Release body 里重复写完整 changelog。tag message 示例：
+GitHub Release 页面上的题记来自 **annotated tag message**，不是 GitHub Release body。Release body 保持为空，不要在 GitHub Release body 里重复写完整 changelog。tag message 示例：
 
 ```txt
 v0.1.6
 
 何时一樽酒，重与细论文。
+```
+
+推荐创建方式：
+
+```bash
+git tag -a v0.1.9 -m $'v0.1.9\n\n行到水穷处，坐看云起时。'
+git push origin main
+git push origin v0.1.9
+```
+
+如果题记写错了，修正 annotated tag 后强制更新远端 tag：
+
+```bash
+git tag -d v0.1.9
+git tag -a v0.1.9 <release-commit> -m $'v0.1.9\n\n行到水穷处，坐看云起时。'
+git push origin v0.1.9 --force
 ```
 
 ## License
