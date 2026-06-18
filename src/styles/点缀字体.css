@@ -1,11 +1,19 @@
 @import url("https://fontsapi.zeoseven.com/256/main/result.css");
 @import url("https://fontsapi.zeoseven.com/437/main/result.css");
+@import url("https://fontsapi.zeoseven.com/292/main/result.css");
 
 :root {
-  --font-family-base: "SF Pro Display", "SF Pro Text", "PingFang SC", "PingFang TC", "Hiragino Sans GB", "Segoe UI Variable", "Segoe UI", "Helvetica Neue", -apple-system, BlinkMacSystemFont, system-ui, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-  --font-family-ornament-1: "Huiwen-mincho", "PingFang SC", serif;
-  --font-family-ornament-2: "Huiwen-MinchoGBK", "PingFang SC", serif;
+    --font-family-base:
+        "SF Pro Display", "SF Pro Text", "PingFang SC", "PingFang TC",
+        "Hiragino Sans GB", "Segoe UI Variable", "Segoe UI", "Helvetica Neue",
+        -apple-system, BlinkMacSystemFont, system-ui, "Microsoft YaHei",
+        "Noto Sans CJK SC", sans-serif;
+    --font-family-ornament-1: "Huiwen-mincho", "PingFang SC", serif;
+    /*--font-family-ornament-2: "Huiwen-MinchoGBK", "PingFang SC", serif;*/
+    --font-family-ornament-2: "LXGW WenKai", "PingFang SC", serif;
 
-  font-family: var(--font-family-base);
-  font-feature-settings: "liga" 1, "kern" 1;
+    font-family: var(--font-family-base);
+    font-feature-settings:
+        "liga" 1,
+        "kern" 1;
 }

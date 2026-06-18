@@ -12,11 +12,10 @@ import { TabContentArea } from './TabContentArea';
 import { TabResults } from './TabResults';
 
 interface MainPanelProps {
-  accentColor: string;
   poemExpanded: boolean;
 }
 
-export function MainPanel({ accentColor, poemExpanded }: MainPanelProps) {
+export function MainPanel({ poemExpanded }: MainPanelProps) {
   const { ready, settings } = useSettingsContext();
   const copy = useCopy();
   const [view, setView] = useState<ViewMode>('all');
@@ -66,8 +65,6 @@ export function MainPanel({ accentColor, poemExpanded }: MainPanelProps) {
       transition={{ duration: 0.74, delay: poemExpanded ? 0.12 : 0, ease: [0.22, 1, 0.36, 1] }}
       style={{ transformOrigin: 'top center' }}
     >
-      <div className="h-[3px] w-full transition-[background] duration-500" style={{ background: accentColor }} />
-
       <div className="px-6 pt-5 pb-5 min-w-0 max-[720px]:p-4">
         <AppHeader
           openTabCount={tabState.tabs.length}

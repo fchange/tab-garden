@@ -44,6 +44,7 @@ export function TabResults({
       <EmptyState
         title={query.trim() ? copy.empty.noMatches : copy.empty.noTabs}
         description={query.trim() ? copy.empty.noMatchesDescription : copy.empty.noTabsDescription}
+        descriptionClassName={query.trim() ? undefined : 'font-ornament-2'}
       />
     );
   }

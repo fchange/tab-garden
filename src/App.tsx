@@ -49,7 +49,7 @@ function AppShell() {
 
       {settings.showBookmarksBar && <BookmarksBar style={settings.bookmarksBarStyle} />}
 
-      <MainPanel accentColor={accentColor} poemExpanded={poemExpanded} />
+      <MainPanel poemExpanded={poemExpanded} />
 
       <PoemDisplay show={settings.showPoem} expanded={poemExpanded} onExpandedChange={setPoemExpanded} />
 
