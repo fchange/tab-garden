@@ -43,6 +43,7 @@ export interface AppSettings {
   animationEnabled: boolean;
   searchToggleDisplay: SearchToggleDisplay;
   showPoem: boolean;
+  openPoemExpandedByDefault: boolean;
   showPoemDynasty: boolean;
   showBookmarksBar: boolean;
   bookmarksBarStyle: BookmarksBarStyle;

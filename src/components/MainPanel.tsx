@@ -62,6 +62,7 @@ export function MainPanel({ poemExpanded }: MainPanelProps) {
         scale: poemExpanded ? 0.52 : 1,
         opacity: 1,
       }}
+      initial={false}
       transition={{ duration: 0.74, delay: poemExpanded ? 0.12 : 0, ease: [0.22, 1, 0.36, 1] }}
       style={{ transformOrigin: 'top center' }}
     >

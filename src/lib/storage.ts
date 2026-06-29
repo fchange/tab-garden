@@ -16,6 +16,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   animationEnabled: true,
   searchToggleDisplay: 'detailed',
   showPoem: true,
+  openPoemExpandedByDefault: false,
   showPoemDynasty: false,
   showBookmarksBar: false,
   bookmarksBarStyle: 'standard',

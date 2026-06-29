@@ -31,29 +31,19 @@ export default function App() {
 }
 
 function AppShell() {
-  const { settings } = useSettingsContext();
+  const { ready, settings } = useSettingsContext();
   const { currentPalette, isDarkMode } = useTheme();
   const { accentColor } = useAccent();
-
-  const [poemExpanded, setPoemExpanded] = useState(false);
-
-  useEffect(() => {
-    if (!settings.showPoem) {
-      setPoemExpanded(false);
-    }
-  }, [settings.showPoem]);
 
   return (
     <div className="relative w-full h-full flex flex-col items-center">
       <WaveBackground palette={currentPalette} accentColor={accentColor} paused={!settings.animationEnabled} />
 
-      {settings.showBookmarksBar && <BookmarksBar style={settings.bookmarksBarStyle} />}
-
-      <MainPanel poemExpanded={poemExpanded} />
-
-      <PoemDisplay show={settings.showPoem} expanded={poemExpanded} onExpandedChange={setPoemExpanded} />
-
-      <FloatingControlBar />
+      {ready && (
+        <ReadyAppContent
+          initialPoemExpanded={settings.showPoem && settings.openPoemExpandedByDefault}
+        />
+      )}
 
       <Toaster
         position="bottom-center"
@@ -67,5 +57,33 @@ function AppShell() {
         }}
       />
     </div>
+  );
+}
+
+function ReadyAppContent({ initialPoemExpanded }: { initialPoemExpanded: boolean }) {
+  const { settings } = useSettingsContext();
+  const [poemExpanded, setPoemExpanded] = useState(initialPoemExpanded);
+
+  useEffect(() => {
+    if (!settings.showPoem) {
+      setPoemExpanded(false);
+      return;
+    }
+
+    if (settings.openPoemExpandedByDefault) {
+      setPoemExpanded(true);
+    }
+  }, [settings.openPoemExpandedByDefault, settings.showPoem]);
+
+  return (
+    <>
+      {settings.showBookmarksBar && <BookmarksBar style={settings.bookmarksBarStyle} />}
+
+      <MainPanel poemExpanded={poemExpanded} />
+
+      <PoemDisplay show={settings.showPoem} expanded={poemExpanded} onExpandedChange={setPoemExpanded} />
+
+      <FloatingControlBar />
+    </>
   );
 }

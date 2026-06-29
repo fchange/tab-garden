@@ -344,13 +344,31 @@ function PoemSettingsSection({ accentColor }: { accentColor: string }) {
         <SettingsItem
           title={copy.settings.showPoemDynasty}
           description={copy.settings.showPoemDynastyDescription}
-          last
         >
           <SettingsSwitch
             checked={settings.showPoemDynasty}
             accentColor={accentColor}
             ariaLabel={copy.settings.showPoemDynasty}
             onClick={() => void updateSettings((current) => ({ ...current, showPoemDynasty: !current.showPoemDynasty }))}
+          />
+        </SettingsItem>
+
+        <SettingsItem
+          title={copy.settings.openPoemExpandedByDefault}
+          description={copy.settings.openPoemExpandedByDefaultDescription}
+          last
+        >
+          <SettingsSwitch
+            checked={settings.openPoemExpandedByDefault}
+            accentColor={accentColor}
+            ariaLabel={copy.settings.openPoemExpandedByDefault}
+            onClick={() =>
+              void updateSettings((current) => ({
+                ...current,
+                openPoemExpandedByDefault: !current.openPoemExpandedByDefault,
+                showPoem: current.showPoem || !current.openPoemExpandedByDefault,
+              }))
+            }
           />
         </SettingsItem>
       </SettingsSectionCard>

@@ -62,8 +62,8 @@ export function PoemDisplay({
   const [poem, setPoem] = useState<PoemLine>(DEFAULT_POEM);
   const [dailyPoems, setDailyPoems] = useState<PoemLine[]>([]);
   const [dailyPoemIndex, setDailyPoemIndex] = useState(0);
-  const [showExpandedHead, setShowExpandedHead] = useState(false);
-  const [poemLifted, setPoemLifted] = useState(false);
+  const [showExpandedHead, setShowExpandedHead] = useState(expanded);
+  const [poemLifted, setPoemLifted] = useState(expanded);
   const collapsedTextMeasureRef = useRef<HTMLSpanElement>(null);
   const expandedTextMeasureRef = useRef<HTMLSpanElement>(null);
   const titleViewportRef = useRef<HTMLSpanElement>(null);
@@ -299,12 +299,14 @@ export function PoemDisplay({
             >
               <motion.span
                 className="relative inline-grid min-w-0 max-w-full place-items-center overflow-hidden"
+                initial={false}
                 animate={{ width: textWidth }}
                 transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
               >
                 <motion.span
                   className="col-start-1 row-start-1 inline-block max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
                   aria-hidden="true"
+                  initial={false}
                   animate={{
                     opacity: showExpandedHead ? 0 : 1,
                     x: showExpandedHead ? -14 : 0,
@@ -316,6 +318,7 @@ export function PoemDisplay({
                 <motion.span
                   className="col-start-1 row-start-1 inline-block max-w-full overflow-hidden text-ellipsis whitespace-nowrap"
                   aria-hidden="true"
+                  initial={false}
                   animate={{
                     opacity: showExpandedHead ? 1 : 0,
                     x: showExpandedHead ? 0 : 14,
@@ -330,6 +333,7 @@ export function PoemDisplay({
           <motion.span
             className="absolute left-1/2 top-0 inline-flex h-full items-center gap-2"
             aria-hidden={!credit && !poemLifted}
+            initial={false}
             animate={{
               x: trailX,
               y: 0,
@@ -339,6 +343,7 @@ export function PoemDisplay({
             {credit && (
               <motion.span
                 className="poem-author-seal pointer-events-none whitespace-nowrap font-ornament-1 text-[12px] leading-none tracking-[-0.08em] text-white/96 shadow-[0_10px_24px_rgba(194,0,0,0.18)] max-[720px]:text-[11px]"
+                initial={false}
                 animate={{
                   opacity: 1,
                   scale: showExpandedHead ? 1 : 0.92,
@@ -449,6 +454,7 @@ export function PoemDisplay({
               "mt-[0.72em] cursor-pointer overflow-y-auto pb-[clamp(18px,3vw,34px)] pointer-events-auto max-[720px]:mt-[0.56em]",
           )}
           aria-hidden={!poemLifted}
+          initial={false}
           onClick={() => {
             if (poemLifted) onExpandedChange(false);
           }}
