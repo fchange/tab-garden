@@ -75,6 +75,78 @@
   --theme-shadow-elevated: 0 30px 80px rgba(111, 131, 126, 0.16);
   --theme-inset-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.38);
   --radius: 0.75rem;
+
+  /*
+   * Fluid layout / type scale (single source of truth)
+   *
+   * Static styles consume these via className `var(--*)`.
+   * Motion y / maxHeight MUST NOT embed `var()` inside animate calc() —
+   * Motion leaves residual offsets. Components resolve tokens to px via
+   * `readCssVarPx` + `useTokenDrivenMotionY` instead (see those modules).
+   *
+   * Widths: floor at the original desktop caps (980 / 1080) so 1280–1440
+   * stays roomy; only grow past that on larger viewports (up to max).
+   */
+  --layout-gutter: clamp(16px, 2.4vw, 48px);
+  --layout-panel-width: min(
+    clamp(980px, 52vw, 1200px),
+    calc(100vw - (2 * var(--layout-gutter)))
+  );
+  --layout-panel-top: clamp(28px, 7.2vh, 150px);
+  /* JS: MainPanel exit translateY gap (with panel height) */
+  --layout-panel-exit-gap: clamp(80px, 14vh, 220px);
+  /* Chrome above tab lists: header + search + view toggle + panel top */
+  --layout-chrome-offset: clamp(300px, 34vh, 460px);
+  --layout-content-max-height: calc(100dvh - var(--layout-chrome-offset));
+
+  --poem-width: min(
+    clamp(1080px, 56vw, 1280px),
+    calc(100vw - (2 * var(--layout-gutter)))
+  );
+  --poem-head-max-width: min(92vw, 1280px);
+  --poem-dock-inset: clamp(48px, 5.2vh, 72px);
+  --poem-text: clamp(1.5rem, 1.05rem + 0.9vw, 2.625rem);
+  --poem-text-compact: clamp(1.375rem, 0.95rem + 0.75vw, 2.25rem);
+  --poem-text-extra-compact: clamp(1.25rem, 0.9rem + 0.65vw, 2rem);
+  --poem-seal: clamp(0.6875rem, 0.55rem + 0.28vw, 0.9375rem);
+  /* JS: PoemDisplay lift translateY inset from viewport top when expanded */
+  --poem-lift-inset: clamp(220px, 30vh, 440px);
+  /* JS: PoemDisplay body maxHeight while expanded */
+  --poem-body-max-height: calc(100dvh - clamp(300px, 38vh, 520px));
+  --poem-body-pad-x: clamp(16px, 4vw, 56px);
+  --poem-body-pad-bottom: clamp(18px, 3vw, 40px);
+}
+
+/* Tall viewports: more top offset + higher poem lift (read live by JS on expand/resize) */
+@media (min-height: 900px) {
+  :root {
+    --layout-panel-top: clamp(48px, 9vh, 160px);
+    --poem-lift-inset: clamp(240px, 28vh, 460px);
+    --layout-panel-exit-gap: clamp(96px, 14vh, 240px);
+  }
+}
+
+@media (min-height: 1200px) {
+  :root {
+    --layout-panel-top: clamp(64px, 11vh, 180px);
+    --poem-lift-inset: clamp(260px, 26vh, 480px);
+    --layout-chrome-offset: clamp(320px, 30vh, 500px);
+    --layout-panel-exit-gap: clamp(110px, 14vh, 260px);
+  }
+}
+
+/* Narrow / compact windows keep tighter gutters */
+@media (max-width: 720px) {
+  :root {
+    --layout-gutter: 16px;
+    --layout-panel-width: calc(100vw - 32px);
+    --layout-panel-top: 16px;
+    --poem-width: calc(100vw - 32px);
+    --poem-text: clamp(1.375rem, 4.2vw, 1.75rem);
+    --poem-text-compact: clamp(1.25rem, 3.8vw, 1.5rem);
+    --poem-text-extra-compact: clamp(1.125rem, 3.4vw, 1.375rem);
+    --poem-seal: 0.6875rem;
+  }
 }
 
 [data-theme="dark"] {

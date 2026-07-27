@@ -62,7 +62,7 @@ export function VirtualTabList({
   return (
     <div
       ref={viewportRef}
-      className="min-w-0 max-h-[calc(100vh-330px)] overflow-y-auto overflow-x-hidden pb-2"
+      className="min-w-0 max-h-[var(--layout-content-max-height)] overflow-y-auto overflow-x-hidden pb-2"
       onScroll={handleScroll}
     >
       <div className="relative min-w-0" style={{ height: tabs.length * ITEM_HEIGHT }}>

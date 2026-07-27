@@ -1,11 +1,13 @@
-import { useDeferredValue, useEffect, useState } from 'react';
+import { useDeferredValue, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 
+import { useTokenDrivenMotionY } from '../hooks/useTokenDrivenMotionY';
 import { useTabActions } from '../hooks/useTabActions';
 import { useTabs } from '../hooks/useTabs';
 import { useTabViewModel } from '../hooks/useTabViewModel';
 import { useCopy, useSettingsContext } from '../lib/appContext';
 import { cn } from '../lib/cn';
+import { readCssVarPx } from '../lib/cssLength';
 import type { ViewMode } from '../types/tab';
 import { AppHeader } from './AppHeader';
 import { TabContentArea } from './TabContentArea';
@@ -18,6 +20,7 @@ interface MainPanelProps {
 export function MainPanel({ poemExpanded }: MainPanelProps) {
   const { ready, settings } = useSettingsContext();
   const copy = useCopy();
+  const panelRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<ViewMode>('all');
   const [query, setQuery] = useState('');
   const deferredQuery = useDeferredValue(query);
@@ -38,6 +41,17 @@ export function MainPanel({ poemExpanded }: MainPanelProps) {
     query: deferredQuery,
   });
 
+  // y from tokens via MotionValue — see useTokenDrivenMotionY contract.
+  const exitY = useTokenDrivenMotionY({
+    active: poemExpanded,
+    enterDelay: 0.12,
+    getActiveY: () => {
+      const height = panelRef.current?.offsetHeight ?? 0;
+      const gap = readCssVarPx('--layout-panel-exit-gap');
+      return -(height + gap);
+    },
+  });
+
   useEffect(() => {
     if (ready) {
       setView(settings.defaultView);
@@ -53,18 +67,18 @@ export function MainPanel({ poemExpanded }: MainPanelProps) {
 
   return (
     <motion.div
+      ref={panelRef}
       className={cn(
-        'relative z-10 w-[min(980px,calc(100vw-48px))] mt-[clamp(28px,5vh,60px)] rounded-[20px] overflow-hidden bg-card/65 backdrop-blur-sm backdrop-saturate-150 border border-border/90 shadow-[var(--theme-shadow-soft)] transition-[background,border-color,box-shadow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] max-[720px]:w-[calc(100vw-32px)] max-[720px]:mt-4',
+        'relative z-10 w-[var(--layout-panel-width)] mt-[var(--layout-panel-top)] rounded-[20px] overflow-hidden bg-card/65 backdrop-blur-sm backdrop-saturate-150 border border-border/90 shadow-[var(--theme-shadow-soft)] transition-[background,border-color,box-shadow,width,margin] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]',
         poemExpanded && 'pointer-events-none',
       )}
+      style={{ y: exitY, transformOrigin: 'top center' }}
       animate={{
-        y: poemExpanded ? 'calc(-100% - clamp(80px, 14vh, 150px))' : 0,
         scale: poemExpanded ? 0.52 : 1,
         opacity: 1,
       }}
       initial={false}
       transition={{ duration: 0.74, delay: poemExpanded ? 0.12 : 0, ease: [0.22, 1, 0.36, 1] }}
-      style={{ transformOrigin: 'top center' }}
     >
       <div className="px-6 pt-5 pb-5 min-w-0 max-[720px]:p-4">
         <AppHeader

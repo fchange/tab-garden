@@ -1,10 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowLeft, Copy, Search, Shuffle } from "lucide-react";
-import { motion } from "motion/react";
+import { animate, motion, useMotionValue } from "motion/react";
 import { toast } from "sonner";
 
+import { useTokenDrivenMotionY } from "../hooks/useTokenDrivenMotionY";
 import { DEFAULT_POEM, loadDailyPoems, type PoemLine } from "../lib/jinrishici";
 import { cn } from "../lib/cn";
+import { readCssVarPx } from "../lib/cssLength";
 import { queryDefaultSearchProvider } from "../lib/defaultSearch";
 import { useCopy, useSettingsContext } from "../lib/appContext";
 
@@ -45,7 +47,8 @@ const TEXT_WIDTH_TOLERANCE = 24;
 const HEAD_TRAIL_GAP = 16;
 const POEM_LIFT_DELAY = 120;
 const HEAD_RESET_DELAY = 360;
-const HEAD_MAX_WIDTH_CLASS = "max-w-[min(92vw,1080px)]";
+const HEAD_MAX_WIDTH_CLASS = "max-w-[var(--poem-head-max-width)]";
+const POEM_BODY_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const POEM_ACTION_GROUP_CLASS =
   "inline-flex items-center gap-0.5 rounded-lg bg-black/[0.045] p-0.5 dark:bg-white/[0.07]";
 const POEM_ACTION_BUTTON_CLASS =
@@ -70,6 +73,53 @@ export function PoemDisplay({
   const [textWidths, setTextWidths] = useState({ collapsed: 0, expanded: 0 });
   const [titleViewportWidth, setTitleViewportWidth] = useState(0);
   const title = poem.origin?.title;
+
+  // Lift y from --poem-lift-inset (incl. min-height media overrides). See useTokenDrivenMotionY.
+  const poemY = useTokenDrivenMotionY({
+    active: poemLifted,
+    getActiveY: () => -window.innerHeight + readCssVarPx("--poem-lift-inset"),
+  });
+
+  // Body maxHeight from --poem-body-max-height; numeric so Motion does not keep residual calc.
+  // Initial 0 only — never probe CSS vars during render (DOM side effects / layout thrash).
+  const bodyMaxHeight = useMotionValue(0);
+  const bodyMaxHeightInitRef = useRef(false);
+  const bodyMaxHeightControlsRef = useRef<ReturnType<typeof animate> | null>(null);
+
+  useLayoutEffect(() => {
+    const target = poemLifted ? readCssVarPx("--poem-body-max-height") : 0;
+
+    if (!bodyMaxHeightInitRef.current) {
+      bodyMaxHeightInitRef.current = true;
+      bodyMaxHeight.set(target);
+      return;
+    }
+
+    bodyMaxHeightControlsRef.current?.stop();
+    const controls = animate(bodyMaxHeight, target, {
+      duration: 0.78,
+      ease: POEM_BODY_EASE,
+    });
+    bodyMaxHeightControlsRef.current = controls;
+    return () => {
+      controls.stop();
+      if (bodyMaxHeightControlsRef.current === controls) {
+        bodyMaxHeightControlsRef.current = null;
+      }
+    };
+  }, [poemLifted, bodyMaxHeight]);
+
+  useEffect(() => {
+    if (!poemLifted) return;
+    const snap = () => {
+      // Stop in-flight maxHeight tween so resize snap is not overwritten.
+      bodyMaxHeightControlsRef.current?.stop();
+      bodyMaxHeightControlsRef.current = null;
+      bodyMaxHeight.set(readCssVarPx("--poem-body-max-height"));
+    };
+    window.addEventListener("resize", snap);
+    return () => window.removeEventListener("resize", snap);
+  }, [poemLifted, bodyMaxHeight]);
 
   useEffect(() => {
     if (!show) return;
@@ -199,8 +249,8 @@ export function PoemDisplay({
   const headSizeClass =
     titleViewportWidth > 0 && longestHeadWidth > compactThreshold
       ? longestHeadWidth > extraCompactThreshold
-        ? "text-[24px] max-[720px]:text-[22px]"
-        : "text-[26px] max-[720px]:text-[24px]"
+        ? "text-[length:var(--poem-text-extra-compact)]"
+        : "text-[length:var(--poem-text-compact)]"
       : null;
 
   const handleCopyText = async (text: string) => {
@@ -266,17 +316,13 @@ export function PoemDisplay({
 
       <motion.div
         className={cn(
-          "group/poem absolute left-[50vw] top-[calc(100%-54px)] z-10 flex w-[min(1080px,calc(100vw-48px))] flex-col items-center justify-center gap-0 bg-transparent p-0 text-center font-ornament-1 text-[30px] leading-relaxed tracking-[0.08em] text-[rgb(17,17,17)] opacity-80 transition-[color,opacity] duration-300 ease-in animate-[poem-fade-in_1s_ease-in] dark:text-white max-[720px]:px-4",
+          "group/poem absolute left-[50vw] top-[calc(100%-var(--poem-dock-inset))] z-10 flex w-[var(--poem-width)] flex-col items-center justify-center gap-0 bg-transparent p-0 text-center font-ornament-1 text-[length:var(--poem-text)] leading-relaxed tracking-[0.08em] text-[rgb(17,17,17)] opacity-80 transition-[color,opacity,width] duration-300 ease-in animate-[poem-fade-in_1s_ease-in] dark:text-white max-[720px]:px-4",
           headSizeClass,
           poemLifted && "opacity-[0.92]",
         )}
         aria-expanded={expanded}
         initial={false}
-        animate={{
-          x: "-50%",
-          y: poemLifted ? "calc(-100vh + clamp(230px, 34vh, 330px))" : 0,
-        }}
-        transition={{ duration: 0.74, ease: [0.22, 1, 0.36, 1] }}
+        style={{ x: "-50%", y: poemY }}
       >
         <span className="group/title relative flex min-h-[1.5em] w-full max-w-full items-center justify-center">
           <button
@@ -342,7 +388,7 @@ export function PoemDisplay({
           >
             {credit && (
               <motion.span
-                className="poem-author-seal pointer-events-none whitespace-nowrap font-ornament-1 text-[12px] leading-none tracking-[-0.08em] text-white/96 shadow-[0_10px_24px_rgba(194,0,0,0.18)] max-[720px]:text-[11px]"
+                className="poem-author-seal pointer-events-none whitespace-nowrap font-ornament-1 text-[length:var(--poem-seal)] leading-none tracking-[-0.08em] text-white/96 shadow-[0_10px_24px_rgba(194,0,0,0.18)]"
                 initial={false}
                 animate={{
                   opacity: 1,
@@ -449,22 +495,22 @@ export function PoemDisplay({
 
         <motion.div
           className={cn(
-            "box-border flex w-full flex-col gap-[0.18em] overflow-hidden px-[clamp(16px,4vw,48px)] [scrollbar-width:none] [text-shadow:0_1px_18px_rgba(255,255,255,0.42)] transition-[margin,padding] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none [&::-webkit-scrollbar]:hidden [&>span]:block dark:[text-shadow:0_1px_18px_rgba(0,0,0,0.36)]",
+            "box-border flex w-full flex-col gap-[0.18em] overflow-hidden px-[var(--poem-body-pad-x)] [scrollbar-width:none] [text-shadow:0_1px_18px_rgba(255,255,255,0.42)] transition-[margin,padding] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none [&::-webkit-scrollbar]:hidden [&>span]:block dark:[text-shadow:0_1px_18px_rgba(0,0,0,0.36)]",
             expanded &&
-              "mt-[0.72em] cursor-pointer overflow-y-auto pb-[clamp(18px,3vw,34px)] pointer-events-auto max-[720px]:mt-[0.56em]",
+              "mt-[0.72em] cursor-pointer overflow-y-auto pb-[var(--poem-body-pad-bottom)] pointer-events-auto max-[720px]:mt-[0.56em]",
           )}
           aria-hidden={!poemLifted}
           initial={false}
           onClick={() => {
             if (poemLifted) onExpandedChange(false);
           }}
+          style={{ maxHeight: bodyMaxHeight }}
           animate={{
             opacity: poemLifted ? 1 : 0,
             y: poemLifted ? 0 : 96,
             filter: poemLifted ? "blur(0px)" : "blur(5px)",
-            maxHeight: poemLifted ? "calc(100vh - 360px)" : 0,
           }}
-          transition={{ duration: 0.78, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.78, ease: POEM_BODY_EASE }}
         >
           {poemLines.map((line, index) => (
             <span key={`${line}-${index}`} className="group/poem-line">
