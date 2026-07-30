@@ -1,16 +1,11 @@
-import { ArrowLeft, MoreHorizontal, Moon, X } from 'lucide-react';
-import { motion } from 'motion/react';
+import { useState } from 'react';
+import { ArrowLeft, Moon, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import type { BrowserTab, DomainGroupModel } from '../types/tab';
 import { useCopy } from '../lib/appContext';
 import { cn } from '../lib/cn';
 import { getDomainColor } from '../lib/url';
 import { TabItem } from './TabItem';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu';
 
 interface DomainCardProps {
   group: DomainGroupModel;
@@ -19,8 +14,8 @@ interface DomainCardProps {
   onSwitch?: (tab: BrowserTab) => void;
   onClose?: (tab: BrowserTab) => void;
   onSleep?: (tab: BrowserTab) => void;
-  onCloseAll?: (tabs: BrowserTab[]) => void;
-  onSleepAll?: (tabs: BrowserTab[]) => void;
+  onCloseAll?: (tabs: BrowserTab[]) => Promise<void>;
+  onSleepAll?: (tabs: BrowserTab[]) => Promise<void>;
   canSleepTab?: (tab: BrowserTab) => boolean;
   onFocusRequest?: () => void;
   onCollapse?: () => void;
@@ -45,6 +40,20 @@ export function DomainCard({
   const domainColor = getDomainColor(group.id);
   const focused = mode === 'focused';
   const visibleTabs = focused ? group.tabs : group.tabs.slice(0, 5);
+  const [pendingAction, setPendingAction] = useState<'sleep' | 'close' | null>(null);
+
+  const runGroupAction = async (action: 'sleep' | 'close') => {
+    if (pendingAction) return;
+    const handler = action === 'sleep' ? onSleepAll : onCloseAll;
+    if (!handler) return;
+
+    setPendingAction(action);
+    try {
+      await handler(group.tabs);
+    } finally {
+      setPendingAction(null);
+    }
+  };
 
   const handleHeaderClick = () => {
     if (focused) {
@@ -103,45 +112,57 @@ export function DomainCard({
             {copy.domainCard.tabCount(group.tabs.length)}
           </span>
         </motion.div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              className="size-8 rounded-lg border-none bg-transparent cursor-pointer flex items-center justify-center text-[rgba(0,0,0,0.45)] transition-all duration-150 hover:bg-[rgba(128,128,128,0.10)] hover:text-[rgba(0,0,0,0.72)] dark:text-[rgba(255,255,255,0.42)] dark:hover:text-[rgba(255,255,255,0.78)]"
-              aria-label={copy.domainCard.menu}
-              title={copy.domainCard.menu}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <MoreHorizontal size={17} />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" sideOffset={6}>
-            <DropdownMenuItem onSelect={() => onSleepAll?.(group.tabs)} disabled={!group.discardableCount}>
-              <Moon size={14} />
-              {copy.domainCard.sleepAll}
-            </DropdownMenuItem>
-            <DropdownMenuItem variant="destructive" onSelect={() => onCloseAll?.(group.tabs)}>
-              <X size={14} />
-              {copy.domainCard.closeAll}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-0.5 shrink-0" onClick={(event) => event.stopPropagation()}>
+          <motion.button
+            type="button"
+            whileTap={{ scale: 0.9, y: 1 }}
+            transition={{ duration: 0.14 }}
+            className="size-8 rounded-lg border-none bg-transparent cursor-pointer flex items-center justify-center text-[rgba(0,0,0,0.45)] transition-colors duration-150 hover:bg-[rgba(128,128,128,0.10)] hover:text-[rgba(0,0,0,0.72)] disabled:cursor-default disabled:opacity-25 dark:text-[rgba(255,255,255,0.42)] dark:hover:text-[rgba(255,255,255,0.78)]"
+            aria-label={copy.domainCard.sleepAll}
+            title={copy.domainCard.sleepAll}
+            disabled={!group.discardableCount || pendingAction !== null}
+            onClick={() => void runGroupAction('sleep')}
+          >
+            <motion.span animate={pendingAction === 'sleep' ? { opacity: 0.45, y: 2 } : { opacity: 1, y: 0 }}>
+              <Moon size={16} />
+            </motion.span>
+          </motion.button>
+          <motion.button
+            type="button"
+            whileTap={{ scale: 0.9, y: 1 }}
+            transition={{ duration: 0.14 }}
+            className="size-8 rounded-lg border-none bg-transparent cursor-pointer flex items-center justify-center text-[rgba(0,0,0,0.45)] transition-colors duration-150 hover:bg-red-500/10 hover:text-red-600 disabled:cursor-default disabled:opacity-25 dark:text-[rgba(255,255,255,0.42)] dark:hover:text-red-400"
+            aria-label={copy.domainCard.closeAll}
+            title={copy.domainCard.closeAll}
+            disabled={pendingAction !== null}
+            onClick={() => void runGroupAction('close')}
+          >
+            <X size={16} />
+          </motion.button>
+        </div>
       </motion.div>
 
       <motion.div layout className={cn('flex flex-col min-w-0', focused ? 'gap-1' : 'gap-1.5')}>
-        {visibleTabs.map((tab) => (
-          <motion.div layout key={tab.id}>
-            <TabItem
-              tab={tab}
-              accentColor={accentColor ?? domainColor}
-              onSwitch={onSwitch}
-              onClose={onClose}
-              onSleep={onSleep}
-              canSleep={canSleepTab?.(tab) ?? false}
-              compact={!focused}
-            />
-          </motion.div>
-        ))}
+        <AnimatePresence initial={false} mode="popLayout">
+          {visibleTabs.map((tab) => (
+            <motion.div
+              layout
+              key={tab.id}
+              exit={{ opacity: 0, height: 0, x: 12, marginBottom: 0 }}
+              transition={{ duration: 0.18, ease: [0.2, 0.8, 0.2, 1] }}
+            >
+              <TabItem
+                tab={tab}
+                accentColor={accentColor ?? domainColor}
+                onSwitch={onSwitch}
+                onClose={onClose}
+                onSleep={onSleep}
+                canSleep={canSleepTab?.(tab) ?? false}
+                compact={!focused}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
         {!focused && group.tabs.length > 5 && (
           <div className="text-[12.5px] font-medium text-center py-1 opacity-[0.35] tracking-[0.02em]">
             {copy.domainCard.more(group.tabs.length - 5)}

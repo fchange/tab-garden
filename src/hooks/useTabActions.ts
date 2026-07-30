@@ -9,8 +9,8 @@ export interface TabActionHandlers {
   onSwitch: (tab: BrowserTab) => void;
   onClose: (tab: BrowserTab) => void;
   onSleep: (tab: BrowserTab) => void;
-  onCloseAll: (tabs: BrowserTab[]) => void;
-  onSleepAll: (tabs: BrowserTab[]) => void;
+  onCloseAll: (tabs: BrowserTab[]) => Promise<void>;
+  onSleepAll: (tabs: BrowserTab[]) => Promise<void>;
 }
 
 export interface BatchAction {
@@ -32,8 +32,9 @@ export function useTabActions({
   duplicateCount,
   tabState,
 }: UseTabActionsOptions) {
-  const handleFeedback = (feedback: ReturnType<typeof tabState.switchToTab>) => {
-    void feedback.then((result) => toast(result.message));
+  const handleFeedback = async (feedback: ReturnType<typeof tabState.switchToTab>) => {
+    const result = await feedback;
+    toast(result.message);
   };
 
   const handlers = useMemo<TabActionHandlers>(() => ({

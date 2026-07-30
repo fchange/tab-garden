@@ -13,8 +13,8 @@ interface GroupGridProps {
   onSwitch: (tab: BrowserTab) => void;
   onClose: (tab: BrowserTab) => void;
   onSleep: (tab: BrowserTab) => void;
-  onCloseAll: (tabs: BrowserTab[]) => void;
-  onSleepAll: (tabs: BrowserTab[]) => void;
+  onCloseAll: (tabs: BrowserTab[]) => Promise<void>;
+  onSleepAll: (tabs: BrowserTab[]) => Promise<void>;
   canSleepTab: (tab: BrowserTab) => boolean;
 }
 
@@ -79,35 +79,38 @@ export function GroupGrid({
           )}
           transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
         >
-          {groups.map((group) => {
-            const focused = focusedGroupId === group.id;
-            const muted = viewMode === 'focused';
+          <AnimatePresence initial={false} mode="popLayout">
+            {groups.map((group) => {
+              const focused = focusedGroupId === group.id;
+              const muted = viewMode === 'focused';
 
-            return (
-              <motion.div
-                layout
-                key={group.id}
-                className={cn('min-w-0', muted && 'pointer-events-none')}
-                animate={{ opacity: muted ? 0 : 1 }}
-                transition={{ duration: muted ? 0.12 : 0.24, ease: [0.2, 0.8, 0.2, 1] }}
-              >
-                {focused ? null : (
-                  <DomainCard
-                    group={group}
-                    accentColor={accentColor}
-                    onSwitch={onSwitch}
-                    onClose={onClose}
-                    onSleep={onSleep}
-                    onCloseAll={onCloseAll}
-                    onSleepAll={onSleepAll}
-                    canSleepTab={canSleepTab}
-                    onFocusRequest={() => focusGroup(group.id)}
-                    onCollapse={collapseFocusedGroup}
-                  />
-                )}
-              </motion.div>
-            );
-          })}
+              return (
+                <motion.div
+                  layout
+                  key={group.id}
+                  className={cn('min-w-0', muted && 'pointer-events-none')}
+                  animate={{ opacity: muted ? 0 : 1 }}
+                  exit={{ opacity: 0, scale: 0.96, y: -6 }}
+                  transition={{ duration: muted ? 0.12 : 0.24, ease: [0.2, 0.8, 0.2, 1] }}
+                >
+                  {focused ? null : (
+                    <DomainCard
+                      group={group}
+                      accentColor={accentColor}
+                      onSwitch={onSwitch}
+                      onClose={onClose}
+                      onSleep={onSleep}
+                      onCloseAll={onCloseAll}
+                      onSleepAll={onSleepAll}
+                      canSleepTab={canSleepTab}
+                      onFocusRequest={() => focusGroup(group.id)}
+                      onCollapse={collapseFocusedGroup}
+                    />
+                  )}
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </motion.div>
 
         <AnimatePresence initial={false}>
