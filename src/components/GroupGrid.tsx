@@ -65,17 +65,16 @@ export function GroupGrid({
     <LayoutGroup>
       <motion.div
         layout
-        className={cn(
-          'relative min-w-0 max-h-[var(--layout-content-max-height)]',
-          viewMode === 'focused' && 'h-[var(--layout-content-max-height)] z-20',
-        )}
+        className="relative min-w-0 max-h-[var(--layout-content-max-height)]"
         transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
       >
         <motion.div
           layout
           className={cn(
             'grid grid-cols-3 gap-2.5 min-w-0 overflow-y-auto overflow-x-hidden pb-2 max-[720px]:grid-cols-1',
-            viewMode === 'focused' ? 'h-full' : 'max-h-[var(--layout-content-max-height)]',
+            viewMode === 'focused'
+              ? 'absolute inset-0'
+              : 'max-h-[var(--layout-content-max-height)]',
           )}
           transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
         >
@@ -117,8 +116,12 @@ export function GroupGrid({
           {viewMode === 'focused' && focusedGroup && (
             <motion.div
               key={focusedGroup.id}
-              className="absolute inset-0 z-30 overflow-y-auto pb-2"
+              className="relative z-30 min-w-0 max-h-[var(--layout-content-max-height)]"
               onClick={collapseFocusedGroup}
+              initial={{ opacity: 0, scale: 0.985 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.985 }}
+              transition={{ duration: 0.28, ease: [0.2, 0.8, 0.2, 1] }}
             >
               <DomainCard
                 group={focusedGroup}

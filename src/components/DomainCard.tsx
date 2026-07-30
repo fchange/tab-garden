@@ -70,14 +70,14 @@ export function DomainCard({
       transition={groupTransition}
       className={cn(
         'rounded-[14px] p-4 border border-solid min-w-0 overflow-hidden transition-colors duration-200 bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.14)] dark:bg-[rgba(255,255,255,0.03)] dark:hover:bg-[rgba(255,255,255,0.06)]',
-        focused && 'min-h-full',
+        focused && 'max-h-[var(--layout-content-max-height)] flex flex-col',
       )}
       style={{ borderColor: `${domainColor}22` }}
       onClick={(event) => event.stopPropagation()}
     >
       <motion.div
         layout
-        className={cn('flex items-center gap-3 mb-3 min-w-0', !focused && 'cursor-pointer')}
+        className={cn('flex items-center gap-3 mb-3 min-w-0 shrink-0', !focused && 'cursor-pointer')}
         onClick={handleHeaderClick}
       >
         {focused && (
@@ -142,7 +142,13 @@ export function DomainCard({
         </div>
       </motion.div>
 
-      <motion.div layout className={cn('flex flex-col min-w-0', focused ? 'gap-1' : 'gap-1.5')}>
+      <motion.div
+        layout
+        className={cn(
+          'flex flex-col min-w-0',
+          focused ? 'gap-1 min-h-0 overflow-y-auto overscroll-contain' : 'gap-1.5',
+        )}
+      >
         <AnimatePresence initial={false} mode="popLayout">
           {visibleTabs.map((tab) => (
             <motion.div
