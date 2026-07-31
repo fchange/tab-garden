@@ -1,0 +1,5 @@
+2026/05/26-18:01:37.165 6457fa Creating DB /Users/franco/code/tab-garden/output/playwright/favicon-debug-final/Default/Session Storage since it was missing.
+2026/05/26-18:01:37.181 6457fa Reusing MANIFEST /Users/franco/code/tab-garden/output/playwright/favicon-debug-final/Default/Session Storage/MANIFEST-000001
+2026/05/26-18:01:50.585 6457fe Level-0 table #5: started
+2026/05/26-18:01:50.595 6457fe Level-0 table #5: 175714 bytes OK
+2026/05/26-18:01:50.608 6457fe Delete type=0 #3

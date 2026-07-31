@@ -1,0 +1,52 @@
+{
+  "name": "Tab Garden marketplace poster v2",
+  "design_system": {
+    "color": {
+      "light_ink": "#1f302c",
+      "soft_ink": "#60716b",
+      "paper": "#f7faf6",
+      "paper_warm": "#f3f0e2",
+      "night": "#111c19",
+      "night_panel": "#182722",
+      "accent_sage": "#8e804b",
+      "accent_blue": "#158bb8",
+      "accent_green": "#229453"
+    },
+    "typography": {
+      "headline": "Songti SC / STSong / Noto Serif CJK SC, high contrast serif, large but restrained",
+      "body": "PingFang SC / system sans, compact, medium weight",
+      "labels": "Avenir Next / PingFang SC, small caps only for English metadata"
+    },
+    "layout": {
+      "canvas": "1280x800",
+      "composition": "editorial split, strong negative space, real screenshot treated as product photography",
+      "screenshot_treatment": "large glass print, rounded 24-30px, soft tinted shadow, never fake UI"
+    },
+    "shape": {
+      "outer_radius": 30,
+      "inner_radius": 14,
+      "caption_radius": 999
+    },
+    "elevation": {
+      "shadow": "wide, soft, color-tinted; no generic black card shadows",
+      "texture": "subtle paper grain and ink wash background"
+    }
+  },
+  "design_style": {
+    "mood": "quiet, premium, literate, calm utility",
+    "visual_language": "modern browser product photography mixed with restrained Chinese editorial print",
+    "brand_voice": "specific pain-point copy, no hype, no feature-list dumping",
+    "avoid": [
+      "large poster-like slogans without product proof",
+      "purple SaaS gradients",
+      "decorative blobs",
+      "AI-looking fake interface",
+      "busy mountain pattern competing with screenshots"
+    ]
+  },
+  "visual_effects": {
+    "background": "AI-generated abstract paper, ink, and mineral pigment washes",
+    "overlay": "very subtle grain and vignette",
+    "motion": "none for static store images"
+  }
+}

@@ -1,0 +1,155 @@
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - text: 你现在打开了
+          - strong [ref=e9]: "5"
+          - text: 个标签
+          - generic [ref=e10]:
+            - text: ，
+            - strong [ref=e11]: "1"
+            - text: 个重复
+          - generic [ref=e12]:
+            - text: ，
+            - strong [ref=e13]: "1"
+            - text: 个休眠中
+          - text: 。
+        - button "草灰绿" [ref=e14] [cursor=pointer]:
+          - generic [ref=e15]: 草灰绿
+          - img
+      - generic [ref=e16]:
+        - generic:
+          - img
+          - img
+        - textbox "搜索标签..." [ref=e17]
+        - generic [ref=e18]:
+          - button "切换搜索模式" [ref=e19]:
+            - generic [ref=e20]:
+              - generic [ref=e22]:
+                - img
+                - generic [ref=e23]: 标签
+              - generic [ref=e24]:
+                - img
+                - generic [ref=e25]: 网络
+          - generic [ref=e26]:
+            - img [ref=e27]
+            - generic [ref=e29]: K
+    - generic [ref=e30]:
+      - tablist [ref=e32]:
+        - tab "全部 5" [selected] [ref=e33] [cursor=pointer]:
+          - generic [ref=e35]:
+            - text: 全部
+            - generic [ref=e36]: "5"
+        - tab "域名 3" [ref=e37] [cursor=pointer]:
+          - generic [ref=e38]:
+            - text: 域名
+            - generic [ref=e39]: "3"
+        - tab "窗口 2" [ref=e40] [cursor=pointer]:
+          - generic [ref=e41]:
+            - text: 窗口
+            - generic [ref=e42]: "2"
+        - tab "重复 1" [ref=e43] [cursor=pointer]:
+          - generic [ref=e44]:
+            - text: 重复
+            - generic [ref=e45]: "1"
+      - paragraph [ref=e46]: 当前是预览环境，正在使用示例标签。
+      - tabpanel "全部 5" [ref=e47]:
+        - generic [ref=e50]:
+          - generic [ref=e53]:
+            - generic [ref=e55]: G
+            - generic [ref=e56]:
+              - generic [ref=e57]:
+                - text: GitHub - Repo
+                - generic [ref=e58]: 当前
+              - generic [ref=e59]: github.com/openai/openai-cookbook
+            - generic [ref=e61]: github.com
+            - generic:
+              - button "休眠标签" [disabled]:
+                - img
+              - button "关闭标签":
+                - img
+          - generic [ref=e64]:
+            - generic [ref=e66]: G
+            - generic [ref=e67]:
+              - generic [ref=e68]: "Pull Request #10"
+              - generic [ref=e69]: github.com/openai/openai-cookbook/pulls
+            - generic [ref=e71]: github.com
+            - generic:
+              - button "休眠标签":
+                - img
+              - button "关闭标签":
+                - img
+          - generic [ref=e74]:
+            - generic [ref=e76]: C
+            - generic [ref=e77]:
+              - generic [ref=e78]: ChatGPT
+              - generic [ref=e79]: chatgpt.com
+            - generic [ref=e81]: chatgpt.com
+            - generic:
+              - button "休眠标签" [disabled]:
+                - img
+              - button "关闭标签":
+                - img
+          - generic [ref=e84]:
+            - generic [ref=e86]: G
+            - generic [ref=e87]:
+              - generic [ref=e88]:
+                - text: Google Docs
+                - generic [ref=e89]: 休眠
+              - generic [ref=e90]: docs.google.com/document/d/123
+            - generic [ref=e92]: google.com
+            - generic:
+              - button "休眠标签" [disabled]:
+                - img
+              - button "关闭标签":
+                - img
+          - generic [ref=e95]:
+            - generic [ref=e97]: G
+            - generic [ref=e98]:
+              - generic [ref=e99]: GitHub - Repo
+              - generic [ref=e100]: github.com/openai/openai-cookbook/
+            - generic [ref=e102]: 重复
+            - generic:
+              - button "休眠标签":
+                - img
+              - button "关闭标签":
+                - img
+  - generic [ref=e103]:
+    - generic [ref=e104]:
+      - button "展开诗文：落日醉醒问，一春无此寒。" [ref=e105] [cursor=pointer]:
+        - generic [ref=e107]:
+          - generic [ref=e108]: 落日醉醒问，一春无此寒。
+          - generic [ref=e109]: 落日醉醒问，一春无此寒。
+      - generic [ref=e110]:
+        - generic:
+          - generic: 沈蔚
+        - generic:
+          - generic:
+            - button:
+              - img
+        - generic:
+          - generic:
+            - button:
+              - img
+            - button:
+              - img
+    - generic:
+      - generic: 落日醉醒问，一春无此寒。
+      - generic: 落日醉醒问，一春无此寒。
+    - generic:
+      - generic:
+        - text: 落日醉醒问，一春无此寒。
+        - generic:
+          - generic:
+            - button:
+              - img
+  - generic [ref=e111] [cursor=pointer]:
+    - button "切换深色":
+      - img
+    - button "暂停动画":
+      - img
+    - button "设置":
+      - img
+    - 'button "当前配色: 草灰绿" [ref=e112]'
+  - region "Notifications alt+T"

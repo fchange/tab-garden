@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-06-29T11:23:11.447Z",
+  "proxy": "http://127.0.0.1:7897",
+  "fonts": [
+    {
+      "id": "256",
+      "css": "output/marketplace/demo-assets/fonts/256/result.css",
+      "files": 200
+    },
+    {
+      "id": "437",
+      "css": "output/marketplace/demo-assets/fonts/437/result.css",
+      "files": 404
+    },
+    {
+      "id": "292",
+      "css": "output/marketplace/demo-assets/fonts/292/result.css",
+      "files": 237
+    }
+  ],
+  "favicons": [
+    "output/marketplace/demo-assets/favicons/github.com.png",
+    "output/marketplace/demo-assets/favicons/playwright.dev.png",
+    "output/marketplace/demo-assets/favicons/developer.chrome.com.png",
+    "output/marketplace/demo-assets/favicons/developer.mozilla.org.png",
+    "output/marketplace/demo-assets/favicons/react.dev.png",
+    "output/marketplace/demo-assets/favicons/vite.dev.png",
+    "output/marketplace/demo-assets/favicons/docs.google.com.png",
+    "output/marketplace/demo-assets/favicons/calendar.google.com.png",
+    "output/marketplace/demo-assets/favicons/mail.google.com.png",
+    "output/marketplace/demo-assets/favicons/linear.app.png",
+    "output/marketplace/demo-assets/favicons/www.figma.com.png",
+    "output/marketplace/demo-assets/favicons/www.notion.so.png",
+    "output/marketplace/demo-assets/favicons/www.canva.com.png",
+    "output/marketplace/demo-assets/favicons/www.dropbox.com.png",
+    "output/marketplace/demo-assets/favicons/app.slack.com.png",
+    "output/marketplace/demo-assets/favicons/chatgpt.com.png",
+    "output/marketplace/demo-assets/favicons/claude.ai.png",
+    "output/marketplace/demo-assets/favicons/gemini.google.com.png",
+    "output/marketplace/demo-assets/favicons/www.perplexity.ai.png",
+    "output/marketplace/demo-assets/favicons/huggingface.co.png",
+    "output/marketplace/demo-assets/favicons/replicate.com.png",
+    "output/marketplace/demo-assets/favicons/www.kaggle.com.png",
+    "output/marketplace/demo-assets/favicons/paperswithcode.com.png",
+    "output/marketplace/demo-assets/favicons/arxiv.org.png",
+    "output/marketplace/demo-assets/favicons/www.youtube.com.png",
+    "output/marketplace/demo-assets/favicons/www.bilibili.com.png",
+    "output/marketplace/demo-assets/favicons/www.netflix.com.png",
+    "output/marketplace/demo-assets/favicons/open.spotify.com.png",
+    "output/marketplace/demo-assets/favicons/music.apple.com.png",
+    "output/marketplace/demo-assets/favicons/www.theverge.com.png",
+    "output/marketplace/demo-assets/favicons/www.wired.com.png",
+    "output/marketplace/demo-assets/favicons/www.nytimes.com.png",
+    "output/marketplace/demo-assets/favicons/www.bbc.com.png",
+    "output/marketplace/demo-assets/favicons/www.wikipedia.org.png",
+    "output/marketplace/demo-assets/favicons/www.amazon.com.png",
+    "output/marketplace/demo-assets/favicons/www.apple.com.png",
+    "output/marketplace/demo-assets/favicons/www.microsoft.com.png",
+    "output/marketplace/demo-assets/favicons/www.cloudflare.com.png",
+    "output/marketplace/demo-assets/favicons/vercel.com.png",
+    "output/marketplace/demo-assets/favicons/www.netlify.com.png",
+    "output/marketplace/demo-assets/favicons/www.producthunt.com.png",
+    "output/marketplace/demo-assets/favicons/news.ycombinator.com.png",
+    "output/marketplace/demo-assets/favicons/stackoverflow.com.png"
+  ]
+}

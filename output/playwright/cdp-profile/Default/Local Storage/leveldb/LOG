@@ -1,0 +1,17 @@
+2026/05/26-15:41:11.705 60583d Creating DB /Users/franco/code/tab-garden/output/playwright/cdp-profile/Default/Local Storage/leveldb since it was missing.
+2026/05/26-15:41:11.721 60583d Reusing MANIFEST /Users/franco/code/tab-garden/output/playwright/cdp-profile/Default/Local Storage/leveldb/MANIFEST-000001
+2026/05/26-15:42:24.535 60584c Level-0 table #5: started
+2026/05/26-15:42:24.548 60584c Level-0 table #5: 414641 bytes OK
+2026/05/26-15:42:24.561 60584c Delete type=0 #3
+2026/05/26-15:43:33.983 60584c Level-0 table #7: started
+2026/05/26-15:43:33.998 60584c Level-0 table #7: 28471 bytes OK
+2026/05/26-15:43:34.014 60584c Delete type=0 #4
+2026/05/26-15:43:56.125 60584c Level-0 table #9: started
+2026/05/26-15:43:56.240 60584c Level-0 table #9: 50578 bytes OK
+2026/05/26-15:43:56.303 60584c Delete type=0 #6
+2026/05/26-15:44:07.961 60584c Level-0 table #11: started
+2026/05/26-15:44:07.966 60584c Level-0 table #11: 37100 bytes OK
+2026/05/26-15:44:07.976 60584c Delete type=0 #8
+2026/05/26-15:45:02.470 60584c Level-0 table #13: started
+2026/05/26-15:45:02.478 60584c Level-0 table #13: 82421 bytes OK
+2026/05/26-15:45:02.485 60584c Delete type=0 #10

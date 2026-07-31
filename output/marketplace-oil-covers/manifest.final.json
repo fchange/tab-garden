@@ -1,0 +1,43 @@
+{
+  "generatedAt": "2026-06-29T11:28:39.275Z",
+  "format": "1280x800 PNG, opaque browser screenshot",
+  "mode": "oil-cover-inspired deterministic browser render",
+  "note": "The image_gen reference-image tool was unavailable in this session.",
+  "covers": [
+    {
+      "output": "01-tabs-under-control.png",
+      "prompt": "01-tabs-under-control.prompt.md",
+      "screenshot": "01-all-tabs-overview-50-tabs.png",
+      "title": "50 个标签\n一眼看清",
+      "subtitle": "把失控的页面收回一张安静工作台。"
+    },
+    {
+      "output": "02-sites-auto-grouped.png",
+      "prompt": "02-sites-auto-grouped.prompt.md",
+      "screenshot": "03-domain-groups.png",
+      "title": "网页自动\n归队",
+      "subtitle": "按域名和窗口切开研究、开发、写作上下文。"
+    },
+    {
+      "output": "03-theme-language-controls.png",
+      "prompt": "03-theme-language-controls.prompt.md",
+      "screenshot": "06-settings-protection-theme.png",
+      "title": "主题语言\n随手切换",
+      "subtitle": "深色、中文、保护规则，都留在本地设置里。"
+    },
+    {
+      "output": "04-duplicates-cleanup.png",
+      "prompt": "04-duplicates-cleanup.prompt.md",
+      "screenshot": "05-duplicate-cleanup.png",
+      "title": "重复页\n不用再找",
+      "subtitle": "识别重复标签，留下重要页面，清掉可关闭的那部分。"
+    },
+    {
+      "output": "05-eastern-palette-breathing.png",
+      "prompt": "05-eastern-palette-breathing.prompt.md",
+      "screenshot": "07-accent-palette.png",
+      "title": "效率之外\n也要呼吸",
+      "subtitle": "东方色盘、诗文角落和轻背景，让新标签页不冷冰冰。"
+    }
+  ]
+}

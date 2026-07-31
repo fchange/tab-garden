@@ -1,0 +1,187 @@
+- generic [ref=e3]:
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - text: 你现在打开了
+            - strong: "5"
+            - text: 个标签
+            - generic:
+              - text: ，
+              - strong: "1"
+              - text: 个重复
+            - generic:
+              - text: ，
+              - strong: "1"
+              - text: 个休眠中
+            - text: 。
+          - button "草灰绿":
+            - generic: 草灰绿
+            - img
+        - generic:
+          - generic:
+            - img
+            - img
+          - textbox "搜索标签..."
+          - generic:
+            - button "切换搜索模式":
+              - generic:
+                - generic:
+                  - img
+                  - generic: 标签
+                - generic:
+                  - img
+                  - generic: 网络
+            - generic:
+              - img
+              - generic: K
+      - generic:
+        - generic:
+          - tablist:
+            - tab "全部 5" [selected]:
+              - generic:
+                - text: 全部
+                - generic: "5"
+            - tab "域名 3":
+              - generic:
+                - text: 域名
+                - generic: "3"
+            - tab "窗口 2":
+              - generic:
+                - text: 窗口
+                - generic: "2"
+            - tab "重复 1":
+              - generic:
+                - text: 重复
+                - generic: "1"
+        - paragraph: 当前是预览环境，正在使用示例标签。
+        - tabpanel "全部 5":
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: G
+                      - generic:
+                        - generic:
+                          - text: GitHub - Repo
+                          - generic: 当前
+                        - generic: github.com/openai/openai-cookbook
+                      - generic:
+                        - generic: github.com
+                      - generic:
+                        - button "休眠标签" [disabled]:
+                          - img
+                        - button "关闭标签":
+                          - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: G
+                      - generic:
+                        - generic: "Pull Request #10"
+                        - generic: github.com/openai/openai-cookbook/pulls
+                      - generic:
+                        - generic: github.com
+                      - generic:
+                        - button "休眠标签":
+                          - img
+                        - button "关闭标签":
+                          - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: C
+                      - generic:
+                        - generic: ChatGPT
+                        - generic: chatgpt.com
+                      - generic:
+                        - generic: chatgpt.com
+                      - generic:
+                        - button "休眠标签" [disabled]:
+                          - img
+                        - button "关闭标签":
+                          - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: G
+                      - generic:
+                        - generic:
+                          - text: Google Docs
+                          - generic: 休眠
+                        - generic: docs.google.com/document/d/123
+                      - generic:
+                        - generic: google.com
+                      - generic:
+                        - button "休眠标签" [disabled]:
+                          - img
+                        - button "关闭标签":
+                          - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: G
+                      - generic:
+                        - generic: GitHub - Repo
+                        - generic: github.com/openai/openai-cookbook/
+                      - generic:
+                        - generic: 重复
+                      - generic:
+                        - button "休眠标签":
+                          - img
+                        - button "关闭标签":
+                          - img
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - button "收起诗文：东南" [active] [ref=e6] [cursor=pointer]:
+        - generic [ref=e8]:
+          - generic [ref=e9]: 东南一望日中乌，欲遂羲和去得无。
+          - generic [ref=e10]: 东南
+      - generic [ref=e11]:
+        - generic:
+          - generic: 李商隐
+        - generic:
+          - generic:
+            - button "返回":
+              - img
+            - button "换一首":
+              - img
+        - generic:
+          - generic:
+            - button "复制文案":
+              - img
+            - button "查询这篇诗文":
+              - img
+    - generic:
+      - generic: 东南一望日中乌，欲遂羲和去得无。
+      - generic: 东南
+    - generic [ref=e12] [cursor=pointer]:
+      - generic [ref=e14]:
+        - text: 东南一望日中乌，欲遂羲和去得无。
+        - generic:
+          - generic:
+            - button "复制文案":
+              - img
+      - generic [ref=e16]:
+        - text: 且向秦楼棠树下，每朝先觅照罗敷。
+        - generic:
+          - generic:
+            - button "复制文案":
+              - img
+  - generic [ref=e17] [cursor=pointer]:
+    - button "切换深色":
+      - img
+    - button "暂停动画":
+      - img
+    - button "设置":
+      - img
+    - 'button "当前配色: 草灰绿" [ref=e18]'
+  - region "Notifications alt+T"

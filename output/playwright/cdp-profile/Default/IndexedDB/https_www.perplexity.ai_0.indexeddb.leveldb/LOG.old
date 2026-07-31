@@ -1,0 +1,6 @@
+2026/05/26-15:42:55.552 6057e6 Creating DB /Users/franco/code/tab-garden/output/playwright/cdp-profile/Default/IndexedDB/https_www.perplexity.ai_0.indexeddb.leveldb since it was missing.
+2026/05/26-15:42:55.557 6057e6 Reusing MANIFEST /Users/franco/code/tab-garden/output/playwright/cdp-profile/Default/IndexedDB/https_www.perplexity.ai_0.indexeddb.leveldb/MANIFEST-000001
+2026/05/26-15:42:55.564 6057e7 Level-0 table #5: started
+2026/05/26-15:42:55.567 6057e7 Level-0 table #5: 567 bytes OK
+2026/05/26-15:42:55.570 6057e7 Delete type=0 #3
+2026/05/26-15:42:55.570 6057e7 Manual compaction at level-0 from '\x00\x01\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x02\x00\x00\x00' @ 0 : 0; will stop at (end)
