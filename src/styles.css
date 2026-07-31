@@ -105,6 +105,8 @@
   );
   --poem-head-max-width: min(92vw, 1280px);
   --poem-dock-inset: clamp(48px, 5.2vh, 72px);
+  /* Minimum visual separation between the main panel and docked poem. */
+  --poem-safe-gap: 20px;
   --poem-text: clamp(1.5rem, 1.05rem + 0.9vw, 2.625rem);
   --poem-text-compact: clamp(1.375rem, 0.95rem + 0.75vw, 2.25rem);
   --poem-text-extra-compact: clamp(1.25rem, 0.9rem + 0.65vw, 2rem);

@@ -6,11 +6,16 @@ const packageJson = JSON.parse(readFileSync(new URL('./package.json', import.met
   version: string;
 };
 
+const getDisplayVersion = (mode: string) =>
+  mode === 'dev' ? `${packageJson.version}-dev` : packageJson.version;
+
 export default defineConfig({
   modules: ['@wxt-dev/module-react'],
-  manifest: {
+  manifest: ({ mode }) => ({
     name: '枝理 Tab',
     description: '整理枝叶，也整理标签。',
+    version: packageJson.version,
+    ...(mode === 'dev' && { version_name: getDisplayVersion(mode) }),
     icons: {
       16: '/icons/icon-16.png',
       32: '/icons/icon-32.png',
@@ -27,10 +32,10 @@ export default defineConfig({
         128: '/icons/icon-128.png',
       },
     },
-  },
-  vite: () => ({
+  }),
+  vite: ({ mode }) => ({
     define: {
-      __APP_VERSION__: JSON.stringify(packageJson.version),
+      __APP_VERSION__: JSON.stringify(getDisplayVersion(mode)),
     },
     plugins: [tailwindcss()],
   }),

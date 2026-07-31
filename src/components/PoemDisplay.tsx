@@ -315,6 +315,7 @@ export function PoemDisplay({
       </svg>
 
       <motion.div
+        data-poem-display
         className={cn(
           "group/poem absolute left-[50vw] top-[calc(100%-var(--poem-dock-inset))] z-10 flex w-[var(--poem-width)] flex-col items-center justify-center gap-0 bg-transparent p-0 text-center font-ornament-1 text-[length:var(--poem-text)] leading-relaxed tracking-[0.08em] text-[rgb(17,17,17)] opacity-80 transition-[color,opacity,width] duration-300 ease-in animate-[poem-fade-in_1s_ease-in] dark:text-white max-[720px]:px-4",
           headSizeClass,

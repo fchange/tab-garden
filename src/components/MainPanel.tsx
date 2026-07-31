@@ -68,6 +68,7 @@ export function MainPanel({ poemExpanded }: MainPanelProps) {
   return (
     <motion.div
       ref={panelRef}
+      data-main-panel
       className={cn(
         'relative z-10 w-[var(--layout-panel-width)] mt-[var(--layout-panel-top)] rounded-[20px] overflow-hidden bg-card/65 backdrop-blur-sm backdrop-saturate-150 border border-border/90 shadow-[var(--theme-shadow-soft)] transition-[background,border-color,box-shadow,width,margin] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]',
         poemExpanded && 'pointer-events-none',
