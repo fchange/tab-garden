@@ -84,8 +84,8 @@ export function DomainCard({
           <button
             type="button"
             className="size-8 rounded-lg border-none bg-transparent cursor-pointer flex items-center justify-center text-[rgba(0,0,0,0.45)] transition-all duration-150 hover:bg-[rgba(128,128,128,0.10)] hover:text-[rgba(0,0,0,0.72)] dark:text-[rgba(255,255,255,0.42)] dark:hover:text-[rgba(255,255,255,0.78)]"
-            aria-label="Back"
-            title="Back"
+            aria-label={copy.domainCard.back}
+            title={copy.domainCard.back}
             onClick={(event) => {
               event.stopPropagation();
               onCollapse?.();

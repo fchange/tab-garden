@@ -1,4 +1,5 @@
 import { cn } from '../lib/cn';
+import { useCopy } from '../lib/appContext';
 import type { BookmarksBarStyle } from '../types/settings';
 import { BookmarkMenuColumns } from './bookmarks/BookmarkMenuColumns';
 import { BookmarkRootEntry } from './bookmarks/BookmarkRootEntry';
@@ -15,6 +16,7 @@ export function BookmarksBar({ style }: { style: BookmarksBarStyle }) {
 }
 
 function BookmarkMenuBar({ bookmarks, variant }: { bookmarks: BookmarkItem[]; variant: BookmarksBarStyle }) {
+  const copy = useCopy();
   const {
     activeRoot,
     clearCloseTimer,
@@ -45,7 +47,7 @@ function BookmarkMenuBar({ bookmarks, variant }: { bookmarks: BookmarkItem[]; va
   return (
     <nav
       ref={navRef}
-      aria-label="Bookmarks bar"
+      aria-label={copy.settings.bookmarksBar}
       className={barClassName}
       onMouseEnter={clearCloseTimer}
       onMouseLeave={scheduleClose}
