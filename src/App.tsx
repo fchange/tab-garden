@@ -37,7 +37,9 @@ function AppShell() {
 
   return (
     <div className="relative w-full h-full flex flex-col items-center">
-      <WaveBackground palette={currentPalette} accentColor={accentColor} paused={!settings.animationEnabled} />
+      {ready && (
+        <WaveBackground palette={currentPalette} accentColor={accentColor} paused={!settings.animationEnabled} />
+      )}
 
       {ready && (
         <ReadyAppContent

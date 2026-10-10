@@ -87,7 +87,7 @@ export function AccentProvider({ children }: { children: ReactNode }) {
     updateSettings,
   });
 
-  useApplyThemeVars(currentPalette, value.accentColor, resolvedMode);
+  useApplyThemeVars(currentPalette, value.accentColor, resolvedMode, ready);
 
   return <AccentContext.Provider value={value}>{children}</AccentContext.Provider>;
 }

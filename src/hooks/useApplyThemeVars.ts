@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
 import { getReadableTextColor } from '../lib/accentColors';
 import { paletteToShadcnVars } from '../lib/theme';
@@ -8,8 +8,11 @@ export function useApplyThemeVars(
   palette: PaletteDefinition,
   accentColor: string,
   resolvedMode: ThemeMode,
+  ready: boolean,
 ) {
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (!ready) return;
+
     const root = document.documentElement;
     const themeVars = {
       ...paletteToShadcnVars(palette),
@@ -24,8 +27,16 @@ export function useApplyThemeVars(
       root.style.setProperty(key, value);
     });
 
-    document.documentElement.dataset.theme = resolvedMode;
-    document.documentElement.style.colorScheme = resolvedMode;
+    root.dataset.theme = resolvedMode;
+    root.style.colorScheme = resolvedMode;
     document.body.style.background = palette.bg;
-  }, [accentColor, palette, resolvedMode]);
+
+    if (root.dataset.themeReady === 'true') return;
+
+    const frame = requestAnimationFrame(() => {
+      root.dataset.themeReady = 'true';
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [accentColor, palette, ready, resolvedMode]);
 }
