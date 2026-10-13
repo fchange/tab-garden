@@ -26,6 +26,14 @@ marketing/
 screenshot/
 scripts/
 
+# Local wallpaper source downloads and upload staging (never extension assets)
+/public/wallpapers/
+output/wallpaper-delivery/
+__pycache__/
+
+# Local wallpaper curation tools, data and tool-only tests
+/tools/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

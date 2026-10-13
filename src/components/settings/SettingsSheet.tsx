@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Check, ChevronRight, ExternalLink, Github, Moon, Sun } from 'lucide-react';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { ArrowLeft, Check, ChevronRight, ExternalLink, Github, Moon, Sun } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 import { SearchModeToggle, type SearchMode } from '../SearchModeToggle';
 import { Button } from '../ui/button';
@@ -12,11 +13,12 @@ import {
 import { ScrollArea } from '../ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
 import { ACCENT_COLORS } from '../../lib/accentColors';
-import { useAccent, useCopy, useSettingsContext } from '../../lib/appContext';
+import { useAccent, useCopy, useSettingsContext, useTheme } from '../../lib/appContext';
 import { cn } from '../../lib/cn';
 import { getViewOptions } from '../../lib/i18n';
 import { DEFAULT_SETTINGS } from '../../lib/storage';
 import type { ThemePreference } from '../../types/settings';
+import { BackgroundGallery, BackgroundSettingsEntry } from './BackgroundGallery';
 import {
   SettingsItem,
   SettingsAnimatedSegmentedControl,
@@ -41,52 +43,119 @@ export function SettingsSheet({
   const copy = useCopy();
   const { accentColor, accentTextColor, resetAccentColor } = useAccent();
   const { updateSettings } = useSettingsContext();
+  const { isDarkMode, toggleTheme } = useTheme();
   const [searchTogglePreviewMode, setSearchTogglePreviewMode] = useState<SearchMode>('tabs');
+  const [backgroundResetKey, setBackgroundResetKey] = useState(0);
+  const [page, setPage] = useState<'settings' | 'background'>('settings');
+  const reducedMotion = useReducedMotion();
+  const backgroundSelectionVersion = useRef(0);
+
+  useLayoutEffect(() => {
+    if (!open) {
+      backgroundSelectionVersion.current += 1;
+      setPage('settings');
+    }
+  }, [open]);
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={(nextOpen) => {
+      // Exit animations keep children mounted; cancel before they finish decoding.
+      if (!nextOpen) backgroundSelectionVersion.current += 1;
+      onOpenChange(nextOpen);
+    }}>
       <SheetContent
         side="right"
         className="right-4 top-6 bottom-6 flex h-auto w-[min(500px,calc(100vw-32px))] flex-col overflow-hidden rounded-2xl border border-[rgba(34,54,50,0.14)] bg-popover/98 p-0 shadow-[0_26px_80px_rgba(34,54,50,0.20),var(--theme-inset-highlight)] dark:border-white/12 dark:bg-[var(--theme-popover)] dark:shadow-[0_30px_86px_rgba(0,0,0,0.48),var(--theme-inset-highlight)] sm:max-w-none"
       >
-        <SheetHeader className="border-b border-[rgba(34,54,50,0.11)] bg-white/42 px-6 py-5 pr-14 dark:border-white/10 dark:bg-white/[0.025]">
-          <SheetTitle className="text-[20px] font-semibold tracking-tight text-foreground/90 dark:text-foreground/92">
-            {copy.settings.title}
+        <SheetHeader className="min-h-[70px] justify-center space-y-0 border-b border-[rgba(34,54,50,0.11)] bg-white/42 px-6 py-4 pr-24 dark:border-white/10 dark:bg-white/[0.025]">
+          <SheetTitle className="flex items-center gap-2.5 text-[20px] font-semibold tracking-tight text-foreground/90 dark:text-foreground/92">
+            {page === 'background' && (
+              <button
+                type="button"
+                aria-label={copy.background.back}
+                onClick={() => {
+                  backgroundSelectionVersion.current += 1;
+                  setPage('settings');
+                }}
+                className="-ml-2 flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <ArrowLeft className="size-4" aria-hidden="true" />
+              </button>
+            )}
+            {page === 'background' ? copy.background.title : copy.settings.title}
           </SheetTitle>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            onClick={toggleTheme}
+            title={isDarkMode ? copy.controls.light : copy.controls.dark}
+            aria-label={isDarkMode ? copy.controls.light : copy.controls.dark}
+            className="absolute right-14 top-4 m-0 size-8 rounded-full border-0 bg-transparent text-muted-foreground shadow-none hover:bg-foreground/[0.06] hover:text-foreground"
+          >
+            {isDarkMode ? <Sun className="size-4" aria-hidden="true" /> : <Moon className="size-4" aria-hidden="true" />}
+          </Button>
         </SheetHeader>
 
-        <ScrollArea className="min-h-0 flex-1">
-          <div className="space-y-6 px-6 py-5">
-            <AppearanceSettingsSection />
-
-            <NewTabSettingsSection accentColor={accentColor} />
-
-            <ProtectionSettingsSection accentColor={accentColor} />
-
-            <PoemSettingsSection accentColor={accentColor} />
-
-            <SearchToggleSettingsSection
-              accentColor={accentColor}
-              accentTextColor={accentTextColor}
-              previewMode={searchTogglePreviewMode}
-              onTogglePreview={() => setSearchTogglePreviewMode((current) => (current === 'tabs' ? 'web' : 'tabs'))}
-            />
-
-            <AboutSettingsSection />
-
-            <Button
-              variant="ghost"
-              className="h-10 w-full rounded-lg text-[14px] font-medium shadow-[var(--theme-inset-highlight)] transition-all duration-200 active:scale-[0.99]"
-              style={{ color: accentColor }}
-              onClick={() => {
-                resetAccentColor(DEFAULT_SETTINGS.defaultAccentColor);
-                void updateSettings(DEFAULT_SETTINGS);
-              }}
+        <AnimatePresence initial={false} mode="wait">
+          {page === 'settings' ? (
+            <motion.div
+              key="settings"
+              className="min-h-0 flex-1"
+              initial={reducedMotion ? false : { opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={reducedMotion ? { opacity: 1 } : { opacity: 0, x: -10 }}
+              transition={{ duration: reducedMotion ? 0 : 0.16, ease: 'easeOut' }}
             >
-              {copy.settings.resetAll}
-            </Button>
-          </div>
-        </ScrollArea>
+              <ScrollArea className="h-full">
+                <div className="space-y-6 px-6 py-5">
+                  <AppearanceSettingsSection />
+
+                  <BackgroundSettingsEntry onOpen={() => setPage('background')} />
+
+                  <NewTabSettingsSection accentColor={accentColor} />
+
+                  <ProtectionSettingsSection accentColor={accentColor} />
+
+                  <PoemSettingsSection accentColor={accentColor} />
+
+                  <SearchToggleSettingsSection
+                    accentColor={accentColor}
+                    accentTextColor={accentTextColor}
+                    previewMode={searchTogglePreviewMode}
+                    onTogglePreview={() => setSearchTogglePreviewMode((current) => (current === 'tabs' ? 'web' : 'tabs'))}
+                  />
+
+                  <AboutSettingsSection />
+
+                  <Button
+                    variant="ghost"
+                    className="h-10 w-full rounded-lg text-[14px] font-medium shadow-[var(--theme-inset-highlight)] transition-all duration-200 active:scale-[0.99]"
+                    style={{ color: accentColor }}
+                    onClick={() => {
+                      setBackgroundResetKey((current) => current + 1);
+                      resetAccentColor(DEFAULT_SETTINGS.defaultAccentColor);
+                      void updateSettings(DEFAULT_SETTINGS);
+                    }}
+                  >
+                    {copy.settings.resetAll}
+                  </Button>
+                </div>
+              </ScrollArea>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="background"
+              className="min-h-0 flex-1"
+              initial={reducedMotion ? false : { opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={reducedMotion ? { opacity: 1 } : { opacity: 0, x: 12 }}
+              transition={{ duration: reducedMotion ? 0 : 0.18, ease: 'easeOut' }}
+            >
+              <BackgroundGallery key={backgroundResetKey} selectionVersion={backgroundSelectionVersion} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </SheetContent>
     </Sheet>
   );
@@ -204,6 +273,19 @@ function NewTabSettingsSection({ accentColor }: { accentColor: string }) {
   return (
     <SettingsSection title={copy.settings.newTabPage}>
       <SettingsSectionCard>
+        <SettingsItem title={copy.settings.homeLayout}>
+          <SettingsAnimatedSegmentedControl
+            value={settings.homeLayout}
+            accentColor={accentColor}
+            activeTextColor={accentTextColor}
+            layoutId="settings-home-layout-indicator"
+            options={[
+              { value: 'tabs', label: copy.settings.tabsLayout },
+              { value: 'clock', label: copy.settings.clockLayout },
+            ]}
+            onChange={(homeLayout) => void updateSettings({ homeLayout })}
+          />
+        </SettingsItem>
         <SettingsItem
           title={copy.settings.bookmarksBar}
           description={copy.settings.bookmarksBarDescription}

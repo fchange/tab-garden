@@ -33,6 +33,37 @@ export function isSpecialUrl(url: string): boolean {
   return SPECIAL_PROTOCOLS.some((protocol) => url.startsWith(protocol));
 }
 
+export type SpecialPageType = 'blank' | 'new-tab' | 'settings' | 'extensions' | 'history' | 'downloads' | 'bookmarks' | 'extension' | 'internal';
+
+export function getSpecialPageType(url?: string | null): SpecialPageType | null {
+  if (!url) return null;
+
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === 'chrome-extension:') return 'extension';
+    if (parsed.protocol === 'about:') {
+      if (parsed.pathname === 'blank') return 'blank';
+      if (parsed.pathname === 'newtab' || parsed.pathname === 'home') return 'new-tab';
+      return 'internal';
+    }
+    if (parsed.protocol !== 'chrome:' && parsed.protocol !== 'edge:') return null;
+
+    switch (parsed.hostname.toLowerCase()) {
+      case 'newtab':
+      case 'new-tab-page':
+        return 'new-tab';
+      case 'settings': return 'settings';
+      case 'extensions': return 'extensions';
+      case 'history': return 'history';
+      case 'downloads': return 'downloads';
+      case 'bookmarks': return 'bookmarks';
+      default: return 'internal';
+    }
+  } catch {
+    return null;
+  }
+}
+
 export function normalizeUrl(url?: string | null): string {
   if (!url) return '';
   if (isSpecialUrl(url)) return url;

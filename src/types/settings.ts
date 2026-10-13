@@ -5,6 +5,7 @@ export type ThemeMode = 'light' | 'dark';
 export type LanguagePreference = 'en' | 'zh';
 export type SearchToggleDisplay = 'compact' | 'detailed';
 export type BookmarksBarStyle = 'standard' | 'borderless';
+export type HomeLayout = 'tabs' | 'clock';
 
 export interface ColorSample {
   hex: string;
@@ -32,6 +33,7 @@ export interface PaletteDefinition {
 
 export interface AppSettings {
   language: LanguagePreference;
+  homeLayout: HomeLayout;
   defaultView: ViewMode;
   protectPinned: boolean;
   protectAudible: boolean;
@@ -41,6 +43,7 @@ export interface AppSettings {
   defaultAccentColor: string | null;
   randomAccentColor: boolean;
   animationEnabled: boolean;
+  wallpaperId: string | null;
   searchToggleDisplay: SearchToggleDisplay;
   showPoem: boolean;
   openPoemExpandedByDefault: boolean;

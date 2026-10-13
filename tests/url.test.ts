@@ -1,7 +1,56 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { getBaseDomain, getChromeFaviconUrl, getDisplayUrl } from '../src/lib/url.ts';
+import { getBaseDomain, getChromeFaviconUrl, getDisplayUrl, getFaviconUrl, getSpecialPageType } from '../src/lib/url.ts';
+
+describe('getSpecialPageType', () => {
+  it('recognizes blank pages independently of query strings and fragments', () => {
+    for (const url of ['about:blank', 'about:blank#section', 'about:blank?x=1', 'ABOUT:blank']) {
+      assert.equal(getSpecialPageType(url), 'blank');
+    }
+  });
+
+  it('classifies Chrome and Edge internal pages by their exact host', () => {
+    for (const protocol of ['chrome', 'edge']) {
+      assert.equal(getSpecialPageType(`${protocol}://newtab/`), 'new-tab');
+      assert.equal(getSpecialPageType(`${protocol}://new-tab-page/`), 'new-tab');
+      assert.equal(getSpecialPageType(`${protocol}://settings/privacy?search=cookies`), 'settings');
+      assert.equal(getSpecialPageType(`${protocol}://extensions/?id=abc`), 'extensions');
+      assert.equal(getSpecialPageType(`${protocol}://history/syncedTabs`), 'history');
+      assert.equal(getSpecialPageType(`${protocol}://downloads/`), 'downloads');
+      assert.equal(getSpecialPageType(`${protocol}://bookmarks/?id=1`), 'bookmarks');
+      assert.equal(getSpecialPageType(`${protocol}://flags/`), 'internal');
+      assert.equal(getSpecialPageType(`${protocol}://settings-other/`), 'internal');
+    }
+    assert.equal(getSpecialPageType('CHROME://SETTINGS/'), 'settings');
+  });
+
+  it('distinguishes extension pages and other about pages', () => {
+    assert.equal(getSpecialPageType('chrome-extension://abcdef/options.html'), 'extension');
+    assert.equal(getSpecialPageType('about:newtab'), 'new-tab');
+    assert.equal(getSpecialPageType('about:home'), 'new-tab');
+    assert.equal(getSpecialPageType('about:config'), 'internal');
+  });
+
+  it('does not replace icons for normal websites or malformed URLs', () => {
+    for (const url of [
+      'https://example.com/settings', 'https://chrome.example/',
+      'https://example.com/?next=chrome://settings', 'file:///tmp/page.html',
+      '', 'not a URL',
+    ]) {
+      assert.equal(getSpecialPageType(url), null);
+    }
+    assert.equal(getSpecialPageType(undefined), null);
+  });
+});
+
+describe('getFaviconUrl', () => {
+  it('preserves supplied icons for websites and third-party extensions', () => {
+    const favicon = 'data:image/png;base64,example';
+    assert.equal(getFaviconUrl('https://example.com/', favicon), favicon);
+    assert.equal(getFaviconUrl('chrome-extension://abcdef/options.html', favicon), favicon);
+  });
+});
 
 describe('getBaseDomain', () => {
   it('keeps the registrable domain for multi-part public suffixes', () => {

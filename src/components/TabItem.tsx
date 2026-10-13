@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, type CSSProperties, type MouseEvent } from 'react';
-import { Moon, CirclePlus, X } from 'lucide-react';
+import { AppWindow, Bookmark, Download, File, History, Moon, PanelsTopLeft, Puzzle, Settings2, X } from 'lucide-react';
 import { Badge } from './ui/badge';
 import { cn } from '../lib/cn';
 import { useCopy } from '../lib/appContext';
-import { getBaseDomain, getDisplayUrl, isSpecialUrl, getFaviconUrl, getDomainColor } from '../lib/url';
+import { getBaseDomain, getDisplayUrl, isSpecialUrl, getFaviconUrl, getDomainColor, getSpecialPageType, type SpecialPageType } from '../lib/url';
 import type { BrowserTab } from '../types/tab';
 
 interface TabItemProps {
@@ -28,16 +28,34 @@ function tabFaviconUrl(tab: BrowserTab): string {
 interface TabFaviconProps {
   faviconUrl: string;
   domain: string;
-  isBlankPage?: boolean;
+  specialPageType: SpecialPageType | null;
   audible?: boolean;
   compact?: boolean;
 }
 
-function TabFavicon({ faviconUrl, domain, isBlankPage, audible, compact }: TabFaviconProps) {
+const specialPageIcons = {
+  blank: File,
+  'new-tab': PanelsTopLeft,
+  settings: Settings2,
+  extensions: Puzzle,
+  history: History,
+  downloads: Download,
+  bookmarks: Bookmark,
+  extension: Puzzle,
+  internal: AppWindow,
+};
+
+function TabFavicon({ faviconUrl, domain, specialPageType, audible, compact }: TabFaviconProps) {
   const [imageFailed, setImageFailed] = useState(false);
-  const showImage = !!faviconUrl && !imageFailed;
+  // Internal pages use semantic icons; third-party extensions keep their own branding.
+  const showImage = !!faviconUrl && !imageFailed && (!specialPageType || specialPageType === 'extension');
   const fallbackLabel = domain[0]?.toUpperCase() || '?';
-  const fallbackIcon = isBlankPage ? <CirclePlus size={compact ? 11 : 14} strokeWidth={1.9} /> : fallbackLabel;
+  const Icon = specialPageType ? specialPageIcons[specialPageType] : null;
+  const fallbackIcon = Icon ? <Icon size={compact ? 14 : 18} strokeWidth={1.9} aria-hidden="true" /> : fallbackLabel;
+  const fallbackStyle = !specialPageType ? {
+    background: `color-mix(in srgb, ${getDomainColor(domain)} 12%, var(--theme-surface))`,
+    color: `color-mix(in srgb, ${getDomainColor(domain)} 25%, var(--theme-fg))`,
+  } : undefined;
 
   useEffect(() => {
     setImageFailed(false);
@@ -56,7 +74,7 @@ function TabFavicon({ faviconUrl, domain, isBlankPage, audible, compact }: TabFa
             onError={() => setImageFailed(true)}
           />
         ) : (
-          <span className="size-4 rounded-[4px] flex items-center justify-center text-[10px] font-semibold bg-[rgba(128,128,128,0.10)] text-[rgba(0,0,0,0.45)] dark:text-[rgba(255,255,255,0.35)]">
+          <span className="size-4 rounded-[4px] flex items-center justify-center text-[10px] font-semibold bg-[var(--theme-surface-strong)] text-muted-foreground" style={fallbackStyle}>
             {fallbackIcon}
           </span>
         )}
@@ -76,7 +94,7 @@ function TabFavicon({ faviconUrl, domain, isBlankPage, audible, compact }: TabFa
           onError={() => setImageFailed(true)}
         />
       ) : (
-        <span className="size-[22px] rounded flex items-center justify-center text-[13px] font-semibold bg-[rgba(128,128,128,0.10)] text-[rgba(0,0,0,0.45)] dark:text-[rgba(255,255,255,0.35)]">
+        <span className="size-[22px] rounded flex items-center justify-center text-[13px] font-semibold bg-[var(--theme-surface-strong)] text-muted-foreground" style={fallbackStyle}>
           {fallbackIcon}
         </span>
       )}
@@ -142,7 +160,7 @@ export function TabItem({
 
   const displayUrl = useMemo(() => getDisplayUrl(tab.url, copy.domainCard.blankPage), [copy, tab.url]);
   const faviconUrl = useMemo(() => tabFaviconUrl(tab), [tab]);
-  const isBlankPage = tab.url?.toLowerCase() === 'about:blank';
+  const specialPageType = useMemo(() => getSpecialPageType(tab.url), [tab.url]);
   const domain = useMemo(
     () => getBaseDomain(tab.url, copy.domainCard.unnamedPage, copy.domainCard.blankPage),
     [copy, tab.url],
@@ -180,7 +198,7 @@ export function TabItem({
         onMouseLeave={() => setHovered(false)}
         onClick={handleClick}
       >
-        <TabFavicon faviconUrl={faviconUrl} domain={domain} isBlankPage={isBlankPage} compact />
+        <TabFavicon faviconUrl={faviconUrl} domain={domain} specialPageType={specialPageType} compact />
 
         <span
           className="text-[14px] font-medium truncate flex-1 min-w-0 transition-colors duration-150 text-[rgba(0,0,0,0.74)] group-hover:text-[rgba(0,0,0,0.58)] dark:text-[rgba(255,255,255,0.75)] dark:group-hover:text-[rgba(255,255,255,0.58)]"
@@ -215,7 +233,7 @@ export function TabItem({
           transition: 'transform 280ms, opacity 280ms',
         }}
       >
-        <TabFavicon faviconUrl={faviconUrl} domain={domain} isBlankPage={isBlankPage} audible={tab.audible} />
+        <TabFavicon faviconUrl={faviconUrl} domain={domain} specialPageType={specialPageType} audible={tab.audible} />
 
         <div className="flex-1 min-w-0 flex flex-col gap-0.5">
           <div className="text-[15px] font-medium truncate flex items-center gap-1.5 text-[rgba(0,0,0,0.82)] group-hover:text-[rgba(0,0,0,0.62)] dark:text-[rgba(255,255,255,0.82)] dark:group-hover:text-[rgba(255,255,255,0.62)] transition-colors duration-200">

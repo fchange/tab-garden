@@ -149,6 +149,34 @@
     --poem-text-extra-compact: clamp(1.125rem, 3.4vw, 1.375rem);
     --poem-seal: 0.6875rem;
   }
+
+  /* Leave room for the absolute bookmark bar above the workspace. */
+  .main-panel-with-bookmarks {
+    margin-top: 52px;
+    --layout-content-max-height: calc(100dvh - var(--layout-chrome-offset) - 36px);
+  }
+}
+
+.clock-layout {
+  --poem-head-max-width: min(90vw, 900px);
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(88px, 22vh, 280px) var(--layout-gutter) 80px;
+}
+
+/* Unframed clock and poem text need a quiet reading surface over photographs. */
+.clock-layout-with-wallpaper {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--theme-bg) 45%, transparent),
+    color-mix(in srgb, var(--theme-bg) 80%, transparent) 20%,
+    color-mix(in srgb, var(--theme-bg) 80%, transparent)
+  );
 }
 
 [data-theme="dark"] {

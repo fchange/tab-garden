@@ -1,10 +1,12 @@
 import type { AppSettings } from '../types/settings';
-import { DEFAULT_ACCENT_COLOR } from './accentColors';
+import { DEFAULT_ACCENT_COLOR } from './accentColors.ts';
+import { getWallpaper } from './wallpapers.ts';
 
 export const SETTINGS_KEY = 'zhi-li-tab:settings';
 
 export const DEFAULT_SETTINGS: AppSettings = {
   language: 'zh',
+  homeLayout: 'tabs',
   defaultView: 'all',
   protectPinned: true,
   protectAudible: true,
@@ -14,6 +16,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   defaultAccentColor: DEFAULT_ACCENT_COLOR,
   randomAccentColor: false,
   animationEnabled: true,
+  wallpaperId: null,
   searchToggleDisplay: 'detailed',
   showPoem: true,
   openPoemExpandedByDefault: false,
@@ -41,6 +44,12 @@ function normalizeSettings(storedSettings?: StoredSettings): AppSettings {
     ...DEFAULT_SETTINGS,
     ...currentSettings,
   };
+
+  normalizedSettings.wallpaperId = getWallpaper(normalizedSettings.wallpaperId)?.id ?? null;
+
+  if (normalizedSettings.homeLayout !== 'tabs' && normalizedSettings.homeLayout !== 'clock') {
+    normalizedSettings.homeLayout = DEFAULT_SETTINGS.homeLayout;
+  }
 
   if (!normalizedSettings.randomAccentColor && !normalizedSettings.defaultAccentColor) {
     normalizedSettings.defaultAccentColor = DEFAULT_SETTINGS.defaultAccentColor;
