@@ -93,6 +93,27 @@ const EN = {
     openGithub: 'Open source',
     versionLabel: 'Version',
     appearance: 'Appearance',
+    presets: {
+      title: 'Theme presets',
+      mountainVerse: {
+        name: 'Mountain Verse',
+        description: 'Tabs · poem collapsed · mountains · Chinese',
+      },
+      mountainPoetry: {
+        name: 'Mountain Poetry',
+        description: 'Tabs · poem expanded · mountains · Chinese',
+      },
+      florenceClock: {
+        name: 'Florence Time',
+        description: 'Clock · no poem · Florence · English',
+      },
+      praterPoetry: {
+        name: 'Prater Poetry',
+        description: 'Clock · poem collapsed · Prater · English',
+      },
+      applied: 'Applied',
+      apply: (name: string) => `Apply ${name}`,
+    },
     features: 'Protection rules',
     language: 'Language',
     english: 'English',
@@ -276,6 +297,27 @@ const ZH: typeof EN = {
     openGithub: '打开源码',
     versionLabel: '版本',
     appearance: '外观',
+    presets: {
+      title: '主题组合',
+      mountainVerse: {
+        name: '山峦诗笺',
+        description: '标签管理 · 诗文默认收起 · 山峦 · 中文',
+      },
+      mountainPoetry: {
+        name: '山峦诗页',
+        description: '标签管理 · 诗文默认展开 · 山峦 · 中文',
+      },
+      florenceClock: {
+        name: '佛罗伦萨时刻',
+        description: '时钟 · 无诗文 · Florence · 英文',
+      },
+      praterPoetry: {
+        name: '普拉特诗景',
+        description: '时钟 · 诗文默认收起 · Prater · 英文',
+      },
+      applied: '已应用',
+      apply: (name: string) => `应用「${name}」`,
+    },
     features: '保护规则',
     language: '语言',
     english: 'English',

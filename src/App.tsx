@@ -99,14 +99,7 @@ function ReadyAppContent({ homeLayout, initialPoemExpanded }: { homeLayout: Home
   const [poemExpanded, setPoemExpanded] = useState(initialPoemExpanded);
 
   useEffect(() => {
-    if (!settings.showPoem) {
-      setPoemExpanded(false);
-      return;
-    }
-
-    if (settings.openPoemExpandedByDefault) {
-      setPoemExpanded(true);
-    }
+    setPoemExpanded(settings.showPoem && settings.openPoemExpandedByDefault);
   }, [settings.openPoemExpandedByDefault, settings.showPoem]);
 
   return (

@@ -16,6 +16,7 @@ import { ACCENT_COLORS } from '../../lib/accentColors';
 import { useAccent, useCopy, useSettingsContext, useTheme } from '../../lib/appContext';
 import { cn } from '../../lib/cn';
 import { getViewOptions } from '../../lib/i18n';
+import { isSettingsPresetActive, SETTINGS_PRESETS, type SettingsPresetId } from '../../lib/settingsPresets';
 import { DEFAULT_SETTINGS } from '../../lib/storage';
 import type { ThemePreference } from '../../types/settings';
 import { BackgroundGallery, BackgroundSettingsEntry } from './BackgroundGallery';
@@ -109,6 +110,8 @@ export function SettingsSheet({
             >
               <ScrollArea className="h-full">
                 <div className="space-y-6 px-6 py-5">
+                  <ThemePresetsSection />
+
                   <AppearanceSettingsSection />
 
                   <BackgroundSettingsEntry onOpen={() => setPage('background')} />
@@ -158,6 +161,65 @@ export function SettingsSheet({
         </AnimatePresence>
       </SheetContent>
     </Sheet>
+  );
+}
+
+function ThemePresetsSection() {
+  const copy = useCopy();
+  const { accentColor } = useAccent();
+  const { settings, updateSettings } = useSettingsContext();
+  const presetCopy = copy.settings.presets;
+  const labels: Record<SettingsPresetId, { name: string; description: string }> = {
+    'mountain-verse': presetCopy.mountainVerse,
+    'mountain-poetry': presetCopy.mountainPoetry,
+    'florence-clock': presetCopy.florenceClock,
+    'prater-poetry': presetCopy.praterPoetry,
+  };
+
+  return (
+    <SettingsSection title={presetCopy.title}>
+      <SettingsSectionCard>
+        {SETTINGS_PRESETS.map((preset, index) => {
+          const active = isSettingsPresetActive(settings, preset);
+          const label = labels[preset.id];
+
+          return (
+            <div key={preset.id}>
+              <button
+                type="button"
+                aria-label={presetCopy.apply(label.name)}
+                aria-pressed={active}
+                onClick={() => void updateSettings(preset.settings)}
+                className="group/preset flex min-h-[68px] w-full items-center gap-3 px-4 py-3.5 text-left transition-colors duration-200 hover:bg-[rgba(34,54,50,0.045)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring dark:hover:bg-white/[0.045]"
+              >
+                <span
+                  className="size-2 shrink-0 rounded-full shadow-[0_0_0_3px_rgba(255,255,255,0.52)] dark:shadow-[0_0_0_3px_rgba(255,255,255,0.10)]"
+                  style={{ background: accentColor }}
+                  aria-hidden="true"
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[14px] font-semibold leading-snug text-foreground/86 transition-colors group-hover/preset:text-foreground dark:text-foreground/88">
+                    {label.name}
+                  </span>
+                  <span className="mt-1 block text-[12px] leading-snug text-muted-foreground/78 dark:text-muted-foreground/74">
+                    {label.description}
+                  </span>
+                </span>
+                {active ? (
+                  <span className="flex shrink-0 items-center gap-1.5 text-[12px] font-semibold" style={{ color: accentColor }}>
+                    <Check className="size-4" aria-hidden="true" />
+                    <span>{presetCopy.applied}</span>
+                  </span>
+                ) : (
+                  <ChevronRight className="size-4 shrink-0 text-muted-foreground/42 transition-transform group-hover/preset:translate-x-0.5" aria-hidden="true" />
+                )}
+              </button>
+              {index < SETTINGS_PRESETS.length - 1 && <div className="mx-4 h-px bg-[rgba(34,54,50,0.10)] dark:bg-white/10" />}
+            </div>
+          );
+        })}
+      </SettingsSectionCard>
+    </SettingsSection>
   );
 }
 

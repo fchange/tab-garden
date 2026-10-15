@@ -38,3 +38,9 @@
   loading fails, and preserve intentional background-switch transitions.
 - Wallpaper repository boundary: keep local source assets, curation tools and
   exports out of Git; application tests must pass without those local files.
+- Theme presets: keep both collapsed and expanded mountain-poetry variants.
+  Shorten preset summaries instead of widening the established settings sheet;
+  the summary should foreground the layout, poem state, background and language.
+- Poem defaults: synchronize both directions when the expanded-by-default setting
+  changes at runtime. Let the existing controlled motion play the return animation;
+  do not force a remount that resets the poem or skips the transition.
