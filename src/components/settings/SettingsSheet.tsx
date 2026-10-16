@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 import { SearchModeToggle, type SearchMode } from '../SearchModeToggle';
 import { Button } from '../ui/button';
+import { CurrentBadge } from '../ui/current-badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -206,10 +207,7 @@ function ThemePresetsSection() {
                   </span>
                 </span>
                 {active ? (
-                  <span className="flex shrink-0 items-center gap-1.5 text-[12px] font-semibold" style={{ color: accentColor }}>
-                    <Check className="size-4" aria-hidden="true" />
-                    <span>{presetCopy.applied}</span>
-                  </span>
+                  <CurrentBadge color={accentColor}>{presetCopy.applied}</CurrentBadge>
                 ) : (
                   <ChevronRight className="size-4 shrink-0 text-muted-foreground/42 transition-transform group-hover/preset:translate-x-0.5" aria-hidden="true" />
                 )}

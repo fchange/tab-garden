@@ -1,10 +1,11 @@
 import type { CSSProperties, MouseEvent } from 'react';
-import { Check, ChevronDown, Moon, Shuffle, Star, Sun } from 'lucide-react';
+import { ChevronDown, Moon, Shuffle, Star, Sun } from 'lucide-react';
 
 import { ACCENT_COLORS } from '../lib/accentColors';
 import { useAccent, useCopy, useSettingsContext, useTheme } from '../lib/appContext';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import { CurrentBadge } from './ui/current-badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -112,16 +113,9 @@ export function AccentColorMenu() {
 
                 <span className={`flex items-center gap-1.5 shrink-0 transition-opacity duration-150 ${active || isDefault ? '' : 'opacity-0'} group-hover/color:opacity-0`}>
                   {active && (
-                    <Badge
-                      variant="accent"
-                      style={{
-                        background: `color-mix(in srgb, ${color.hex} 16%, transparent)`,
-                        color: color.hex,
-                      }}
-                    >
-                      <Check size={12} />
+                    <CurrentBadge color={color.hex}>
                       {copy.accents.current}
-                    </Badge>
+                    </CurrentBadge>
                   )}
                   {isDefault && (
                     <Badge

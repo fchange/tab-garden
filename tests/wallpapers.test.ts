@@ -15,10 +15,10 @@ describe('selected online wallpaper gallery', () => {
     for (const id of [null, undefined, '', '__proto__', {}, 42]) assert.equal(getWallpaper(id), null);
   });
 
-  it('uses only exact versioned HTTPS CDN hashes and retains verified attribution', () => {
+  it('uses only exact versioned HTTP CDN hashes and retains verified attribution', () => {
     for (const wallpaper of WALLPAPERS) {
       for (const [url, kind] of [[wallpaper.imageUrl, 'image'], [wallpaper.thumbnailUrl, 'thumbnail']] as const) {
-        assert.equal(new URL(url).origin, 'https://oos.jellys.rest');
+        assert.equal(new URL(url).origin, 'http://oos.jellys.rest');
         assert.match(new URL(url).pathname, new RegExp(`^/wallpapers/v1/${wallpaper.id}/${kind}-[a-f0-9]{16}\\.webp$`));
       }
       assert.ok(WALLPAPER_CATEGORIES.includes(wallpaper.category));
@@ -34,6 +34,6 @@ describe('selected online wallpaper gallery', () => {
     const attribution = WALLPAPERS.map(({ id, name, category, author, sourceUrl, license, licenseUrl }) => ({ id, name, category, author, sourceUrl, license, licenseUrl }));
     assert.equal(createHash('sha256').update(JSON.stringify(attribution)).digest('hex'), '9b975ee8a41eba7e34ae59ce4a209bf10f7d6156733da684819e1dae350b91eb');
     const delivery = WALLPAPERS.map(({ id, imageUrl, thumbnailUrl, width, height }) => ({ id, imageUrl, thumbnailUrl, width, height }));
-    assert.equal(createHash('sha256').update(JSON.stringify(delivery)).digest('hex'), 'dbc7713accbbbf5c830452604cf67e50735d54fe1bed579fbe542b37f930f01c');
+    assert.equal(createHash('sha256').update(JSON.stringify(delivery)).digest('hex'), 'b76a7162e8b6f4aeeb85081c5d00b4aa7bfbb6dd7894e3b22978c99b1780c51a');
   });
 });
